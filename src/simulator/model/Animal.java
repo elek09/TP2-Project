@@ -1,5 +1,6 @@
 package simulator.model;
 
+import org.json.JSONObject;
 import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 
@@ -72,15 +73,105 @@ public abstract class Animal implements Entity, AnimalInfo{
 
     }
 
+    public Animal() {
+    }
+
     void init(AnimalMapView reg_mngr){
         _region_mngr = reg_mngr;
+        this._dest = Vector2D.get_random_vector(0, _region_mngr.get_width()-1, 0, _region_mngr.get_height()-1);
         if (this._pos == null){
             _pos = Vector2D.get_random_vector(0, _region_mngr.get_width()-1, 0, _region_mngr.get_height()-1);
         }
-        else
+        else{
+            //_pos = _region_mngr.adjust_position(_pos);
+        }
     }
 
+    public Animal deliver_baby(){
+        if (_baby != null){
+            Animal baby = _baby;
+            _baby = null;
+            return baby;
+        }
+        return null;
+    }
+
+    protected void move(double speed){
+        _pos = _pos.plus(_dest.minus(_pos).direction().scale(speed));
 
 
+    }
+    public JSONObject as_JSON(){
+        JSONObject json = new JSONObject();
+        json.put("gcode", _genetic_code);
+        json.put("pos", _pos.asJSONArray());
+        json.put("dest", _dest.asJSONArray());
+        json.put("energy", _energy);
+        json.put("speed", _speed);
+        json.put("age", _age);
+        json.put("desire", _desire);
+        json.put("sight_range", _sight_range);
+        json.put("state", _state.toString());
+        json.put("diet", _diet.toString());
+        json.put("mate_strategy", _mate_strategy.toString());
+        return json;
+    }
 
+    /*public void update(double dt) {
+        _age += dt;
+        _energy -= _energy * dt;
+        if (_energy <= 0){
+            _state = State.Dead;
+        }
+    }*/
+
+    @Override
+    public State get_state() {
+        return this._state;
+    }
+
+    @Override
+    public Vector2D get_position() {
+        return this._pos;
+    }
+
+    @Override
+    public String get_genetic_code() {
+        return this._genetic_code;
+    }
+
+    @Override
+    public Diet get_diet() {
+        return this._diet;
+    }
+
+    @Override
+    public double get_speed() {
+        return this._speed;
+    }
+
+    @Override
+    public double get_sight_range() {
+        return this._sight_range;
+    }
+
+    @Override
+    public double get_energy() {
+        return this._energy;
+    }
+
+    @Override
+    public double get_age() {
+        return this._age;
+    }
+
+    @Override
+    public Vector2D get_destination() {
+        return this._dest;
+    }
+
+    @Override
+    public boolean is_pregnant() {
+        return this._baby != null;
+    }
 }
