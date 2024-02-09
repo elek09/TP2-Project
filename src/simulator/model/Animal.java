@@ -5,6 +5,16 @@ import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 
 public abstract class Animal implements Entity, AnimalInfo{
+    protected final static double _maxenergy = 100.0;
+    protected final static double _maxdesire = 100.0;
+    protected final static double _lowestdesire = 0.0;
+    protected final static double _lowestenergy = 0;
+    protected final static double _energyreduction = 20.0;
+    protected final static double _desirereduction = 40.0;
+    protected final static double _movefactor = 0.007;
+    protected final static double _speedConst = 35.0;
+    protected final static double _sightrangeConst = 40.0;
+    protected final static double _desireBound = 40.0;
     protected String _genetic_code;
     protected Diet _diet;
     protected State _state;
