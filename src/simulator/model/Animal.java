@@ -15,6 +15,13 @@ public abstract class Animal implements Entity, AnimalInfo{
     protected final static double _speedConst = 35.0;
     protected final static double _sightrangeConst = 40.0;
     protected final static double _desireBound = 40.0;
+    protected final static double _multiplicativeFactor = 60.0;
+    protected final static double _tolerance = 0.20;
+    protected final static double _speedFactor = 2.00;
+    protected final static double _multiplicativeMath = 0.007;
+    protected final static double _multiplicativeTime = 1.2;
+    protected final static double _desireUpperBound = 65.0;
+
     protected String _genetic_code;
     protected Diet _diet;
     protected State _state;
@@ -54,10 +61,10 @@ public abstract class Animal implements Entity, AnimalInfo{
         _pos = pos;
 
         _dest = null;
-        _energy = 100.0;
+        _energy = _maxenergy;
         _speed = Utils.get_randomized_parameter(init_speed, 0.1);
         _age = 0;
-        _desire = 0.0;
+        _desire = _lowestdesire ;
         _sight_range = sight_range;
         _mate_target = null;
         _baby = null;
@@ -69,13 +76,13 @@ public abstract class Animal implements Entity, AnimalInfo{
         _genetic_code = p1._genetic_code;
         _diet = p1._diet;
         _state = State.Normal;
-        _pos = p1.get_position().plus( Vector2D.get_random_vector(-1,1).scale(60.0 * (Utils._rand.nextGaussian()+1)));
+        _pos = p1.get_position().plus( Vector2D.get_random_vector(-1,1).scale(_multiplicativeFactor * (Utils._rand.nextGaussian()+1)));
         _dest = null;
         _energy = (p1._energy + p2._energy) / 2.0;
-        _speed = Utils.get_randomized_parameter((p1.get_speed() + p2.get_speed())/2, 0.2);
+        _speed = Utils.get_randomized_parameter((p1.get_speed() + p2.get_speed())/2, _tolerance);
         _age = 0;
-        _desire = 0.0;
-        _sight_range = Utils.get_randomized_parameter( (p1.get_sight_range() + p2.get_sight_range())/2, 0.2 );
+        _desire = _lowestdesire;
+        _sight_range = Utils.get_randomized_parameter( (p1.get_sight_range() + p2.get_sight_range())/2, _tolerance );
         _mate_target = null;
         _baby = null;
         _region_mngr = null;
