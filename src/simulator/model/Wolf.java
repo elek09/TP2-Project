@@ -1,26 +1,25 @@
 package simulator.model;
 
-import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 
-public class Sheep extends Animal {
+public class Wolf extends Animal{
 
-    private Animal _danger_source;
-    private SelectionStrategy _danger_strategy;
+    private Animal _hunt_target;
+    private SelectionStrategy _hunting_strategy;
 
-    public Sheep(SelectionStrategy mate_strategy, SelectionStrategy danger_strategy, Vector2D pos) {
+    public Wolf(SelectionStrategy mate_strategy, SelectionStrategy danger_strategy, Vector2D pos) {
         super();
         this._mate_strategy = mate_strategy;
-        this._danger_strategy = danger_strategy;
+        this._hunting_strategy = danger_strategy;
         this._pos = pos;
         this._speed = _speedConst;
         this._sight_range = _sightrangeConst;
     }
 
-    protected Sheep(Sheep p1, Animal p2) {
+    protected Wolf(Wolf p1, Animal p2) {
         super(p1, p2);
-        this._danger_strategy = p1._danger_strategy;
-        this._danger_source = null;
+        this._hunting_strategy = p1._hunting_strategy;
+        this._hunt_target = null;
     }
 
     public void update(double dt) {
@@ -37,9 +36,6 @@ public class Sheep extends Animal {
         else if (this._state == State.Mate) {
             updateAsMate(dt);
         }
-        //TODO: Here must be a check for the sheep to see if it's inside of the board in order to change or not the
-        // position of the sheep.
-        // if (this._pos.getX() )
 
 
     }
@@ -55,6 +51,7 @@ public class Sheep extends Animal {
         this._desire += _desirereduction * dt;
         assert this._desire > _lowestdesire && this._desire <= _maxdesire;
         if (this._danger_source == null) {
+            searchForDanger();
             //TODO: Search for a new danger source
 
             if (this._desire > _desireUpperBound) {
@@ -120,21 +117,21 @@ public class Sheep extends Animal {
                     this._desire = 0;
                     _mate_target._desire = 0;
                     if (this._baby == null && Math.random() < 0.9) {
-                        this._baby = new Sheep(this, _mate_target);
+                        this._baby = new Wolf(this, _mate_target);
                     }
                     this._state = State.Normal;
                 }
 
             }
-            else if (this._danger_source != null){
-                this._state = State.Danger;
+        else if (this._danger_source != null){
+            this._state = State.Danger;
         }
-            else if (this._danger_source == null){
-                if (this._desire < _desireUpperBound){
-                    this._state = State.Normal;
-                }
-                searchForDanger();
+        else if (this._danger_source == null){
+            if (this._desire < _desireUpperBound){
+                this._state = State.Normal;
             }
+            searchForDanger();
+        }
     }
 
     private boolean searchForMate() {
