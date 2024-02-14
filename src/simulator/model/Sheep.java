@@ -37,6 +37,12 @@ public class Sheep extends Animal {
         else if (this._state == State.Mate) {
             updateAsMate(dt);
         }
+        else if (this._energy==0.0||this._age>8.0){
+            this._state = State.Dead;
+        }
+        else if (this._state!=State.Dead){
+            _energy+=get_food(this,dt);     //FoodSupplier Interface
+        }
         //TODO: Here must be a check for the sheep to see if it's inside of the board in order to change or not the
         // position of the sheep.
         // if (this._pos.getX() )
@@ -137,9 +143,26 @@ public class Sheep extends Animal {
             }
     }
 
-    private boolean searchForMate() {
+    public void searchForDanger(AnimalMapView reg_mngr) {
+        for (Animal a : reg_mngr.get_animals_in_range(this, this._sight_range)) {
+            if (a.get_diet() == Diet.CARNIVORE) {
+                this._danger_source = a;
+                break;
+            }
+            //Finish if we did the region manager class
+        }
+
+    }
+
+    public boolean searchForMate(AnimalMapView reg_mngr) {
+        for (Animal a : reg_mngr.get_animals_in_range(this, this._sight_range)) {
+            if (/*we will have to figure out the corresponding selection strategy*/ a.get_genetic_code() == this._genetic_code) {
+                this._mate_target = a;
+                return true;
+            }
+        }
         return false;
     }
 
-    private void searchForDanger(){}
+
 }
