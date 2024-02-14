@@ -142,6 +142,35 @@ public abstract class Animal implements Entity, AnimalInfo{
         }
     }*/
 
+    /*
+    (Page 4)
+    Implement the following strategies:
+     SelectFirst: returns the first animal in the list "as".
+     SelectClosest: returns the animal closest to the animal "a" in the list "as".
+     SelectYoungest: returns the youngest animal in the "as" list.
+     */
+
+    //we have to do smthing like this:
+    public static SelectionStrategy SelectFirst = (a, as) -> as.get(0);
+    public static SelectionStrategy SelectClosest = (a, as) -> {
+        Animal closest = as.get(0);
+        for (Animal animal : as) {
+            if (a.get_position().distanceTo(animal.get_position()) < a.get_position().distanceTo(closest.get_position())) {
+                closest = animal;
+            }
+        }
+        return closest;
+    };
+    public static SelectionStrategy SelectYoungest = (a, as) -> {
+        Animal youngest = as.get(0);
+        for (Animal animal : as) {
+            if (animal.get_age() < youngest.get_age()) {
+                youngest = animal;
+            }
+        }
+        return youngest;
+    };
+
     @Override
     public State get_state() {
         return this._state;
