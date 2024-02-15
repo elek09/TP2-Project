@@ -66,7 +66,7 @@ public class Wolf extends Animal{
 
     //i think we dont need this, but we shall discuss it
     //(An object of type Wolf can never be in the DANGER state.)
-    private void updateAsDanger(double dt) {
+    /*private void updateAsDanger(double dt) {
         if (this._danger_source != null) {
             if (this._state == State.Dead) {
                 this._danger_source = null;
@@ -93,7 +93,7 @@ public class Wolf extends Animal{
         }
 
 
-    }
+    }*/
 
     private void updateAsMate(double dt) {
         if (this._mate_target != null) {
@@ -164,7 +164,7 @@ strategy.*/
     //Found it on the internet just kept here for reference maybe there is some stuff which what we can work with
     public JSONObject as_JSON() {
         JSONObject ObjectWolf = new JSONObject();
-        ObjectWolf.put("pos", _pos.as_JSON());
+        /*ObjectWolf.put("pos", _pos.as_JSON());
         ObjectWolf.put("energy", _energy);
         ObjectWolf.put("age", _age);
         ObjectWolf.put("state", _state.toString());
@@ -184,7 +184,7 @@ strategy.*/
         }
         if (_hunt_target != null) {
             ObjectWolf.put("hunt_target", _hunt_target.as_JSON());
-        }
+        }*/
         return ObjectWolf;
     }
 

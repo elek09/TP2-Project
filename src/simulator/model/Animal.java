@@ -3,25 +3,9 @@ package simulator.model;
 import org.json.JSONObject;
 import simulator.misc.Utils;
 import simulator.misc.Vector2D;
+import simulator.model.Constants;
 
-public abstract class Animal implements Entity, AnimalInfo{
-    protected final static double _maxenergy = 100.0;
-    protected final static double _maxdesire = 100.0;
-    protected final static double _lowestdesire = 0.0;
-    protected final static double _lowestenergy = 0;
-    protected final static double _energyreduction = 20.0;
-    protected final static double _desirereduction = 40.0;
-    protected final static double _movefactor = 0.007;
-    protected final static double _speedConst = 35.0;
-    protected final static double _sightrangeConst = 40.0;
-    protected final static double _desireBound = 40.0;
-    protected final static double _multiplicativeFactor = 60.0;
-    protected final static double _tolerance = 0.20;
-    protected final static double _speedFactor = 2.00;
-    protected final static double _multiplicativeMath = 0.007;
-    protected final static double _multiplicativeTime = 1.2;
-    protected final static double _desireUpperBound = 65.0;
-
+public abstract class Animal implements Entity, AnimalInfo, Constants{
     protected String _genetic_code;
     protected Diet _diet;
     protected State _state;
@@ -151,6 +135,7 @@ public abstract class Animal implements Entity, AnimalInfo{
      */
 
     //we have to do smthing like this:
+    /*
     public static SelectionStrategy SelectFirst = (a, as) -> as.get(0);
     public static SelectionStrategy SelectClosest = (a, as) -> {
         Animal closest = as.get(0);
@@ -170,7 +155,7 @@ public abstract class Animal implements Entity, AnimalInfo{
         }
         return youngest;
     };
-
+*/
     @Override
     public State get_state() {
         return this._state;

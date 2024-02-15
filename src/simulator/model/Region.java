@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Region implements Entity, FoodSupplier, RegionInfo {
+public abstract class Region implements Entity, FoodSupplier, RegionInfo, Constants {
     protected List<Animal> animals;
 
     public Region() {
