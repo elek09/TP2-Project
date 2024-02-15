@@ -8,6 +8,7 @@ import java.util.List;
 import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 import simulator.model.Constants;
+import simulator.factories.Factory;
 
 public class Simulator implements JSONable {
 
@@ -28,14 +29,14 @@ public class Simulator implements JSONable {
         this.height = height;
         this.animalsFactory = animalsFactory;
         this.regionsFactory = regionsFactory;
-        this.regionManager = new RegionManager();
+        this.regionManager = new RegionManager(cols, rows, width, height);
         this.animals = new ArrayList<>();
         this.currentTime = 0.0;
     }
 
     private void set_region(int row, int col, JSONObject r) {
         Region region = regionsFactory.create(r);
-        regionManager.addRegion(row, col, region);
+        regionManager.add_region(row, col, region);
     }
 
     public void set_region(int row, int col, JSONObject r) {
