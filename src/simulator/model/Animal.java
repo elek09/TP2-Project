@@ -5,7 +5,7 @@ import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 import simulator.model.Constants;
 
-public abstract class Animal implements Entity, AnimalInfo, Constants{
+public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMapView{
     protected String _genetic_code;
     protected Diet _diet;
     protected State _state;
