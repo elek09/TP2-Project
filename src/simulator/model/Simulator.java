@@ -12,15 +12,18 @@ import simulator.factories.Factory;
 
 public class Simulator implements JSONable {
 
-    private final int cols;
-    private final int rows;
-    private final int width;
-    private final int height;
+    private int cols;
+    private int rows;
+    private int width;
+    private int height;
     private final Factory<Animal> animalsFactory;
     private final Factory<Region> regionsFactory;
     private final RegionManager regionManager;
     private final List<Animal> animals;
     private double currentTime;
+    private int row;
+    private int col;
+    private JSONObject r;
 
     public Simulator(int cols, int rows, int width, int height, Factory<Animal> animalsFactory, Factory<Region> regionsFactory) {
         this.cols = cols;
@@ -34,19 +37,23 @@ public class Simulator implements JSONable {
         this.currentTime = 0.0;
     }
 
-    private void set_region(int row, int col, JSONObject r) {
-        Region region = regionsFactory.create(r);
-        regionManager.add_region(row, col, region);
-    }
 
-    public void set_region(int row, int col, JSONObject r) {
-        Region region = new Region(r);      // absctract class
-        set_region(row, col, region);
+    /*private void set_region(int row, int col, JSONObject r) {
+        this.rows = row;
+        this.cols = col;
+        this.r = r;
+        Region region = regionsFactory.create(r);
+        regionManager.set_region(row, col, region);
+    }*/
+
+    public void set_region(int row, int col, JSONObject r_json) {
+        //Region region = new Region(r_json);      // absctract class
+        set_region(row, col, r_json);
     }
 
     private void add_animal(Animal a) {
         animals.add(a);
-        regionManager.registerAnimal(a);
+        regionManager.register_animal(a);
     }
 
     public void add_animal(JSONObject a_json) {
@@ -76,7 +83,7 @@ public class Simulator implements JSONable {
         // Update animals and regions
         for (Animal animal : animals) {
             animal.update(dt);
-            regionManager.updateRegion(animal);
+            regionManager.update_animal_region(animal);
         }
         regionManager.updateAllRegions();
 

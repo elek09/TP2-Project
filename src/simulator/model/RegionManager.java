@@ -169,6 +169,7 @@ public class RegionManager implements AnimalMapView {
         }
     }
     //This is weird cuz I don't know pretty much anything about the filter stuff.
+    @Override
     public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter){
         List<Animal> animalsInRange = new ArrayList<>();
         // Calculate the row and column of the region based on the animal's position
@@ -204,9 +205,11 @@ public class RegionManager implements AnimalMapView {
         json.put("regions", regions);
         return json;
     }
-    @Override
-    public List<Animal> get_animals_in_range(Animal e, Predicate<Animal> filter) {
-        return null;
-
+    public void remove_dead_animals(Animal a){
+        for (int i = 0; i < _rows; i++){
+            for (int j = 0; j < _cols; j++){
+                _regions[i][j].remove_animal(a);
+            }
+        }
     }
 }
