@@ -18,6 +18,9 @@ public class RegionManager implements AnimalMapView {
     private int _region_height;
     private Region[][] _regions;
     private Map<Animal, Region> _animal_region;
+    private Animal a;
+    private Predicate<Animal> filter;
+
     public RegionManager(int cols, int rows, int width, int height){
         this._rows = rows;
         this._cols = cols;
@@ -169,8 +172,10 @@ public class RegionManager implements AnimalMapView {
         }
     }
     //This is weird cuz I don't know pretty much anything about the filter stuff.
+
     @Override
     public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter){
+
         List<Animal> animalsInRange = new ArrayList<>();
         // Calculate the row and column of the region based on the animal's position
         int row = (int) a.get_position().getY() / _region_height;
@@ -205,11 +210,5 @@ public class RegionManager implements AnimalMapView {
         json.put("regions", regions);
         return json;
     }
-    public void remove_dead_animals(Animal a){
-        for (int i = 0; i < _rows; i++){
-            for (int j = 0; j < _cols; j++){
-                _regions[i][j].remove_animal(a);
-            }
-        }
-    }
+
 }

@@ -41,7 +41,7 @@ public class Sheep extends Animal {
             this._state = State.Dead;
         }
         else if (this._state!=State.Dead){
-            _energy+=get_food(this,dt);     //FoodSupplier Interface
+            _energy += Animal.get_food(this,dt);     //FoodSupplier Interface
         }
         //TODO: Here must be a check for the sheep to see if it's inside of the board in order to change or not the
         // position of the sheep.
@@ -62,6 +62,7 @@ public class Sheep extends Animal {
         assert this._desire > _lowestdesire && this._desire <= _maxdesire;
         if (this._danger_source == null) {
             //TODO: Search for a new danger source
+            searchForDanger(_region_mngr);
 
             if (this._desire > _desireUpperBound) {
                 this._state = State.Mate;
@@ -93,7 +94,7 @@ public class Sheep extends Animal {
             } else {
                 this._state = State.Normal;
             }
-            searchForDanger();
+            searchForDanger(_region_mngr);
             updateAsNormal(dt);
         }
 
@@ -111,7 +112,7 @@ public class Sheep extends Animal {
             }
         } else if (this._mate_target == null)
             //Searches for a mate and if there is no mate, it will update as normal
-            if (!searchForMate()) {
+            if (!searchForMate(_region_mngr)) {
                 updateAsNormal(dt);
 
             } else {
@@ -139,7 +140,7 @@ public class Sheep extends Animal {
                 if (this._desire < _desireUpperBound){
                     this._state = State.Normal;
                 }
-                searchForDanger();
+                searchForDanger(_region_mngr);
             }
     }
 
