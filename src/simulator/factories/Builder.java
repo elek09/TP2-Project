@@ -1,5 +1,7 @@
 package simulator.factories;
 
+import org.json.JSONObject;
+
 public abstract class Builder<T> {
     private String _type_tag;
     private String _desc;
@@ -29,5 +31,5 @@ public abstract class Builder<T> {
     public String toString() {
         return _desc;
     }
-    protected abstract T create_instance(JSONObject data);
+    protected abstract T create_instance(JSONObject data) throws IllegalArgumentException;
 }

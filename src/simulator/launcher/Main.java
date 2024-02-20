@@ -19,6 +19,18 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 public class Main {
 
+
+
+
+
+
+
+
+
+
+
+
+	/*
 	private enum ExecMode {
 		BATCH("batch", "Batch mode"), GUI("gui", "Graphical User Interface mode");
 
@@ -163,5 +175,5 @@ public class Main {
 			System.err.println();
 			e.printStackTrace();
 		}
-	}
+	}*/
 }

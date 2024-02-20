@@ -5,8 +5,6 @@ import org.json.JSONObject;
 import java.util.List;
 
 public interface Factory<T> {
-    T createInstance(JSONObject info) throws IllegalArgumentException;
-    List<JSONObject> getInfo();
-
-    T create(JSONObject r);
+    public T create_instance(JSONObject info);
+    public List<JSONObject> get_info();
 }
