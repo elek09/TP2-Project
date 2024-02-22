@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import simulator.misc.Utils;
-import simulator.misc.Vector2D;
-import simulator.model.Constants;
 import simulator.factories.Factory;
 
 public class Simulator implements JSONable {
@@ -75,7 +72,7 @@ public class Simulator implements JSONable {
         currentTime += dt;
 
         // Remove dead animals
-        animals.removeIf(animal -> animal.get_state() == State.Dead);
+        animals.removeIf(animal -> animal.get_state() == State.DEAD);
         regionManager.removeDeadAnimals();
 
         // Update animals and regions

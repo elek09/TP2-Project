@@ -10,7 +10,7 @@ public class DefaultRegion extends Region implements RegionInfo{
             return 0.0;
         }
         else {
-            return _multiplicativeFactor*Math.exp(-Math.max(0,n - _substractionNumHerb)*_speedFactor)*dt;
+            return _multiplicativeFactor*Math.exp(-Math.max(0,n - _substractionNumHerb)* _speedFactorSheep)*dt;
 
 
         }
