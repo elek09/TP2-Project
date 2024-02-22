@@ -3,6 +3,9 @@ package simulator.model;
 import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 
+import java.util.List;
+import java.util.function.Predicate;
+
 public class Sheep extends Animal {
 
     private Animal _danger_source;
@@ -166,4 +169,43 @@ public class Sheep extends Animal {
     }
 
 
+    @Override
+    public List<Animal> get_animals_in_range(Animal e, Predicate<Animal> filter) {
+        return null;
+    }
+
+    @Override
+    public int get_cols() {
+        return 0;
+    }
+
+    @Override
+    public int get_rows() {
+        return 0;
+    }
+
+    @Override
+    public int get_width() {
+        return 0;
+    }
+
+    @Override
+    public int get_height() {
+        return 0;
+    }
+
+    @Override
+    public int get_region_width() {
+        return 0;
+    }
+
+    @Override
+    public int get_region_height() {
+        return 0;
+    }
+
+    @Override
+    public Vector2D adjust_position(Vector2D pos) {
+        return null;
+    }
 }

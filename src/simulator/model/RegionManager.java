@@ -2,6 +2,7 @@ package simulator.model;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import simulator.misc.Vector2D;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -209,6 +210,16 @@ public class RegionManager implements AnimalMapView {
         }
         json.put("regions", regions);
         return json;
+    }
+    public Vector2D adjust_position(Vector2D pos){
+        double x = pos.getX();
+        double y = pos.getY();
+        while (x >= this._width) x = (x - this._width);
+        while (x < 0) x = (x + this._width);
+        while (y >= this._height) y = (y - this._height);
+        while (y < 0) y = (y + this._height);
+
+        return new Vector2D(x, y);
     }
 
 }
