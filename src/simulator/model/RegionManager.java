@@ -4,7 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import simulator.misc.Vector2D;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -175,7 +174,7 @@ public class RegionManager implements AnimalMapView {
     //This is weird cuz I don't know pretty much anything about the filter stuff.
 
     @Override
-    public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter){
+    public List<Animal> get_animals_in_range(Animal a, double filter){
 
         List<Animal> animalsInRange = new ArrayList<>();
         // Calculate the row and column of the region based on the animal's position
