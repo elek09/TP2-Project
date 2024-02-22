@@ -84,7 +84,8 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
             _pos = Vector2D.get_random_vector(0, _region_mngr.get_width()-1, 0, _region_mngr.get_height()-1);
         }
         else{
-            //_pos = _region_mngr.adjust_position(_pos);
+            if(this._pos.getX() < 0 || this._pos.getX() > _region_mngr.get_width() || this._pos.getY() < 0 || this._pos.getY() > _region_mngr.get_height()
+                _pos = _region_mngr.adjust_position(_pos);
         }
     }
 
@@ -118,15 +119,13 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
         return json;
     }
 
-    /*public void update(double dt) {
+    public void update(double dt) {
         _age += dt;
         _energy -= _energy * dt;
         if (_energy <= 0){
             _state = State.Dead;
         }
-    }*/
-
-
+    }
     @Override
     public State get_state() {
         return this._state;
