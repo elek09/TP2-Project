@@ -5,7 +5,7 @@ import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 import simulator.model.Constants;
 
-public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMapView{
+public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMapView, FoodSupplier{
     protected String _genetic_code;
     protected Diet _diet;
     protected State _state;
@@ -84,7 +84,7 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
             _pos = Vector2D.get_random_vector(0, _region_mngr.get_width()-1, 0, _region_mngr.get_height()-1);
         }
         else{
-            if(this._pos.getX() < 0 || this._pos.getX() > _region_mngr.get_width() || this._pos.getY() < 0 || this._pos.getY() > _region_mngr.get_height()
+            if(this._pos.getX() < 0 || this._pos.getX() > _region_mngr.get_width() || this._pos.getY() < 0 || this._pos.getY() > _region_mngr.get_height())
                 _pos = _region_mngr.adjust_position(_pos);
         }
     }
@@ -174,5 +174,15 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
     @Override
     public boolean is_pregnant() {
         return this._baby != null;
+    }
+
+    public boolean searchForMate(AnimalMapView reg_mngr) {
+        for (Animal a : reg_mngr.get_animals_in_range(this, this._sight_range)) {
+            if (a.get_genetic_code() == this._genetic_code && a.is_pregnant() == false && a.get_state() == State.Mate && a != this) {
+                this._mate_target = a;
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -3,10 +3,9 @@ package simulator.model;
 import simulator.misc.Vector2D;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 public interface AnimalMapView {
-    public List<Animal> get_animals_in_range(Animal e, Predicate<Animal> filter);
+    public List<Animal> get_animals_in_range(Animal e, double filter);
     public int get_cols();
     public int get_rows();
     public int get_width();

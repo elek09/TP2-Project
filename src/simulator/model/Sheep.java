@@ -1,10 +1,8 @@
 package simulator.model;
 
-import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 public class Sheep extends Animal {
 
@@ -35,7 +33,6 @@ public class Sheep extends Animal {
         }
         else if (this._state == State.Danger) {
             updateAsDanger(dt);
-
         }
         else if (this._state == State.Mate) {
             updateAsMate(dt);
@@ -44,8 +41,11 @@ public class Sheep extends Animal {
             this._state = State.Dead;
         }
         else if (this._state!=State.Dead){
-            _energy += Animal.get_food(this,dt);     //FoodSupplier Interface
+            _energy += this.getFood(this,dt);     //FoodSupplier Interface
         }
+        _energy = Math.min(Math.max(_energy, _lowestenergy), _maxenergy);
+        _age += dt;
+
         //TODO: Here must be a check for the sheep to see if it's inside of the board in order to change or not the
         // position of the sheep.
         // if (this._pos.getX() )
@@ -53,16 +53,20 @@ public class Sheep extends Animal {
 
     }
 
+    //Checked
     private void updateAsNormal(double dt) {
         if (_pos.distanceTo(_dest) < 8.0) {
             _dest = new Vector2D(Math.random() * 800, Math.random() * 600);
         }
         move(this._speed * dt * Math.exp((this._energy - _maxenergy) * _movefactor));
         this._age += dt;
+
         this._energy -= dt * _energyreduction;
         assert this._energy > _lowestenergy && this._energy <= _maxenergy;
+
         this._desire += _desirereduction * dt;
         assert this._desire > _lowestdesire && this._desire <= _maxdesire;
+
         if (this._danger_source == null) {
             //TODO: Search for a new danger source
             searchForDanger(_region_mngr);
@@ -75,6 +79,7 @@ public class Sheep extends Animal {
         }
     }
 
+    //Its seems good now
     private void updateAsDanger(double dt) {
         if (this._danger_source != null) {
             if (this._state == State.Dead) {
@@ -84,13 +89,13 @@ public class Sheep extends Animal {
                 this._dest = _pos.plus(_pos.minus(_danger_source.get_position()).direction());
                 move(_speedFactor * _speed * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
                 this._age += dt;
+
                 this._energy -= _energyreduction * _multiplicativeTime * dt;
                 assert this._energy > _lowestenergy && this._energy <= _maxenergy;
+
                 this._desire += _desirereduction * dt;
                 assert this._desire > _lowestdesire && this._desire <= _maxdesire;
-
             }
-
         } else {
             if (this._desire >= _desireUpperBound) {
                 this._state = State.Mate;
@@ -100,32 +105,30 @@ public class Sheep extends Animal {
             searchForDanger(_region_mngr);
             updateAsNormal(dt);
         }
-
-
     }
 
+    //Its seems good now
     private void updateAsMate(double dt) {
         if (this._mate_target != null) {
             if (this._state == State.Dead || this._sight_range < _pos.distanceTo(_mate_target.get_position())) {
                 this._mate_target = null;
                 return;
-            } else {
-
-
             }
         } else if (this._mate_target == null)
             //Searches for a mate and if there is no mate, it will update as normal
             if (!searchForMate(_region_mngr)) {
                 updateAsNormal(dt);
-
             } else {
                 this._dest = _mate_target.get_position();
                 move(_speedFactor * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
                 this._age += dt;
+
                 this._energy -= _energyreduction * _multiplicativeTime * dt;
                 assert this._energy > _lowestenergy && this._energy <= _maxenergy;
+
                 this._desire += _desirereduction * dt;
                 assert this._desire > _lowestdesire && this._desire <= _maxdesire;
+
                 if (this._pos.distanceTo(_mate_target.get_position()) < 8.0) {
                     this._desire = 0;
                     _mate_target._desire = 0;
@@ -134,43 +137,30 @@ public class Sheep extends Animal {
                     }
                     this._state = State.Normal;
                 }
-
+            }
+            else if (this._danger_source == null){
+                searchForDanger(_region_mngr);
             }
             else if (this._danger_source != null){
-                this._state = State.Danger;
-        }
-            else if (this._danger_source == null){
                 if (this._desire < _desireUpperBound){
                     this._state = State.Normal;
                 }
-                searchForDanger(_region_mngr);
+                else {
+                    this._state = State.Danger;
+                }
             }
     }
 
     public void searchForDanger(AnimalMapView reg_mngr) {
         for (Animal a : reg_mngr.get_animals_in_range(this, this._sight_range)) {
             if (a.get_diet() == Diet.CARNIVORE) {
-                this._danger_source = a;
+                this._state = State.Danger;
                 break;
             }
-            //Finish if we did the region manager class
         }
-
     }
-
-    public boolean searchForMate(AnimalMapView reg_mngr) {
-        for (Animal a : reg_mngr.get_animals_in_range(this, this._sight_range)) {
-            if (/*we will have to figure out the corresponding selection strategy*/ a.get_genetic_code() == this._genetic_code) {
-                this._mate_target = a;
-                return true;
-            }
-        }
-        return false;
-    }
-
-
     @Override
-    public List<Animal> get_animals_in_range(Animal e, Predicate<Animal> filter) {
+    public List<Animal> get_animals_in_range(Animal e, double filter) {
         return null;
     }
 
@@ -207,5 +197,10 @@ public class Sheep extends Animal {
     @Override
     public Vector2D adjust_position(Vector2D pos) {
         return null;
+    }
+
+    @Override
+    public double getFood(Animal a, double dt) {
+        return 0;
     }
 }
