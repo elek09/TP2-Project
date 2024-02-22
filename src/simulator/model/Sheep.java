@@ -1,10 +1,8 @@
 package simulator.model;
 
-import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 public class Sheep extends Animal {
 
@@ -27,33 +25,28 @@ public class Sheep extends Animal {
     }
 
     public void update(double dt) {
-        if (this._state == State.Dead) {
+        if (this._state == State.DEAD) {
             return;
         }
-        else if (this._state == State.Normal) {
+        else if (this._state == State.NORMAL) {
             updateAsNormal(dt);
         }
-        else if (this._state == State.Danger) {
+        else if (this._state == State.DANGER) {
             updateAsDanger(dt);
-
         }
-        else if (this._state == State.Mate) {
+        else if (this._state == State.MATE) {
             updateAsMate(dt);
         }
         else if (this._energy==0.0||this._age>8.0){
-            this._state = State.Dead;
+            this._state = State.DEAD;
         }
-        else if (this._state!=State.Dead){
-            _energy += FoodSupplier.getFood(this,dt);     //FoodSupplier Interface
+        else if (this._state != State.DEAD){
+            _energy += this.getFood(this,dt);     //FoodSupplier Interface      we will need to look into this bc the adding function in getFood seems a bit off now
         }
-        _energy = Math.min(Math.max(_energy, _lowestenergy), _maxenergy);
-        _age += dt;
 
         //TODO: Here must be a check for the sheep to see if it's inside of the board in order to change or not the
         // position of the sheep.
         // if (this._pos.getX() )
-
-
     }
 
     //Checked
@@ -63,44 +56,44 @@ public class Sheep extends Animal {
         }
         move(this._speed * dt * Math.exp((this._energy - _maxenergy) * _movefactor));
         this._age += dt;
-        this._energy -= dt * _energyreduction;
+        this._energy -= dt * _energyreductionSheep;
         assert this._energy > _lowestenergy && this._energy <= _maxenergy;
-        this._desire += _desirereduction * dt;
+        this._desire += _desirereductionSheep * dt;
         assert this._desire > _lowestdesire && this._desire <= _maxdesire;
         if (this._danger_source == null) {
             //TODO: Search for a new danger source
             searchForDanger(_region_mngr);
 
             if (this._desire > _desireUpperBound) {
-                this._state = State.Mate;
+                this._state = State.MATE;
             }
         } else {
-            this._state = State.Danger;
+            this._state = State.DANGER;
         }
     }
 
     //Its seems good now
     private void updateAsDanger(double dt) {
         if (this._danger_source != null) {
-            if (this._state == State.Dead) {
+            if (this._state == State.DEAD) {
                 this._danger_source = null;
                 return;
             } else {
                 this._dest = _pos.plus(_pos.minus(_danger_source.get_position()).direction());
-                move(_speedFactor * _speed * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
+                move(_speedFactorSheep * _speed * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
                 this._age += dt;
 
-                this._energy -= _energyreduction * _multiplicativeTime * dt;
+                this._energy -= _energyreductionSheep * _multiplicativeTime * dt;
                 assert this._energy > _lowestenergy && this._energy <= _maxenergy;
 
-                this._desire += _desirereduction * dt;
+                this._desire += _desirereductionSheep * dt;
                 assert this._desire > _lowestdesire && this._desire <= _maxdesire;
             }
         } else {
             if (this._desire >= _desireUpperBound) {
-                this._state = State.Mate;
+                this._state = State.MATE;
             } else {
-                this._state = State.Normal;
+                this._state = State.NORMAL;
             }
             searchForDanger(_region_mngr);
             updateAsNormal(dt);
@@ -112,7 +105,7 @@ public class Sheep extends Animal {
     //Its seems good now
     private void updateAsMate(double dt) {
         if (this._mate_target != null) {
-            if (this._state == State.Dead || this._sight_range < _pos.distanceTo(_mate_target.get_position())) {
+            if (this._state == State.DEAD || this._sight_range < _pos.distanceTo(_mate_target.get_position())) {
                 this._mate_target = null;
                 return;
             } else {
@@ -126,13 +119,13 @@ public class Sheep extends Animal {
 
             } else {
                 this._dest = _mate_target.get_position();
-                move(_speedFactor * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
+                move(_speedFactorSheep * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
                 this._age += dt;
 
-                this._energy -= _energyreduction * _multiplicativeTime * dt;
+                this._energy -= _energyreductionSheep * _multiplicativeTime * dt;
                 assert this._energy > _lowestenergy && this._energy <= _maxenergy;
 
-                this._desire += _desirereduction * dt;
+                this._desire += _desirereductionSheep * dt;
                 assert this._desire > _lowestdesire && this._desire <= _maxdesire;
 
                 if (this._pos.distanceTo(_mate_target.get_position()) < 8.0) {
@@ -141,22 +134,22 @@ public class Sheep extends Animal {
                     if (this._baby == null && Math.random() < 0.9) {
                         this._baby = new Sheep(this, _mate_target);
                     }
-                    this._state = State.Normal;
+                    this._state = State.NORMAL;
                 }
 
             }
             else if (this._danger_source != null){
-                this._state = State.Danger;
+                this._state = State.DANGER;
         }
             else if (this._danger_source == null){
                 searchForDanger(_region_mngr);
             }
             else if (this._danger_source != null){
                 if (this._desire < _desireUpperBound){
-                    this._state = State.Normal;
+                    this._state = State.NORMAL;
                 }
                 else {
-                    this._state = State.Danger;
+                    this._state = State.DANGER;
                 }
             }
     }
@@ -164,7 +157,7 @@ public class Sheep extends Animal {
     public void searchForDanger(AnimalMapView reg_mngr) {
         for (Animal a : reg_mngr.get_animals_in_range(this, this._sight_range)) {
             if (a.get_diet() == Diet.CARNIVORE) {
-                this._state = State.Danger;
+                this._state = State.DANGER;
                 break;
             }
         }

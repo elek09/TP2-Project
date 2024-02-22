@@ -16,7 +16,7 @@ public class DynamicSupplyRegion extends Region implements RegionInfo {
         if (a._diet == Diet.CARNIVORE) {
             return 0.0;
         } else {
-            double food = Math.min(_food,_multiplicativeFactor*Math.exp(-Math.max(0,n-_substractionNumHerb)*_speedFactor)*dt);
+            double food = Math.min(_food,_multiplicativeFactor*Math.exp(-Math.max(0,n-_substractionNumHerb)* _speedFactorSheep)*dt);
             this._food -= food;
             return this._food;
         }
