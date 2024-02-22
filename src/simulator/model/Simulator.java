@@ -43,7 +43,7 @@ public class Simulator implements JSONable {
 
     public void set_region(int row, int col, JSONObject r_json) {
         Region region = regionsFactory.createInstance(r_json);
-        set_region(row, col, r_json);
+        set_region(row, col, region);
     }
 
     private void add_animal(Animal a) {
@@ -57,7 +57,7 @@ public class Simulator implements JSONable {
     }
 
     public MapInfo getMapInfo() {
-        return regionManager;
+        return null;
     }
 
     public List<? extends AnimalInfo> getAnimals() {
@@ -73,14 +73,14 @@ public class Simulator implements JSONable {
 
         // Remove dead animals
         animals.removeIf(animal -> animal.get_state() == State.DEAD);
-        regionManager.removeDeadAnimals();
+        //regionManager.unregister_animal(animal -> animal.get_state() == State.Dead);
 
         // Update animals and regions
         for (Animal animal : animals) {
             animal.update(dt);
             regionManager.update_animal_region(animal);
         }
-        regionManager.updateAllRegions();
+        regionManager.update_all_regions(currentTime);
 
         // Check for pregnancy and add babies
         for (Animal animal : animals) {
@@ -92,10 +92,10 @@ public class Simulator implements JSONable {
     }
 
     @Override
-    public JSONObject asJSON() {
+    public JSONObject as_JSON() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("time", currentTime);
-        jsonObject.put("state", regionManager.asJSON());
+        jsonObject.put("state", regionManager.as_JSON());
         return jsonObject;
     }
 }

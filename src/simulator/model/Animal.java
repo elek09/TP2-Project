@@ -179,12 +179,12 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
     }
 
     public boolean searchForMate(AnimalMapView reg_mngr) {
-        for (Animal a : reg_mngr.get_animals_in_range(this, this._sight_range)) {
+        /*for (Animal a : reg_mngr.get_animals_in_range(this, this._sight_range)) {
             if (a.get_genetic_code() == this._genetic_code && a.is_pregnant() == false && a.get_state() == State.MATE && a != this) {
                 this._mate_target = a;
                 return true;
             }
-        }
+        }*/
         return false;
     }
 }
