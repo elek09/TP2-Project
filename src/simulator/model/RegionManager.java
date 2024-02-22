@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import simulator.misc.Vector2D;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -172,11 +173,20 @@ public class RegionManager implements AnimalMapView {
         }
     }
     //This is weird cuz I don't know pretty much anything about the filter stuff.
+    /**
+     * We have to query over all the regions that are in the sight of view of the animal,
+     * Meaning that we need to check all the points in a circle of the sight range of the animal and check if the region is in the sight of view of the animal
+     * and then check all the animals in the region and check if they are in the sight of view of the animal and return the ones that are.
+     * @param a The animal to get the animals in range of.
+     * @param filter The filter to apply to the animals.
+     * @return A list of animals that are in the same region as the specified animal and match the filter.
+     */
 
     @Override
-    public List<Animal> get_animals_in_range(Animal a, double filter){
+    public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter){
 
         List<Animal> animalsInRange = new ArrayList<>();
+        /*
         // Calculate the row and column of the region based on the animal's position
         int row = (int) a.get_position().getY() / _region_height;
         int col = (int) a.get_position().getX() / _region_width;
@@ -196,7 +206,7 @@ public class RegionManager implements AnimalMapView {
             // Throw an exception if the row or col are out of range
             throw new IllegalArgumentException("Animal's position is out of range.");
         }
-
+        */
         return animalsInRange;
     }
     public JSONObject as_JSON(){

@@ -1,8 +1,10 @@
 package simulator.model;
 
+import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public class Sheep extends Animal {
 
@@ -33,6 +35,7 @@ public class Sheep extends Animal {
         }
         else if (this._state == State.Danger) {
             updateAsDanger(dt);
+
         }
         else if (this._state == State.Mate) {
             updateAsMate(dt);
@@ -41,7 +44,7 @@ public class Sheep extends Animal {
             this._state = State.Dead;
         }
         else if (this._state!=State.Dead){
-            _energy += this.getFood(this,dt);     //FoodSupplier Interface
+            _energy += FoodSupplier.getFood(this,dt);     //FoodSupplier Interface
         }
         _energy = Math.min(Math.max(_energy, _lowestenergy), _maxenergy);
         _age += dt;
@@ -60,13 +63,10 @@ public class Sheep extends Animal {
         }
         move(this._speed * dt * Math.exp((this._energy - _maxenergy) * _movefactor));
         this._age += dt;
-
         this._energy -= dt * _energyreduction;
         assert this._energy > _lowestenergy && this._energy <= _maxenergy;
-
         this._desire += _desirereduction * dt;
         assert this._desire > _lowestdesire && this._desire <= _maxdesire;
-
         if (this._danger_source == null) {
             //TODO: Search for a new danger source
             searchForDanger(_region_mngr);
@@ -105,6 +105,8 @@ public class Sheep extends Animal {
             searchForDanger(_region_mngr);
             updateAsNormal(dt);
         }
+
+
     }
 
     //Its seems good now
@@ -113,11 +115,15 @@ public class Sheep extends Animal {
             if (this._state == State.Dead || this._sight_range < _pos.distanceTo(_mate_target.get_position())) {
                 this._mate_target = null;
                 return;
+            } else {
+
+
             }
         } else if (this._mate_target == null)
             //Searches for a mate and if there is no mate, it will update as normal
             if (!searchForMate(_region_mngr)) {
                 updateAsNormal(dt);
+
             } else {
                 this._dest = _mate_target.get_position();
                 move(_speedFactor * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
@@ -137,7 +143,11 @@ public class Sheep extends Animal {
                     }
                     this._state = State.Normal;
                 }
+
             }
+            else if (this._danger_source != null){
+                this._state = State.Danger;
+        }
             else if (this._danger_source == null){
                 searchForDanger(_region_mngr);
             }
