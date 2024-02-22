@@ -4,7 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import simulator.misc.Vector2D;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +30,7 @@ public class RegionManager implements AnimalMapView {
         this._region_width = width/cols;
         this._region_height = height/rows;
     }
+
 
     public int get_cols(){
         return _cols;
@@ -97,7 +97,7 @@ public class RegionManager implements AnimalMapView {
         }
     }
 
-    void unregister_animal(Animal a){
+    public void unregister_animal(Animal a){
         // Calculate the row and column of the region based on the animal's position
         // Cast to int is needed because in Animal, position is a Vector2D and getX and getY return double (?).
         int row = (int) a.get_position().getY() / _region_height;
@@ -118,7 +118,7 @@ public class RegionManager implements AnimalMapView {
             throw new IllegalArgumentException("Animal's position is out of range.");
         }
     }
-    void update_animal_region(Animal a){
+    public void update_animal_region(Animal a){
         // Calculate the row and column of the region based on the animal's position
         int row = (int) a.get_position().getY() / _region_height;
         int col = (int) a.get_position().getX() / _region_width ;
@@ -181,34 +181,31 @@ public class RegionManager implements AnimalMapView {
      * @param filter The filter to apply to the animals.
      * @return A list of animals that are in the same region as the specified animal and match the filter.
      */
-
     @Override
-    public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter){
-
+    public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter) {
         List<Animal> animalsInRange = new ArrayList<>();
-        /*
-        // Calculate the row and column of the region based on the animal's position
-        int row = (int) a.get_position().getY() / _region_height;
-        int col = (int) a.get_position().getX() / _region_width;
 
-        // Check if the row and col are within the valid range
-        if (row >= 0 && row < _rows && col >= 0 && col < _cols) {
-            // Get the region at the specified row and column
-            Region r = _regions[row][col];
+        // Get the list of regions that fall inside the field of view of the animal
+        List<Region> regionsInView = get_regions_in_view(a);
 
-            // Get the animals in the region that match the filter
-            for (Animal animal : r.getAnimals()) {
-                if (filter.test(animal)) {
-                    animalsInRange.add(animal);
-                }
+        // Iterate over each region
+        for (Region region : regionsInView) {
+            // Get the list of animals in the current region
+            List<Animal> animalsInRegion = region.getAnimals();
+
+            // Iterate over each animal in the region
+            for (Animal animal : animalsInRegion) {
+                // Check if the animal is in the field of view of the given animal and satisfies the filter condition
+//                if (is_in_view(a, animal) && filter.test(animal)) {
+//                    // If so, add it to the list of animals in range
+//                    animalsInRange.add(animal);
+//                }
             }
-        } else {
-            // Throw an exception if the row or col are out of range
-            throw new IllegalArgumentException("Animal's position is out of range.");
         }
-        */
+
         return animalsInRange;
     }
+
     public JSONObject as_JSON(){
         JSONObject json = new JSONObject();
         JSONArray regions = new JSONArray();
@@ -230,5 +227,31 @@ public class RegionManager implements AnimalMapView {
 
         return new Vector2D(x, y);
     }
+    public List<Region> get_regions_in_view(Animal a) {
+        List<Region> regionsInView = new ArrayList<>();
+
+        // Get the field of view of the animal
+        double fieldOfView = a.get_sight_range();
+
+        // Get the position of the animal
+        Vector2D animalPosition = a.get_position();
+
+        // Iterate over each region
+        for (Region[] region : _regions) {
+            // Get the position of the region
+           // Vector2D regionPosition = region;
+
+            // Calculate the distance between the animal and the region
+            double distance = 0;// = animalPosition.distanceTo(regionPosition);
+
+            // If the region is within the field of view of the animal, add it to the list
+            if (distance <= fieldOfView) {
+                //regionsInView.add(region);
+            }
+        }
+
+        return regionsInView;
+    }
+
 
 }

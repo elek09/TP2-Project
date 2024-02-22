@@ -46,12 +46,12 @@ public class Controller {
     }
 
     public void run(double t, double dt, boolean sv, OutputStream out) {
-        JSONObject init_state = _sim.asJSON();
+        JSONObject init_state = _sim.as_JSON();
         JSONObject final_state;
         while (_sim.get_time() < t) {
             _sim.advance(dt);
         }
-        final_state = _sim.asJSON();
+        final_state = _sim.as_JSON();
         JSONObject output = new JSONObject();
         output.put("in", init_state);
         output.put("out", final_state);

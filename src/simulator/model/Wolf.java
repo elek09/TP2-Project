@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import simulator.misc.Vector2D;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public class Wolf extends Animal{
     private Animal _hunt_target;
@@ -184,12 +185,6 @@ public class Wolf extends Animal{
         return this._hunt_target;
     }
 
-
-    @Override
-    public List<Animal> get_animals_in_range(Animal e, double filter) {
-        return null;
-    }
-
     @Override
     public int get_cols() {
         return 0;
@@ -218,6 +213,11 @@ public class Wolf extends Animal{
     @Override
     public int get_region_height() {
         return 0;
+    }
+
+    @Override
+    public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter) {
+        return null;
     }
 
     @Override

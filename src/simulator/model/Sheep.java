@@ -3,6 +3,7 @@ package simulator.model;
 import simulator.misc.Vector2D;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public class Sheep extends Animal {
 
@@ -155,16 +156,13 @@ public class Sheep extends Animal {
     }
 
     public void searchForDanger(AnimalMapView reg_mngr) {
-        for (Animal a : reg_mngr.get_animals_in_range(this, this._sight_range)) {
+
+        /*for (Animal a : reg_mngr.get_animals_in_range(this, this._sight_range)) {
             if (a.get_diet() == Diet.CARNIVORE) {
                 this._state = State.DANGER;
                 break;
             }
-        }
-    }
-    @Override
-    public List<Animal> get_animals_in_range(Animal e, double filter) {
-        return null;
+        }*/
     }
 
     @Override
@@ -195,6 +193,11 @@ public class Sheep extends Animal {
     @Override
     public int get_region_height() {
         return 0;
+    }
+
+    @Override
+    public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter) {
+        return null;
     }
 
     @Override

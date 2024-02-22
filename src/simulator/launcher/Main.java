@@ -18,9 +18,10 @@ import simulator.misc.Utils;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, world!");
 
-
-
+    }
 
 
 
