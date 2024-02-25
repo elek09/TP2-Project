@@ -20,6 +20,7 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo, Consta
         }
     }
 
+    //return 0?
     @Override
     public double getFood(Animal a, double dt) {
         return 0;
@@ -54,7 +55,4 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo, Consta
         }
         return count;
     }
-
-
-
 }
