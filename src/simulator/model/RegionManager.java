@@ -29,6 +29,15 @@ public class RegionManager implements AnimalMapView {
         this._regions = new DefaultRegion[_rows][_cols];
         this._region_width = width/cols;
         this._region_height = height/rows;
+
+        //it initialises the regions of the _regions array to new objects of type DefaultRegion (using the default constructor)         //done below
+        //and initialises the _animal_region attribute .        //dont know how to do it    page 13
+
+        for (int i = 0; i < _rows; i++){
+            for (int j = 0; j < _cols; j++){
+                _regions[i][j] = new DefaultRegion();
+            }
+        }
     }
 
 
@@ -177,12 +186,16 @@ public class RegionManager implements AnimalMapView {
      * We have to query over all the regions that are in the sight of view of the animal,
      * Meaning that we need to check all the points in a circle of the sight range of the animal and check if the region is in the sight of view of the animal
      * and then check all the animals in the region and check if they are in the sight of view of the animal and return the ones that are.
-     * @param a The animal to get the animals in range of.
-     * @param filter The filter to apply to the animals.
      * @return A list of animals that are in the same region as the specified animal and match the filter.
      */
-    @Override
-    public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter) {
+    //animal only could see the animals in the same region as it?
+
+    //we could use the distanceTo method from the Vector2D class to calculate the distance between the two animal and check if it is in his sight range
+
+    //so we used this distanceTo method check that which regions the animal can see and then we can check the animals in those regions and check if they are in the sight range of the animal
+
+    /*@Override
+    public List<Animal> get_animals_in_range22(Animal a, Predicate<Animal> filter) {
         List<Animal> animalsInRange = new ArrayList<>();
 
         // Get the list of regions that fall inside the field of view of the animal
@@ -203,6 +216,59 @@ public class RegionManager implements AnimalMapView {
             }
         }
 
+        return animalsInRange;
+    }*/
+
+
+    private boolean is_in_view(Animal a, Animal otherAnimal) {
+        Vector2D positionA = a.get_position();
+        Vector2D positionB = otherAnimal.get_position();
+
+        double distance = positionA.distanceTo(positionB);
+
+        if (distance <= a.get_sight_range()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public List<Region> get_regions_in_sight(Animal a) {
+        List<Region> regionsInSight = new ArrayList<>();
+
+        Vector2D animalPosition = a.get_position();
+        double sightRange = a.get_sight_range();
+
+        for (int i = 0; i < _rows; i++) {
+            for (int j = 0; j < _cols; j++) {
+                Vector2D regionPosition = new Vector2D(j * _region_width, i * _region_height);
+
+                // Calculate the distance between the animal and the region
+                double distance = animalPosition.distanceTo(regionPosition);
+
+                if (distance <= sightRange) {
+                    regionsInSight.add(_regions[i][j]);
+                }
+            }
+        }
+
+        return regionsInSight;
+    }
+
+    @Override
+    public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter) {
+        List<Animal> animalsInRange = new ArrayList<>();
+        List<Region> regionsInSight = get_regions_in_sight(a);
+
+        for (Region region : regionsInSight) {
+            List<Animal> animalsInRegion = region.getAnimals();
+
+            for (Animal animal : animalsInRegion) {
+                if (is_in_view(a, animal) && filter.test(animal)) {
+                    animalsInRange.add(animal);
+                }
+            }
+        }
         return animalsInRange;
     }
 
@@ -227,6 +293,8 @@ public class RegionManager implements AnimalMapView {
 
         return new Vector2D(x, y);
     }
+
+    /*
     public List<Region> get_regions_in_view(Animal a) {
         List<Region> regionsInView = new ArrayList<>();
 
@@ -251,7 +319,7 @@ public class RegionManager implements AnimalMapView {
         }
 
         return regionsInView;
-    }
+    }*/
 
 
 }
