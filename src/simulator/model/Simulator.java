@@ -56,8 +56,8 @@ public class Simulator implements JSONable {
         add_animal(animal);
     }
 
-    public MapInfo getMapInfo() {
-        return null;
+    public RegionManager get_map_info() {
+        return regionManager;
     }
 
     public List<? extends AnimalInfo> getAnimals() {
@@ -71,16 +71,22 @@ public class Simulator implements JSONable {
     public void advance(double dt) {
         currentTime += dt;
 
-        // Remove dead animals
-        animals.removeIf(animal -> animal.get_state() == State.DEAD);
-        //regionManager.unregister_animal(animal -> animal.get_state() == State.Dead);
+        //animals.removeIf(animal -> animal.get_state() == State.DEAD);
+        //probably better to use the functions what we wrote for this like unregister_animal thats why i modified below, but we can discuss it
+        for (Animal animal : animals) {
+            if (animal.get_state() == State.DEAD) {
+                regionManager.unregister_animal(animal);
+            }
+        }
 
-        // Update animals and regions
+        // 3. For each animal: call its update(dt) and then ask the region manager to update its current region status.
         for (Animal animal : animals) {
             animal.update(dt);
             regionManager.update_animal_region(animal);
         }
-        regionManager.update_all_regions(currentTime);
+
+        // Ask the region manager to update all regions.
+        regionManager.update_all_regions(dt);
 
         // Check for pregnancy and add babies
         for (Animal animal : animals) {
