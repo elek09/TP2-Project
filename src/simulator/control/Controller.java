@@ -14,6 +14,7 @@ public class Controller {
         this._sim = sim;
     }
 
+    //seems okay
     public void load_data(JSONObject data) {
         JSONArray regions = data.optJSONArray("regions");
         if (regions != null) {
