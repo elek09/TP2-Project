@@ -1,5 +1,7 @@
 package simulator.model;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class SelectYoungest implements SelectionStrategy{
@@ -12,5 +14,10 @@ public class SelectYoungest implements SelectionStrategy{
             }
         }
         return youngest;
+    }
+
+    @Override
+    public SelectionStrategy create_instance(JSONObject mateStrategyData) {
+        return null;
     }
 }

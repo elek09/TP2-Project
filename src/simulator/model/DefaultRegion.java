@@ -1,7 +1,6 @@
 package simulator.model;
 
 public class DefaultRegion extends Region implements RegionInfo{
-
     public double get_food(Animal a, double dt){
         int n = getHerbivorousSize();
         if (a._diet == Diet.CARNIVORE){
