@@ -1,5 +1,7 @@
 package simulator.model;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class SelectClosest implements SelectionStrategy{
@@ -12,5 +14,10 @@ public class SelectClosest implements SelectionStrategy{
             }
         }
         return closest;
+    }
+
+    @Override
+    public SelectionStrategy create_instance(JSONObject mateStrategyData) {
+        return null;
     }
 }

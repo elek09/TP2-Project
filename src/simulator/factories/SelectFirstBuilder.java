@@ -1,19 +1,19 @@
 package simulator.factories;
 
 import org.json.JSONObject;
+import simulator.model.SelectFirst;
+
 /**
  * Builder for the SelectFirstBuilder class object.
  */
 public class SelectFirstBuilder extends Builder{
-    //i am not sure what is needed, we shall discuss it
-    public SelectFirstBuilder(String type_tag, String desc) {
-        super(type_tag, desc);
-        //super("first", "");
+    public SelectFirstBuilder() {
+        super("first", "Creates a SelectFirst strategy.");
     }
 
     @Override
     protected Object create_instance(JSONObject data) throws IllegalArgumentException {
-        return null;
+        return new SelectFirst();
     }
 
 

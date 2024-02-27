@@ -3,6 +3,9 @@ package simulator.launcher;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -13,25 +16,13 @@ import org.apache.commons.cli.ParseException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import simulator.factories.*;
 import simulator.misc.Utils;
+import simulator.model.SelectionStrategy;
 
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello, world!");
-
-    }
-
-
-
-
-
-
-
-
-
-	/*
 	private enum ExecMode {
 		BATCH("batch", "Batch mode"), GUI("gui", "Graphical User Interface mode");
 
@@ -139,6 +130,13 @@ public class Main {
 	}
 
 	private static void init_factories() {
+		// initialize the strategies factory
+		List<Builder<SelectionStrategy>> selection_strategy_builders
+				= new ArrayList<>();
+		selection_strategy_builders.add(new SelectFirstBuilder());
+		selection_strategy_builders.add(new SelectClosestBuilder());
+		Factory<SelectionStrategy> selection_strategy_factory
+				= new BuilderBasedFactory<SelectionStrategy>(selection_strategy_builders);
 	}
 
 	private static JSONObject load_JSON_file(InputStream in) {
@@ -176,5 +174,5 @@ public class Main {
 			System.err.println();
 			e.printStackTrace();
 		}
-	}*/
+	}
 }
