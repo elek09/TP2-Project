@@ -2,7 +2,13 @@ package simulator.launcher;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +25,7 @@ import org.json.JSONTokener;
 import simulator.factories.*;
 import simulator.misc.Utils;
 import simulator.model.SelectionStrategy;
+import simulator.view.SimpleObjectViewer;
 
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
@@ -46,6 +53,7 @@ public class Main {
 	// default values for some parameters
 	//
 	private final static Double _default_time = 10.0; // in seconds
+	private final static Double _default_dt = 0.03;
 
 	// some attributes to stores values corresponding to command-line parameters
 	//
@@ -67,6 +75,9 @@ public class Main {
 			parse_help_option(line, cmdLineOptions);
 			parse_in_file_option(line);
 			parse_time_option(line);
+			parse_dtime_option(line);
+			parse_sv_option(line, cmdLineOptions);
+			parse_out_file_option(line);
 
 			// if there are some remaining arguments, then something wrong is
 			// provided in the command line!
@@ -82,14 +93,18 @@ public class Main {
 		} catch (ParseException e) {
 			System.err.println(e.getLocalizedMessage());
 			System.exit(1);
-		}
+		} catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-	}
+    }
+
+
 
 	private static Options build_options() {
 		Options cmdLineOptions = new Options();
 
-		// help
+		// help .
 		cmdLineOptions.addOption(Option.builder("h").longOpt("help").desc("Print this message.").build());
 
 		// input file
@@ -101,13 +116,36 @@ public class Main {
 						+ _default_time + ".")
 				.build());
 
+		cmdLineOptions.addOption(Option.builder("dt").longOpt("delta time").hasArg()
+				.desc("A double representing actual time, in seconds, per simulation step. Default value: "
+						+ _default_dt + ".")
+				.build());
+
+		cmdLineOptions.addOption(Option.builder("sv").longOpt("simple-viewer").desc("Show the viewer window in console mode.").build());
+
+		cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg().desc("Output file. where output is written").build());
 		return cmdLineOptions;
 	}
-
+	private static void parse_dtime_option(CommandLine line) throws ParseException {
+		String t = line.getOptionValue("dt", _default_dt.toString());
+		try {
+			_time = Double.parseDouble(t);
+			assert (_time >= 0);
+		} catch (Exception e) {
+			throw new ParseException("Invalid value for time: " + t);
+		}
+	}
 	private static void parse_help_option(CommandLine line, Options cmdLineOptions) {
 		if (line.hasOption("h")) {
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp(Main.class.getCanonicalName(), cmdLineOptions, true);
+			System.exit(0);
+		}
+	}
+	private static void parse_sv_option(CommandLine line, Options cmdLineOptions) {
+		if (line.hasOption("sv")) {
+			//SimpleObjectViewer objectViewer = new SimpleObjectViewer();
+			//formatter.printHelp(Main.class.getCanonicalName(), cmdLineOptions, true);
 			System.exit(0);
 		}
 	}
@@ -118,6 +156,13 @@ public class Main {
 			throw new ParseException("In batch mode an input configuration file is required");
 		}
 	}
+	private static void parse_out_file_option(CommandLine line) throws ParseException, IOException {
+		_in_file = line.getOptionValue("o");
+		Path _out_file = Paths.get("out.json");
+		Files.write(_out_file, _in_file.getBytes(), (OpenOption) StandardCharsets.UTF_8);
+
+	}
+
 
 	private static void parse_time_option(CommandLine line) throws ParseException {
 		String t = line.getOptionValue("t", _default_time.toString());
