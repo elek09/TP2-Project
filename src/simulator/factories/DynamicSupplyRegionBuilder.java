@@ -7,7 +7,7 @@ import simulator.model.DynamicSupplyRegion;
  * Builder for the DynamicSupplyRegion class object.
  */
 public class DynamicSupplyRegionBuilder extends Builder{
-    public DynamicSupplyRegionBuilder(String type_tag, String desc) {
+    public DynamicSupplyRegionBuilder() {
         super("dynamic", "Creates a dynamic supply region with the specified parameters.");
     }
 

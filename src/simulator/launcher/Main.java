@@ -1,5 +1,6 @@
 package simulator.launcher;
 
+import java.io.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,14 +23,20 @@ import org.apache.commons.cli.ParseException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import simulator.control.Controller;
 import simulator.factories.*;
 import simulator.misc.Utils;
+import simulator.model.Animal;
+import simulator.model.Region;
 import simulator.model.SelectionStrategy;
+import simulator.model.Simulator;
 import simulator.view.SimpleObjectViewer;
 
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 public class Main {
+	private static Factory<Animal> animal_factory;
+	private static Factory<Region> region_factory;
 	private enum ExecMode {
 		BATCH("batch", "Batch mode"), GUI("gui", "Graphical User Interface mode");
 
@@ -98,7 +105,6 @@ public class Main {
         }
 
     }
-
 
 
 	private static Options build_options() {
@@ -174,14 +180,27 @@ public class Main {
 		}
 	}
 
-	private static void init_factories() {
-		// initialize the strategies factory
-		List<Builder<SelectionStrategy>> selection_strategy_builders
-				= new ArrayList<>();
+	private static void init_factories() throws FileNotFoundException {
+		//strategies factory
+		List<Builder<SelectionStrategy>> selection_strategy_builders = new ArrayList<>();
 		selection_strategy_builders.add(new SelectFirstBuilder());
 		selection_strategy_builders.add(new SelectClosestBuilder());
-		Factory<SelectionStrategy> selection_strategy_factory
-				= new BuilderBasedFactory<SelectionStrategy>(selection_strategy_builders);
+		selection_strategy_builders.add(new SelectYoungestBuilder());
+		Factory<SelectionStrategy> selection_strategy_factory = new BuilderBasedFactory<SelectionStrategy>(selection_strategy_builders);
+
+		SelectionStrategy strategy = selection_strategy_factory.createInstance(load_JSON_file(new FileInputStream(new File("resources/examples/ex4.json"))));
+
+		//animal factory
+		List<Builder<Animal>> animal_builders = new ArrayList<>();
+		animal_builders.add(new SheepBuilder(strategy));
+		animal_builders.add(new WolfBuilder(strategy));
+		animal_factory = new BuilderBasedFactory<Animal>(animal_builders);
+
+		//region factory
+		List<Builder<Region>> region_builders = new ArrayList<>();
+		region_builders.add(new DefaultRegionBuilder());
+		region_builders.add(new DynamicSupplyRegionBuilder());
+		region_factory = new BuilderBasedFactory<Region>(region_builders);
 	}
 
 	private static JSONObject load_JSON_file(InputStream in) {
@@ -191,6 +210,28 @@ public class Main {
 
 	private static void start_batch_mode() throws Exception {
 		InputStream is = new FileInputStream(new File(_in_file));
+
+		// (1) Load the input file into a JSONObject
+		JSONObject inputJson = load_JSON_file(is);
+
+		// (2) Create the output file
+		OutputStream outputFile = new FileOutputStream(new File("output.json"));
+
+		// (3) Create an instance of Simulator passing the appropriate information to its constructor
+		Simulator simulator = new Simulator(inputJson.getInt("width"), inputJson.getInt("height"), inputJson.getInt("rows"), inputJson.getInt("cols"), animal_factory, region_factory);
+
+		// (4) Create an instance of Controller, passing it the simulator
+		Controller controller = new Controller(simulator);
+
+		// (5) Call load_data by passing it the input JSONObject
+		controller.load_data(inputJson);
+
+
+		// (6) Call the run method with the corresponding parameters
+		controller.run(_time, 0.0, false, outputFile);
+
+		// (7) Close the output file
+		outputFile.close();
 	}
 
 	private static void start_GUI_mode() throws Exception {
