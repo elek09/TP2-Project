@@ -10,6 +10,7 @@ public class Sheep extends Animal {
     private Animal _danger_source;
     private SelectionStrategy _danger_strategy;
 
+
     public Sheep(SelectionStrategy mate_strategy, SelectionStrategy danger_strategy, Vector2D pos) {
         super();
         this._mate_strategy = mate_strategy;
@@ -63,7 +64,7 @@ public class Sheep extends Animal {
         assert this._desire > _lowestdesire && this._desire <= _maxdesire;
         if (this._danger_source == null) {
             //TODO: Search for a new danger source
-            searchForDanger(_region_mngr);
+            searchForDanger(_region_mngr, this._danger_strategy);
 
             if (this._desire > _desireUpperBound) {
                 this._state = State.MATE;
@@ -96,14 +97,13 @@ public class Sheep extends Animal {
             } else {
                 this._state = State.NORMAL;
             }
-            searchForDanger(_region_mngr);
+            searchForDanger(_region_mngr, this._danger_strategy);
             updateAsNormal(dt);
         }
 
 
     }
 
-    //Its seems good now
     private void updateAsMate(double dt) {
         if (this._mate_target != null) {
             if (this._state == State.DEAD || this._sight_range < _pos.distanceTo(_mate_target.get_position())) {
@@ -115,9 +115,8 @@ public class Sheep extends Animal {
             }
         } else if (this._mate_target == null)
             //Searches for a mate and if there is no mate, it will update as normal
-            if (!searchForMate(_region_mngr)) {
+            if (searchForMate(_region_mngr, this._mate_strategy)!=null) {
                 updateAsNormal(dt);
-
             } else {
                 this._dest = _mate_target.get_position();
                 move(_speedFactorSheep * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
@@ -143,7 +142,7 @@ public class Sheep extends Animal {
                 this._state = State.DANGER;
         }
             else if (this._danger_source == null){
-                searchForDanger(_region_mngr);
+                searchForDanger(_region_mngr, this._danger_strategy);
             }
             else if (this._danger_source != null){
                 if (this._desire < _desireUpperBound){
@@ -153,16 +152,6 @@ public class Sheep extends Animal {
                     this._state = State.DANGER;
                 }
             }
-    }
-
-    public void searchForDanger(AnimalMapView reg_mngr) {
-
-        /*for (Animal a : reg_mngr.get_animals_in_range(this, this._sight_range)) {
-            if (a.get_diet() == Diet.CARNIVORE) {
-                this._state = State.DANGER;
-                break;
-            }
-        }*/
     }
 
     @Override
