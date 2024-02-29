@@ -2,12 +2,15 @@ package simulator.control;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import simulator.model.AnimalInfo;
 import simulator.model.MapInfo;
 import simulator.model.Simulator;
 import simulator.view.SimpleObjectViewer;
 import simulator.view.SimpleObjectViewer.ObjInfo;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Controller {
 
@@ -60,7 +63,6 @@ public class Controller {
 
         }
 
-
         while (_sim.get_time() < t) {
             _sim.advance(dt);
             if (sv) {
@@ -76,6 +78,13 @@ public class Controller {
         if (sv){
             view.close();
         }
+    }
+    private List<ObjInfo> to_animals_info(List<? extends AnimalInfo> animals) {
+        List<ObjInfo> ol = new ArrayList<>(animals.size());
+        for (AnimalInfo animal : animals) {
+            ol.add(new ObjInfo(animal.get_genetic_code(), (int) animal.get_position().getX(), (int) animal.get_position().getY(), 8));
+        }
+        return ol;
     }
 }
 
