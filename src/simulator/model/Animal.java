@@ -4,6 +4,9 @@ import org.json.JSONObject;
 import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 
+import java.util.List;
+import java.util.function.Predicate;
+
 public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMapView, FoodSupplier{
     protected String _genetic_code;
     protected Diet _diet;
@@ -178,13 +181,40 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
         return this._baby != null;
     }
 
-    public boolean searchForMate(AnimalMapView reg_mngr) {
-        /*for (Animal a : reg_mngr.get_animals_in_range(this, this._sight_range)) {
-            if (a.get_genetic_code() == this._genetic_code && a.is_pregnant() == false && a.get_state() == State.MATE && a != this) {
-                this._mate_target = a;
-                return true;
-            }
-        }*/
-        return false;
+
+    public Animal searchForMate(AnimalMapView reg_mngr, SelectionStrategy strategy) {
+        Predicate<Animal> filter = a -> a.get_genetic_code() == this._genetic_code && !a.is_pregnant() && a.get_state() == State.MATE && a != this;
+        List<Animal> animalsInRange = reg_mngr.get_animals_in_range(this, filter);
+        Animal selectedAnimal = strategy.select(this, animalsInRange);
+
+        if (filter.test(selectedAnimal)) {
+            this._mate_target = selectedAnimal;
+            return selectedAnimal;
+        }
+        return null;
+    }
+
+    public Animal searchForDanger(AnimalMapView reg_mngr, SelectionStrategy strategy) {
+        Predicate<Animal> filter = a -> a.get_diet() == Diet.CARNIVORE;
+        List<Animal> animalsInRange = reg_mngr.get_animals_in_range(this, filter);
+        Animal selectedAnimal = strategy.select(this, animalsInRange);
+
+        if (filter.test(selectedAnimal)) {
+            this._state = State.DANGER;
+            return selectedAnimal;
+        }
+        return null;
+    }
+
+    public Animal searchForHuntTarget(AnimalMapView reg_mngr, SelectionStrategy strategy) {
+        Predicate<Animal> filter = a -> a.get_diet() == Diet.HERBIVORE;
+        List<Animal> animalsInRange = reg_mngr.get_animals_in_range(this, filter);
+        Animal selectedAnimal = strategy.select(this, animalsInRange);
+
+        if (filter.test(selectedAnimal)) {
+            this._state = State.HUNGER;
+            return selectedAnimal;
+        }
+        return null;
     }
 }

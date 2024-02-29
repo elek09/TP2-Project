@@ -72,7 +72,7 @@ public class Wolf extends Animal{
 
     private void updateAsHunger(double dt) {
         if (this._hunt_target==null||this._hunt_target._state == State.DEAD || this._hunt_target.get_position().distanceTo(_pos)>_sight_range){
-            this._hunt_target = null;
+            this._hunt_target = searchForHuntTarget(_region_mngr, this._hunting_strategy);
             return;
         } else if (this._hunt_target == null){
             updateAsNormal(dt);
@@ -108,8 +108,13 @@ public class Wolf extends Animal{
             this._mate_target = null;
             return;
         } else if(this._mate_target==null){
-            updateAsNormal(dt);
+            if(searchForMate(_region_mngr, this._mate_strategy)!=null){
+                this._mate_target=searchForMate(_region_mngr, this._mate_strategy);
+            } else {
+                updateAsNormal(dt);
+            }
         } else if(this._mate_target!=null){
+            _mate_target=searchForMate(_region_mngr, this._mate_strategy);          //hbhbhjbhbhb
             this._dest = _mate_target.get_position();
 
             move(_speedFactorWolf * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
@@ -148,33 +153,6 @@ public class Wolf extends Animal{
 
     public SelectionStrategy get_hunting_strategy() {
         return this._hunting_strategy;
-    }
-
-    //Found it on the internet just kept here for reference maybe there is some stuff which what we can work with
-    public JSONObject as_JSON() {
-        JSONObject ObjectWolf = new JSONObject();
-        /*ObjectWolf.put("pos", _pos.as_JSON());
-        ObjectWolf.put("energy", _energy);
-        ObjectWolf.put("age", _age);
-        ObjectWolf.put("state", _state.toString());
-        ObjectWolf.put("dest", _dest.as_JSON());
-        ObjectWolf.put("speed", _speed);
-        ObjectWolf.put("sight_range", _sight_range);
-        ObjectWolf.put("desire", _desire);
-        ObjectWolf.put("genetic_code", _genetic_code.as_JSON());
-        ObjectWolf.put("diet", _diet.toString());
-        ObjectWolf.put("mate_strategy", _mate_strategy.toString());
-        ObjectWolf.put("hunting_strategy", _hunting_strategy.toString());
-        if (_baby != null) {
-            ObjectWolf.put("baby", _baby.as_JSON());
-        }
-        if (_mate_target != null) {
-            ObjectWolf.put("mate_target", _mate_target.as_JSON());
-        }
-        if (_hunt_target != null) {
-            ObjectWolf.put("hunt_target", _hunt_target.as_JSON());
-        }*/
-        return ObjectWolf;
     }
 
     public void set_hunt_target(Animal a) {
