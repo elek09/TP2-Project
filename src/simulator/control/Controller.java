@@ -2,7 +2,10 @@ package simulator.control;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import simulator.model.MapInfo;
 import simulator.model.Simulator;
+import simulator.view.SimpleObjectViewer;
+import simulator.view.SimpleObjectViewer.ObjInfo;
 
 import java.io.OutputStream;
 
@@ -49,8 +52,20 @@ public class Controller {
     public void run(double t, double dt, boolean sv, OutputStream out) {
         JSONObject init_state = _sim.as_JSON();
         JSONObject final_state;
+        SimpleObjectViewer view = null;
+        if (sv) {
+            MapInfo m = (MapInfo) _sim.get_map_info();
+            view = new SimpleObjectViewer("ECOSYSTEM", m.get_width(), m.get_height(), m.get_cols(), m.get_rows());
+            view.update(to_animals_info(_sim.getAnimals()), _sim.get_time(), dt);
+
+        }
+
+
         while (_sim.get_time() < t) {
             _sim.advance(dt);
+            if (sv) {
+                view.update(to_animals_info(_sim.getAnimals()), _sim.get_time(), dt);
+            }
         }
         final_state = _sim.as_JSON();
         JSONObject output = new JSONObject();
@@ -58,7 +73,9 @@ public class Controller {
         output.put("out", final_state);
 
         // Write output to OutputStream
-
+        if (sv){
+            view.close();
+        }
     }
 }
 
