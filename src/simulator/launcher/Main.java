@@ -5,11 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.OpenOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,22 +21,18 @@ import org.json.JSONTokener;
 import simulator.control.Controller;
 import simulator.factories.*;
 import simulator.misc.Utils;
-import simulator.model.Animal;
-import simulator.model.Region;
-import simulator.model.SelectionStrategy;
-import simulator.model.Simulator;
-import simulator.view.SimpleObjectViewer;
-
-import javax.swing.plaf.basic.BasicSplitPaneUI;
+import simulator.model.*;
 
 public class Main {
 	private static Factory<Animal> animal_factory;
 	private static Factory<Region> region_factory;
-	private enum ExecMode {
+
+    private enum ExecMode {
 		BATCH("batch", "Batch mode"), GUI("gui", "Graphical User Interface mode");
 
 		private String _tag;
 		private String _desc;
+
 
 		private ExecMode(String modeTag, String modeDesc) {
 			_tag = modeTag;
@@ -66,6 +57,7 @@ public class Main {
 	//
 	private static Double _time = null;
 	private static String _in_file = null;
+	private static String _out_file = null;
 	private static ExecMode _mode = ExecMode.BATCH;
 
 	private static void parse_args(String[] args) {
@@ -145,16 +137,15 @@ public class Main {
 		if (line.hasOption("h")) {
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp(Main.class.getCanonicalName(), cmdLineOptions, true);
-			System.exit(0);
+
 		}
 	}
 	private static void parse_sv_option(CommandLine line, Options cmdLineOptions) {
 		if (line.hasOption("sv")) {
-			//SimpleObjectViewer objectViewer = new SimpleObjectViewer();
-			//formatter.printHelp(Main.class.getCanonicalName(), cmdLineOptions, true);
-			System.exit(0);
+			_sv = true;
 		}
 	}
+
 
 	private static void parse_in_file_option(CommandLine line) throws ParseException {
 		_in_file = line.getOptionValue("i");
@@ -163,9 +154,13 @@ public class Main {
 		}
 	}
 	private static void parse_out_file_option(CommandLine line) throws ParseException, IOException {
-		_in_file = line.getOptionValue("o");
-		Path _out_file = Paths.get("out.json");
-		Files.write(_out_file, _in_file.getBytes(), (OpenOption) StandardCharsets.UTF_8);
+		String _out_file = line.getOptionValue("o");
+		if (_mode == ExecMode.BATCH && _out_file == null) {
+			throw new ParseException("In batch mode an input configuration file is required");
+		}
+
+
+
 
 	}
 
@@ -188,34 +183,46 @@ public class Main {
 		selection_strategy_builders.add(new SelectYoungestBuilder());
 		Factory<SelectionStrategy> selection_strategy_factory = new BuilderBasedFactory<SelectionStrategy>(selection_strategy_builders);
 
-		SelectionStrategy strategy = selection_strategy_factory.createInstance(load_JSON_file(new FileInputStream(new File("resources/examples/ex4.json"))));
+		try{
+			//SelectionStrategy strategy = selection_strategy_factory.createInstance(load_JSON_file(_in_file));
+			SelectionStrategy strategy = new SelectFirst();
+			SelectionStrategy mate_strategy = new SelectYoungest();
 
-		//animal factory
-		List<Builder<Animal>> animal_builders = new ArrayList<>();
-		animal_builders.add(new SheepBuilder(strategy));
-		animal_builders.add(new WolfBuilder(strategy));
-		animal_factory = new BuilderBasedFactory<Animal>(animal_builders);
 
-		//region factory
-		List<Builder<Region>> region_builders = new ArrayList<>();
-		region_builders.add(new DefaultRegionBuilder());
-		region_builders.add(new DynamicSupplyRegionBuilder());
-		region_factory = new BuilderBasedFactory<Region>(region_builders);
+			//animal factory
+			List<Builder<Animal>> animal_builders = new ArrayList<>();
+			animal_builders.add(new SheepBuilder(strategy));
+			animal_builders.add(new WolfBuilder(strategy));
+			animal_factory = new BuilderBasedFactory<Animal>(animal_builders);
+
+			//region factory
+			List<Builder<Region>> region_builders = new ArrayList<>();
+			region_builders.add(new DefaultRegionBuilder());
+			region_builders.add(new DynamicSupplyRegionBuilder());
+			region_factory = new BuilderBasedFactory<Region>(region_builders);
+		}	catch (Exception e) {
+			System.err.println("Error while loading the input file: " + e.getLocalizedMessage());
+
+		}
+
+
+
 	}
 
 	private static JSONObject load_JSON_file(InputStream in) {
 		return new JSONObject(new JSONTokener(in));
 	}
 
-
+	private static boolean _sv = false;
 	private static void start_batch_mode() throws Exception {
-		InputStream is = new FileInputStream(new File(_in_file));
+		InputStream is = new FileInputStream(_in_file);
 
 		// (1) Load the input file into a JSONObject
 		JSONObject inputJson = load_JSON_file(is);
 
 		// (2) Create the output file
 		OutputStream outputFile = new FileOutputStream(new File("output.json"));
+		_out_file = "output.json";
 
 		// (3) Create an instance of Simulator passing the appropriate information to its constructor
 		Simulator simulator = new Simulator(inputJson.getInt("width"), inputJson.getInt("height"), inputJson.getInt("rows"), inputJson.getInt("cols"), animal_factory, region_factory);
@@ -228,7 +235,7 @@ public class Main {
 
 
 		// (6) Call the run method with the corresponding parameters
-		controller.run(_time, 0.0, false, outputFile);
+		controller.run(_time, 0.0, _sv, outputFile);
 
 		// (7) Close the output file
 		outputFile.close();
