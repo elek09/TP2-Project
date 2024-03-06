@@ -22,7 +22,7 @@ public class Simulator implements JSONable {
     private int col;
     private JSONObject r;
 
-    public Simulator(int cols, int rows, int width, int height, Factory<Animal> animalsFactory, Factory<Region> regionsFactory) {
+    public Simulator(int width, int height, int cols, int rows, Factory<Animal> animalsFactory, Factory<Region> regionsFactory) {
         this.cols = cols;
         this.rows = rows;
         this.width = width;
