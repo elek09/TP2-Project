@@ -49,14 +49,13 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
         _speed = Utils.get_randomized_parameter(init_speed, 0.1);
         _age = 0;
         _desire = _lowestdesire ;
-        _sight_range = sight_range;
+        _sight_range = sight_range;     //hhbh
         _mate_target = null;
         _baby = null;
         _region_mngr = null;
         _mate_strategy = mate_strategy;
     }
     protected Animal(Animal p1, Animal p2){
-
         _genetic_code = p1._genetic_code;
         _diet = p1._diet;
         _state = State.NORMAL;
@@ -71,7 +70,6 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
         _baby = null;
         _region_mngr = null;
         _mate_strategy = p2._mate_strategy;
-
     }
 
     public Animal() {

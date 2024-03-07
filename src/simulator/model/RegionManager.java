@@ -30,9 +30,7 @@ public class RegionManager implements AnimalMapView {
         this._regions = new DefaultRegion[_rows][_cols];
         this._region_width = width/cols;
         this._region_height = height/rows;
-
         this._animal_region = new HashMap<>();
-
         //it initialises the regions of the _regions array to new objects of type DefaultRegion (using the default constructor)         //done below
         //and initialises the _animal_region attribute .        //dont know how to do it    page 13
 
