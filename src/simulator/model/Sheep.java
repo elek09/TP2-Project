@@ -70,7 +70,7 @@ public class Sheep extends Animal {
         }
     }
 
-    //Its seems good now
+
     private void updateAsDanger(double dt) {
         if (this._danger_source != null) {
             if (this._state == State.DEAD) {
