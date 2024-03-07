@@ -26,18 +26,10 @@ public class Controller {
         if (regions != null) {
             for (int i = 0; i < regions.length(); i++) {
                 JSONObject regionSpec = regions.getJSONObject(i);
-                JSONArray rowRange = regionSpec.getJSONArray("row");
-                JSONArray colRange = regionSpec.getJSONArray("col");
+                int row = regionSpec.getInt("row");
+                int col = regionSpec.getInt("col");
                 JSONObject spec = regionSpec.getJSONObject("spec");
-                int rf = rowRange.getInt(0);
-                int rt = rowRange.getInt(1);
-                int cf = colRange.getInt(0);
-                int ct = colRange.getInt(1);
-                for (int row = rf; row <= rt; row++) {
-                    for (int col = cf; col <= ct; col++) {
-                        _sim.set_region(row, col, spec);
-                    }
-                }
+                _sim.set_region(row, col, spec);
             }
         }
 
