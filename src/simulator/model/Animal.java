@@ -21,6 +21,7 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
     protected Animal _mate_target;
     protected Animal _baby;
     protected AnimalMapView _region_mngr;
+    protected FoodSupplier _food_mngr;
     protected SelectionStrategy _mate_strategy;
 
     protected Animal(String genetic_code, Diet diet, double sight_range, double init_speed, SelectionStrategy mate_strategy, Vector2D pos) {
@@ -49,7 +50,7 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
         _speed = Utils.get_randomized_parameter(init_speed, 0.1);
         _age = 0;
         _desire = _lowestdesire ;
-        _sight_range = sight_range;     //hhbh
+        _sight_range = sight_range;
         _mate_target = null;
         _baby = null;
         _region_mngr = null;
@@ -106,17 +107,10 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
     }
     public JSONObject as_JSON(){
         JSONObject json = new JSONObject();
-        json.put("gcode", _genetic_code);
-        json.put("pos", _pos.asJSONArray());
-        json.put("dest", _dest.asJSONArray());
-        json.put("energy", _energy);
-        json.put("speed", _speed);
-        json.put("age", _age);
-        json.put("desire", _desire);
-        json.put("sight_range", _sight_range);
-        json.put("state", _state.toString());
-        json.put("diet", _diet.toString());
-        json.put("mate_strategy", _mate_strategy.toString());
+        json.put("pos", this._pos.toString());
+        json.put("gcode", this._genetic_code);
+        json.put("diet", this._diet.toString());
+        json.put("state", this._state.toString());
         return json;
     }
 

@@ -2,9 +2,7 @@ package simulator.control;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import simulator.model.AnimalInfo;
-import simulator.model.MapInfo;
-import simulator.model.Simulator;
+import simulator.model.*;
 import simulator.view.SimpleObjectViewer;
 import simulator.view.SimpleObjectViewer.ObjInfo;
 
@@ -19,18 +17,19 @@ public class Controller {
     public Controller(Simulator sim) {
         this._sim = sim;
     }
-
-    //seems okay
     public void load_data(JSONObject data) {
-        JSONArray regions = data.optJSONArray("regions");
-        if (regions != null) {
-            for (int i = 0; i < regions.length(); i++) {
-                JSONObject regionSpec = regions.getJSONObject(i);
-                int row = regionSpec.getInt("row");
-                int col = regionSpec.getInt("col");
-                JSONObject spec = regionSpec.getJSONObject("spec");
-                _sim.set_region(row, col, spec);
+        if (data.has("regions")) {
+            JSONArray regions = data.optJSONArray("regions");
+            {
+                for (int i = 0; i < regions.length(); i++) {
+                    JSONObject regionSpec = regions.getJSONObject(i);
+                    int row = regionSpec.getInt("rows");
+                    int col = regionSpec.getInt("cols");
+                    JSONObject spec = regionSpec.getJSONObject("spec");
+                    _sim.set_region(row, col, spec);
+                }
             }
+
         }
 
         JSONArray animals = data.getJSONArray("animals");
@@ -49,7 +48,7 @@ public class Controller {
         JSONObject final_state;
         SimpleObjectViewer view = null;
         if (sv) {
-            MapInfo m = (MapInfo) _sim.get_map_info();
+            RegionManager m =  _sim.get_map_info();
             view = new SimpleObjectViewer("ECOSYSTEM", m.get_width(), m.get_height(), m.get_cols(), m.get_rows());
             view.update(to_animals_info(_sim.getAnimals()), _sim.get_time(), dt);
 

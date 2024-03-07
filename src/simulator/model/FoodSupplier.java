@@ -1,5 +1,5 @@
 package simulator.model;
 
 public interface FoodSupplier {
-    double getFood(Animal a, double dt);
+    double get_food(Animal a, double dt);
 }

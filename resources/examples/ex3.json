@@ -15,6 +15,7 @@
       }
     }
   }, {
+
     "amount" : 40,
     "spec" : {
       "type" : "sheep",
