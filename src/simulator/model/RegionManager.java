@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class RegionManager implements AnimalMapView {
     private int _rows;
@@ -20,44 +21,50 @@ public class RegionManager implements AnimalMapView {
     private Region[][] _regions;
     private Map<Animal, Region> _animal_region;
 
-    public RegionManager(int cols, int rows, int width, int height){
+    public RegionManager(int cols, int rows, int width, int height) {
         this._rows = rows;
         this._cols = cols;
         this._width = width;
         this._height = height;
         this._regions = new DefaultRegion[_rows][_cols];
-        this._region_width = width/cols;
-        this._region_height = height/rows;
+        this._region_width = width / cols;
+        this._region_height = height / rows;
         this._animal_region = new HashMap<>();
         //it initialises the regions of the _regions array to new objects of type DefaultRegion (using the default constructor)         //done below
         //and initialises the _animal_region attribute .        //dont know how to do it    page 13
 
-        for (int i = 0; i < _rows; i++){
-            for (int j = 0; j < _cols; j++){
+        for (int i = 0; i < _rows; i++) {
+            for (int j = 0; j < _cols; j++) {
                 _regions[i][j] = new DefaultRegion();
             }
         }
     }
 
 
-    public int get_cols(){
+    public int get_cols() {
         return _cols;
     }
-    public int get_rows(){
+
+    public int get_rows() {
         return _rows;
     }
-    public int get_width(){
+
+    public int get_width() {
         return _width;
     }
-    public int get_height(){
+
+    public int get_height() {
         return _height;
     }
-    public int get_region_width(){
+
+    public int get_region_width() {
         return _region_width;
     }
-    public int get_region_height(){
+
+    public int get_region_height() {
         return _region_height;
     }
+
     public void set_region(int row, int col, Region r) {
         // Check if the row and col are within the valid range
         if (row >= 0 && row < _rows && col >= 0 && col < _cols) {
@@ -106,7 +113,7 @@ public class RegionManager implements AnimalMapView {
         }
     }
 
-    public void unregister_animal(Animal a){
+    public void unregister_animal(Animal a) {
         // Calculate the row and column of the region based on the animal's position
         // Cast to int is needed because in Animal, position is a Vector2D and getX and getY return double (?).
         int row = (int) a.get_position().getY() / _region_height;
@@ -127,10 +134,11 @@ public class RegionManager implements AnimalMapView {
             throw new IllegalArgumentException("Animal's position is out of range.");
         }
     }
-    public void update_animal_region(Animal a){
+
+    public void update_animal_region(Animal a) {
         // Calculate the row and column of the region based on the animal's position
         int row = (int) a.get_position().getY() / _region_height;
-        int col = (int) a.get_position().getX() / _region_width ;
+        int col = (int) a.get_position().getX() / _region_width;
 
         // Check if the row and col are within the valid range
         if (row >= 0 && row < _rows && col >= 0 && col < _cols) {
@@ -157,8 +165,9 @@ public class RegionManager implements AnimalMapView {
         }
 
     }
+
     @Override
-    public double get_food(Animal a, double dt){
+    public double get_food(Animal a, double dt) {
         // Calculate the row and column of the region based on the animal's position
         int row = (int) a.get_position().getY() / _region_height;
         int col = (int) a.get_position().getX() / _region_width;
@@ -175,13 +184,15 @@ public class RegionManager implements AnimalMapView {
             throw new IllegalArgumentException("Animal's position is out of range.");
         }
     }
-    void update_all_regions(double dt){
-        for (int i = 0; i < _rows; i++){
-            for (int j = 0; j < _cols; j++){
+
+    void update_all_regions(double dt) {
+        for (int i = 0; i < _rows; i++) {
+            for (int j = 0; j < _cols; j++) {
                 _regions[i][j].update(dt);
             }
         }
     }
+
     private boolean is_in_view(Animal a, Animal otherAnimal) {
         Vector2D positionA = a.get_position();
         Vector2D positionB = otherAnimal.get_position();
@@ -212,30 +223,51 @@ public class RegionManager implements AnimalMapView {
         return regionsInSight;
     }
 
+    /* @Override
+     public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter) {
+         List<Animal> animalsInRange = new ArrayList<>();
+         List<Region> regionsInSight = get_regions_in_sight(a);
+
+         for (Region region : regionsInSight) {
+             List<Animal> animalsInRegion = region.getAnimals();
+
+             for (Animal animal : animalsInRegion) {
+                 if (is_in_view(a, animal) && filter.test(animal)) {
+                     animalsInRange.add(animal);
+                 }
+             }
+         }
+         return animalsInRange;
+     }*/
     @Override
     public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter) {
-        List<Animal> animalsInRange = new ArrayList<>();
-        List<Region> regionsInSight = get_regions_in_sight(a);
+        List<Animal> animals_in_range = new ArrayList<>();
+        Vector2D pos = a.get_position();
+        double sight_range = a.get_sight_range();
+        double row = pos.getX();
+        double col = pos.getY();
 
-        for (Region region : regionsInSight) {
-            List<Animal> animalsInRegion = region.getAnimals();
-
-            for (Animal animal : animalsInRegion) {
-                if (is_in_view(a, animal) && filter.test(animal)) {
-                    animalsInRange.add(animal);
-                }
+        int col_mx = (int) (Math.max(0, col + sight_range) / _width);
+        int col_mn = (int) (Math.max(0, col - sight_range) / _width);
+        int row_mx = (int) (Math.max(0, row + sight_range) / _height);
+        int row_mn = (int) (Math.max(0, row - sight_range) / _height);
+        for (int f = row_mn; f < row_mx; f++) {
+            for (int c = col_mn; c < col_mx; c++) {
+                Region reg = _regions[f][c];
+                animals_in_range.addAll(reg.getAnimals().stream().filter(filter).collect(Collectors.toList()));
             }
+            return animals_in_range;
         }
-        return animalsInRange;
+        return animals_in_range;
     }
 
-    public JSONObject as_JSON(){
+    public JSONObject as_JSON() {
         JSONObject json = new JSONObject();
         JSONArray regions = new JSONArray();
-        for (int i = 0; i < _rows; i++){
-            for (int j = 0; j < _cols; j++){
+        for (int i = 0; i < _rows; i++) {
+            for (int j = 0; j < _cols; j++) {
                 Region region = _regions[i][j];
-                if (region != null){
+                if (region != null) {
                     JSONObject regionJson = region.as_JSON();
                     regionJson.put("row", i);
                     regionJson.put("col", j);
@@ -247,7 +279,8 @@ public class RegionManager implements AnimalMapView {
         json.put("regions", regions);
         return json;
     }
-    public Vector2D adjust_position(Vector2D pos){
+        @Override
+    public Vector2D adjust_position (Vector2D pos){
         double x = pos.getX();
         double y = pos.getY();
         while (x >= this._width) x = (x - this._width);
