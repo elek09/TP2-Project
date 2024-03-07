@@ -43,9 +43,7 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
         _genetic_code = genetic_code;
         _diet = diet;
         _state = State.NORMAL;
-
         _pos = pos;
-
         _dest = null;
         _energy = _maxenergy;
         _speed = Utils.get_randomized_parameter(init_speed, 0.1);

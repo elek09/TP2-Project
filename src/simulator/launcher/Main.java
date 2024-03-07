@@ -158,13 +158,7 @@ public class Main {
 		if (_mode == ExecMode.BATCH && _out_file == null) {
 			throw new ParseException("In batch mode an input configuration file is required");
 		}
-
-
-
-
 	}
-
-
 	private static void parse_time_option(CommandLine line) throws ParseException {
 		String t = line.getOptionValue("t", _default_time.toString());
 		try {
@@ -216,29 +210,37 @@ public class Main {
 	private static boolean _sv = false;
 	private static void start_batch_mode() throws Exception {
 		InputStream is = new FileInputStream(_in_file);
-
+		try{
 		// (1) Load the input file into a JSONObject
 		JSONObject inputJson = load_JSON_file(is);
 
-		// (2) Create the output file
-		OutputStream outputFile = new FileOutputStream(new File("output.json"));
-		_out_file = "output.json";
+			// (2) Create the output file
+			OutputStream outputFile = new FileOutputStream(new File("output.json"));
+			_out_file = "output.json";
 
-		// (3) Create an instance of Simulator passing the appropriate information to its constructor
-		Simulator simulator = new Simulator(inputJson.getInt("width"), inputJson.getInt("height"), inputJson.getInt("rows"), inputJson.getInt("cols"), animal_factory, region_factory);
+			// (3) Create an instance of Simulator passing the appropriate information to its constructor
+			Simulator simulator = new Simulator(inputJson.getInt("width"), inputJson.getInt("height"), inputJson.getInt("rows"), inputJson.getInt("cols"), animal_factory, region_factory);
 
-		// (4) Create an instance of Controller, passing it the simulator
-		Controller controller = new Controller(simulator);
+			// (4) Create an instance of Controller, passing it the simulator
+			Controller controller = new Controller(simulator);
 
-		// (5) Call load_data by passing it the input JSONObject
-		controller.load_data(inputJson);
+			// (5) Call load_data by passing it the input JSONObject
+			controller.load_data(inputJson);
 
 
-		// (6) Call the run method with the corresponding parameters
-		controller.run(_time, 0.0, _sv, outputFile);
 
-		// (7) Close the output file
-		outputFile.close();
+			// (6) Call the run method with the corresponding parameters
+			controller.run(_time, 0.0, _sv, outputFile);
+
+			// (7) Close the output file
+			outputFile.close();
+		} catch(Exception e){
+			System.err.println("Error while loading the input file: " + e.getLocalizedMessage());
+		}
+
+
+
+
 	}
 
 	private static void start_GUI_mode() throws Exception {

@@ -43,12 +43,9 @@ public class Sheep extends Animal {
             this._state = State.DEAD;
         }
         else if (this._state != State.DEAD){
-            _energy += this.getFood(this,dt);     //FoodSupplier Interface      we will need to look into this bc the adding function in getFood seems a bit off now
+            _energy += this.getFood(this,dt);
         }
 
-        //TODO: Here must be a check for the sheep to see if it's inside of the board in order to change or not the
-        // position of the sheep.
-        // if (this._pos.getX() )
     }
 
     //Checked

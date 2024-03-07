@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import simulator.misc.Vector2D;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -29,6 +30,8 @@ public class RegionManager implements AnimalMapView {
         this._regions = new DefaultRegion[_rows][_cols];
         this._region_width = width/cols;
         this._region_height = height/rows;
+
+        this._animal_region = new HashMap<>();
 
         //it initialises the regions of the _regions array to new objects of type DefaultRegion (using the default constructor)         //done below
         //and initialises the _animal_region attribute .        //dont know how to do it    page 13
@@ -86,6 +89,7 @@ public class RegionManager implements AnimalMapView {
 
 
     public void register_animal(Animal a) {
+        a.init(this);
         // Calculate the row and column of the region based on the animal's position
         int row = (int) a.get_position().getY() / _region_height; // Assuming you have a method in Animal to get its position
         int col = (int) a.get_position().getX() / _region_width; // and the position has methods to get x and y coordinates
