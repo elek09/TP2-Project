@@ -12,7 +12,7 @@ public class Sheep extends Animal {
 
 
     public Sheep(SelectionStrategy mate_strategy, SelectionStrategy danger_strategy, Vector2D pos) {
-        super();
+        super("Sheep", Diet.HERBIVORE, _sightrangeConst, _speedConst, mate_strategy, pos);
         this._mate_strategy = mate_strategy;
         this._danger_strategy = danger_strategy;
         this._pos = pos;
@@ -43,7 +43,7 @@ public class Sheep extends Animal {
             this._state = State.DEAD;
         }
         else if (this._state != State.DEAD){
-            _energy += this.getFood(this,dt);
+            _energy += this._region_mngr.get_food(this,dt);
         }
 
     }
@@ -60,7 +60,6 @@ public class Sheep extends Animal {
         this._desire += _desirereductionSheep * dt;
         assert this._desire > _lowestdesire && this._desire <= _maxdesire;
         if (this._danger_source == null) {
-            //TODO: Search for a new danger source
             searchForDanger(_region_mngr, this._danger_strategy);
 
             if (this._desire > _desireUpperBound) {
@@ -182,6 +181,11 @@ public class Sheep extends Animal {
     }
 
     @Override
+    public double get_food(Animal a, double dt) {
+        return 0;
+    }
+
+    @Override
     public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter) {
         return null;
     }
@@ -191,8 +195,4 @@ public class Sheep extends Animal {
         return null;
     }
 
-    @Override
-    public double getFood(Animal a, double dt) {
-        return 0;
-    }
 }

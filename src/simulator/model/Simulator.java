@@ -18,9 +18,7 @@ public class Simulator implements JSONable {
     private final RegionManager regionManager;
     private final List<Animal> animals;
     private double currentTime;
-    private int row;
-    private int col;
-    private JSONObject r;
+
 
     public Simulator(int width, int height, int cols, int rows, Factory<Animal> animalsFactory, Factory<Region> regionsFactory) {
         this.cols = cols;
@@ -36,8 +34,6 @@ public class Simulator implements JSONable {
 
 
     private void set_region(int row, int col, Region r) {
-        this.rows = row;
-        this.cols = col;
         regionManager.set_region(row, col, r);
     }
 
@@ -70,8 +66,6 @@ public class Simulator implements JSONable {
 
     public void advance(double dt) {
         currentTime += dt;
-
-        //animals.removeIf(animal -> animal.get_state() == State.DEAD);
         //probably better to use the functions what we wrote for this like unregister_animal thats why i modified below, but we can discuss it
         for (Animal animal : animals) {
             if (animal.get_state() == State.DEAD) {

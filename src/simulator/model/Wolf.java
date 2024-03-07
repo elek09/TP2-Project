@@ -10,7 +10,7 @@ public class Wolf extends Animal{
     private Animal _hunt_target;
     private SelectionStrategy _hunting_strategy;
     public Wolf(SelectionStrategy mate_strategy, SelectionStrategy danger_strategy, Vector2D pos) {
-        super();
+        super("Wolf", Diet.CARNIVORE, _sightrangeConst, _speedConst, mate_strategy, pos);
         this._mate_strategy = mate_strategy;
         this._hunting_strategy = danger_strategy;
         this._pos = pos;
@@ -36,7 +36,7 @@ public class Wolf extends Animal{
             this._state = State.DEAD;
         }
         else if (this._state!=State.DEAD){
-            _energy += this.getFood(this,dt);     //FoodSupplier Interface      we will need to look into this bc the adding function in getFood seems a bit off now
+            _energy += this._region_mngr.get_food(this,dt);
         }
         else if (this._state == State.HUNGER) {
             updateAsHunger(dt);
@@ -114,7 +114,7 @@ public class Wolf extends Animal{
                 updateAsNormal(dt);
             }
         } else if(this._mate_target!=null){
-            _mate_target=searchForMate(_region_mngr, this._mate_strategy);          //hbhbhjbhbhb
+            _mate_target=searchForMate(_region_mngr, this._mate_strategy);
             this._dest = _mate_target.get_position();
 
             move(_speedFactorWolf * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
@@ -194,6 +194,11 @@ public class Wolf extends Animal{
     }
 
     @Override
+    public double get_food(Animal a, double dt) {
+        return 0;
+    }
+
+    @Override
     public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter) {
         return null;
     }
@@ -203,8 +208,4 @@ public class Wolf extends Animal{
         return null;
     }
 
-    @Override
-    public double getFood(Animal a, double dt) {
-        return 0;
-    }
 }

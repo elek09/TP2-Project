@@ -19,8 +19,6 @@ public class RegionManager implements AnimalMapView {
     private int _region_height;
     private Region[][] _regions;
     private Map<Animal, Region> _animal_region;
-    private Animal a;
-    private Predicate<Animal> filter;
 
     public RegionManager(int cols, int rows, int width, int height){
         this._rows = rows;
@@ -159,6 +157,7 @@ public class RegionManager implements AnimalMapView {
         }
 
     }
+    @Override
     public double get_food(Animal a, double dt){
         // Calculate the row and column of the region based on the animal's position
         int row = (int) a.get_position().getY() / _region_height;
@@ -170,7 +169,7 @@ public class RegionManager implements AnimalMapView {
             Region r = _regions[row][col];
 
             // Get the food from the region
-            return r.getFood(a, dt);
+            return r.get_food(a, dt);
         } else {
             // Throw an exception if the row or col are out of range
             throw new IllegalArgumentException("Animal's position is out of range.");
@@ -183,67 +182,23 @@ public class RegionManager implements AnimalMapView {
             }
         }
     }
-    //This is weird cuz I don't know pretty much anything about the filter stuff.
-    /**
-     * We have to query over all the regions that are in the sight of view of the animal,
-     * Meaning that we need to check all the points in a circle of the sight range of the animal and check if the region is in the sight of view of the animal
-     * and then check all the animals in the region and check if they are in the sight of view of the animal and return the ones that are.
-     * @return A list of animals that are in the same region as the specified animal and match the filter.
-     */
-    //animal only could see the animals in the same region as it?
-
-    //we could use the distanceTo method from the Vector2D class to calculate the distance between the two animal and check if it is in his sight range
-
-    //so we used this distanceTo method check that which regions the animal can see and then we can check the animals in those regions and check if they are in the sight range of the animal
-
-    /*@Override
-    public List<Animal> get_animals_in_range22(Animal a, Predicate<Animal> filter) {
-        List<Animal> animalsInRange = new ArrayList<>();
-
-        // Get the list of regions that fall inside the field of view of the animal
-        List<Region> regionsInView = get_regions_in_view(a);
-
-        // Iterate over each region
-        for (Region region : regionsInView) {
-            // Get the list of animals in the current region
-            List<Animal> animalsInRegion = region.getAnimals();
-
-            // Iterate over each animal in the region
-            for (Animal animal : animalsInRegion) {
-                // Check if the animal is in the field of view of the given animal and satisfies the filter condition
-//                if (is_in_view(a, animal) && filter.test(animal)) {
-//                    // If so, add it to the list of animals in range
-//                    animalsInRange.add(animal);
-//                }
-            }
-        }
-
-        return animalsInRange;
-    }*/
-
-
     private boolean is_in_view(Animal a, Animal otherAnimal) {
         Vector2D positionA = a.get_position();
         Vector2D positionB = otherAnimal.get_position();
 
         double distance = positionA.distanceTo(positionB);
 
-        if (distance <= a.get_sight_range()) {
-            return true;
-        } else {
-            return false;
-        }
+        return distance <= a.get_sight_range();
     }
 
     public List<Region> get_regions_in_sight(Animal a) {
-        List<Region> regionsInSight = new ArrayList<>();
-
-        Vector2D animalPosition = a.get_position();
-        double sightRange = a.get_sight_range();
+        List<Region> regionsInSight = new ArrayList<>();    //Create an empty list of regions
+        Vector2D animalPosition = a.get_position();         //Get the position of the animal
+        double sightRange = a.get_sight_range();            //Get the sight range of the animal
 
         for (int i = 0; i < _rows; i++) {
             for (int j = 0; j < _cols; j++) {
-                Vector2D regionPosition = new Vector2D(j * _region_width, i * _region_height);
+                Vector2D regionPosition = new Vector2D(j * this._region_width, i * this._region_height);    //Calculate the position of the region
 
                 // Calculate the distance between the animal and the region
                 double distance = animalPosition.distanceTo(regionPosition);
@@ -279,7 +234,14 @@ public class RegionManager implements AnimalMapView {
         JSONArray regions = new JSONArray();
         for (int i = 0; i < _rows; i++){
             for (int j = 0; j < _cols; j++){
-                regions.put(_regions[i][j].as_JSON());
+                Region region = _regions[i][j];
+                if (region != null){
+                    JSONObject regionJson = region.as_JSON();
+                    regionJson.put("row", i);
+                    regionJson.put("col", j);
+                    regionJson.put("data", region.as_JSON());
+                    regions.put(regionJson);
+                }
             }
         }
         json.put("regions", regions);
@@ -295,33 +257,5 @@ public class RegionManager implements AnimalMapView {
 
         return new Vector2D(x, y);
     }
-
-    /*
-    public List<Region> get_regions_in_view(Animal a) {
-        List<Region> regionsInView = new ArrayList<>();
-
-        // Get the field of view of the animal
-        double fieldOfView = a.get_sight_range();
-
-        // Get the position of the animal
-        Vector2D animalPosition = a.get_position();
-
-        // Iterate over each region
-        for (Region[] region : _regions) {
-            // Get the position of the region
-           // Vector2D regionPosition = region;
-
-            // Calculate the distance between the animal and the region
-            double distance = 0;// = animalPosition.distanceTo(regionPosition);
-
-            // If the region is within the field of view of the animal, add it to the list
-            if (distance <= fieldOfView) {
-                //regionsInView.add(region);
-            }
-        }
-
-        return regionsInView;
-    }*/
-
 
 }
