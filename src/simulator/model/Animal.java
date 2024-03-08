@@ -102,8 +102,6 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
 
     protected void move(double speed){
         _pos = _pos.plus(_dest.minus(_pos).direction().scale(speed));
-
-
     }
     public JSONObject as_JSON(){
         JSONObject json = new JSONObject();
