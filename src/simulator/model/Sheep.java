@@ -25,7 +25,7 @@ public class Sheep extends Animal {
         this._danger_strategy = p1._danger_strategy;
         this._danger_source = null;
     }
-
+    @Override
     public void update(double dt) {
         if (this._state == State.DEAD) {
             return;
@@ -111,7 +111,7 @@ public class Sheep extends Animal {
             }
         } else if (this._mate_target == null)
             //Searches for a mate and if there is no mate, it will update as normal
-            if (searchForMate(_region_mngr, this._mate_strategy)!=null) {
+            if (searchForMate(_region_mngr, this._mate_strategy) == null) {
                 updateAsNormal(dt);
             } else {
                 this._dest = _mate_target.get_position();

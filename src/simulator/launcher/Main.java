@@ -50,12 +50,13 @@ public class Main {
 
 	// default values for some parameters
 	//
-	private final static Double _default_time = 10.0; // in seconds
+	private final static Double _default_time = 60.0; // in seconds
 	private final static Double _default_dt = 0.03;
 
 	// some attributes to stores values corresponding to command-line parameters
 	//
-	private static Double _time = null;
+	private static Double _time = 0.0;
+
 	private static String _in_file = null;
 	private static String _out_file = null;
 	private static ExecMode _mode = ExecMode.BATCH;
@@ -125,12 +126,12 @@ public class Main {
 		return cmdLineOptions;
 	}
 	private static void parse_dtime_option(CommandLine line) throws ParseException {
-		String t = line.getOptionValue("dt", _default_dt.toString());
+		String dt = line.getOptionValue("dt", _default_dt.toString());
 		try {
-			_time = Double.parseDouble(t);
+			_time = Double.parseDouble(dt);
 			assert (_time >= 0);
 		} catch (Exception e) {
-			throw new ParseException("Invalid value for time: " + t);
+			throw new ParseException("Invalid value for time: " + dt);
 		}
 	}
 	private static void parse_help_option(CommandLine line, Options cmdLineOptions) {
@@ -160,7 +161,7 @@ public class Main {
 		}
 	}
 	private static void parse_time_option(CommandLine line) throws ParseException {
-		String t = line.getOptionValue("t", _default_time.toString());
+		String t = line.getOptionValue("t");
 		try {
 			_time = Double.parseDouble(t);
 			assert (_time >= 0);
@@ -211,8 +212,8 @@ public class Main {
 	private static void start_batch_mode() throws Exception {
 		InputStream is = new FileInputStream(_in_file);
 		try{
-		// (1) Load the input file into a JSONObject
-		JSONObject inputJson = load_JSON_file(is);
+			// (1) Load the input file into a JSONObject
+			JSONObject inputJson = load_JSON_file(is);
 
 			// (2) Create the output file
 			OutputStream outputFile = new FileOutputStream(new File("output.json"));
@@ -227,14 +228,13 @@ public class Main {
 			// (5) Call load_data by passing it the input JSONObject
 			controller.load_data(inputJson);
 
-
-
 			// (6) Call the run method with the corresponding parameters
-			controller.run(_time, 0.0, _sv, outputFile);
+			controller.run(_default_time, _default_dt, _sv, outputFile);
 
 			// (7) Close the output file
 			outputFile.close();
-		} catch(Exception e){
+
+		} catch(IOException e){
 			System.err.println("Error while loading the input file: " + e.getLocalizedMessage());
 		}
 
