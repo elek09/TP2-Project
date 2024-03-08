@@ -222,8 +222,8 @@ public class RegionManager implements AnimalMapView {
 
         return regionsInSight;
     }
-
-    /* @Override
+/*
+     @Override
      public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter) {
          List<Animal> animalsInRange = new ArrayList<>();
          List<Region> regionsInSight = get_regions_in_sight(a);
@@ -251,15 +251,22 @@ public class RegionManager implements AnimalMapView {
         int col_mn = (int) (Math.max(0, col - sight_range) / _width);
         int row_mx = (int) (Math.max(0, row + sight_range) / _height);
         int row_mn = (int) (Math.max(0, row - sight_range) / _height);
+
         for (int f = row_mn; f < row_mx; f++) {
             for (int c = col_mn; c < col_mx; c++) {
                 Region reg = _regions[f][c];
-                animals_in_range.addAll(reg.getAnimals().stream().filter(filter).collect(Collectors.toList()));
+                for (Animal animal : reg.getAnimals()) {
+                    if (filter.test(animal)) {
+                        animals_in_range.add(animal);
+                    }
+                }
+
             }
-            return animals_in_range;
         }
-        return animals_in_range;
+            return animals_in_range;
     }
+
+
 
     public JSONObject as_JSON() {
         JSONObject json = new JSONObject();

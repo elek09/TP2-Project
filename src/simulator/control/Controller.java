@@ -65,10 +65,9 @@ public class Controller {
         output.put("in", init_state);
         output.put("out", final_state);
 
-        // Write output to OutputStream
-        if (sv){
-            view.close();
-        }
+
+
+
     }
     private List<ObjInfo> to_animals_info(List<? extends AnimalInfo> animals) {
         List<ObjInfo> ol = new ArrayList<>(animals.size());

@@ -115,11 +115,6 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
     }
 
     public void update(double dt) {
-        _age += dt;
-        _energy -= _energy * dt;
-        if (_energy <= 0){
-            _state = State.DEAD;
-        }
     }
     @Override
     public State get_state() {
@@ -174,37 +169,28 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
 
     public Animal searchForMate(AnimalMapView reg_mngr, SelectionStrategy strategy) {
         Predicate<Animal> filter = a -> a.get_genetic_code() == this._genetic_code && !a.is_pregnant() && a.get_state() == State.MATE && a != this;
-        List<Animal> animalsInRange = reg_mngr.get_animals_in_range(this, filter);
-        Animal selectedAnimal = strategy.select(this, animalsInRange);
 
-        if (filter.test(selectedAnimal)) {
-            this._mate_target = selectedAnimal;
-            return selectedAnimal;
-        }
-        return null;
+        List<Animal> animalsInRange = reg_mngr.get_animals_in_range(this, filter);
+
+        return strategy.select(this, animalsInRange);
     }
 
     public Animal searchForDanger(AnimalMapView reg_mngr, SelectionStrategy strategy) {
-        Predicate<Animal> filter = a -> a.get_diet() == Diet.CARNIVORE;
-        List<Animal> animalsInRange = reg_mngr.get_animals_in_range(this, filter);
-        Animal selectedAnimal = strategy.select(this, animalsInRange);
 
-        if (filter.test(selectedAnimal)) {
-            this._state = State.DANGER;
-            return selectedAnimal;
-        }
-        return null;
+        Predicate<Animal> filter = a -> a.get_diet() == Diet.CARNIVORE;
+
+        List<Animal> animalsInRange = reg_mngr.get_animals_in_range(this, filter);
+
+
+        return strategy.select(this, animalsInRange);
     }
 
     public Animal searchForHuntTarget(AnimalMapView reg_mngr, SelectionStrategy strategy) {
         Predicate<Animal> filter = a -> a.get_diet() == Diet.HERBIVORE;
-        List<Animal> animalsInRange = reg_mngr.get_animals_in_range(this, filter);
-        Animal selectedAnimal = strategy.select(this, animalsInRange);
 
-        if (filter.test(selectedAnimal)) {
-            this._state = State.HUNGER;
-            return selectedAnimal;
-        }
-        return null;
+        List<Animal> animalsInRange = reg_mngr.get_animals_in_range(this, filter);
+
+
+        return strategy.select(this, animalsInRange);
     }
 }

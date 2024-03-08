@@ -23,7 +23,7 @@ public class Wolf extends Animal{
         this._hunting_strategy = p1._hunting_strategy;
         this._hunt_target = null;
     }
-
+    @Override
     public void update(double dt) {
         if (this._state == State.DEAD) {
             return;
