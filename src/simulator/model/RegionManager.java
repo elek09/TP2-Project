@@ -12,12 +12,12 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class RegionManager implements AnimalMapView {
-    private int _rows;
-    private int _cols;
-    private int _width;
-    private int _height;
-    private int _region_width;
-    private int _region_height;
+    private final int _rows;
+    private final int _cols;
+    private final int _width;
+    private final int _height;
+    private final int _region_width;
+    private final int _region_height;
     private Region[][] _regions;
     private Map<Animal, Region> _animal_region;
 
@@ -286,16 +286,6 @@ public class RegionManager implements AnimalMapView {
         json.put("regions", regions);
         return json;
     }
-        @Override
-    public Vector2D adjust_position (Vector2D pos){
-        double x = pos.getX();
-        double y = pos.getY();
-        while (x >= this._width) x = (x - this._width);
-        while (x < 0) x = (x + this._width);
-        while (y >= this._height) y = (y - this._height);
-        while (y < 0) y = (y + this._height);
 
-        return new Vector2D(x, y);
-    }
 
 }
