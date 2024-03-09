@@ -150,15 +150,16 @@ public class RegionManager implements AnimalMapView {
             // If the animal has moved to a different region
             if (!r.equals(currentRegion)) {
                 // Remove the animal from the current region if it's not null
-                if (currentRegion != null) {
+                if(currentRegion != null){
                     currentRegion.remove_animal(a);
                 }
+                if(r != null){
+                    // Add the animal to the new region
+                    r.add_animal(a);
+                    // Update the _animal_region map
+                    _animal_region.put(a, r);
+                }
 
-                // Add the animal to the new region
-                r.add_animal(a);
-
-                // Update the _animal_region map
-                _animal_region.put(a, r);
             }
         } else {
             // Throw an exception if the row or col are out of range
@@ -167,7 +168,7 @@ public class RegionManager implements AnimalMapView {
 
     }
 
-    @Override
+
     public double get_food(Animal a, double dt) {
         // Calculate the row and column of the region based on the animal's position
         int row = (int) a.get_position().getY() / _region_height;
@@ -223,24 +224,6 @@ public class RegionManager implements AnimalMapView {
 
         return regionsInSight;
     }
-/*
-     @Override
-     public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter) {
-         List<Animal> animalsInRange = new ArrayList<>();
-         List<Region> regionsInSight = get_regions_in_sight(a);
-
-         for (Region region : regionsInSight) {
-             List<Animal> animalsInRegion = region.getAnimals();
-
-             for (Animal animal : animalsInRegion) {
-                 if (is_in_view(a, animal) && filter.test(animal)) {
-                     animalsInRange.add(animal);
-                 }
-             }
-         }
-         return animalsInRange;
-     }*/
-
     @Override
     public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter) {
         List<Animal> animals_in_range = new ArrayList<>();
@@ -288,6 +271,5 @@ public class RegionManager implements AnimalMapView {
         json.put("regions", regions);
         return json;
     }
-
 
 }
