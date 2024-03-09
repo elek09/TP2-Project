@@ -3,15 +3,16 @@ package simulator.model;
 import simulator.misc.Vector2D;
 
 public interface AnimalInfo extends JSONable{
-    public State get_state();
-    public Vector2D get_position();
-    public String get_genetic_code();
-    public Diet get_diet();
-    public double get_speed();
-    public double get_sight_range();
-    public double get_energy();
-    public double get_age();
-    public Vector2D get_destination();
-    public boolean is_pregnant();
+    State get_state();
+    Vector2D get_position();
+    String get_genetic_code();
+    Diet get_diet();
+    double get_speed();
+    double get_sight_range();
+    double get_energy();
+    double get_age();
+    Vector2D get_destination();
+    boolean is_pregnant();
+    SelectionStrategy get_mate_strategy();
 
 }

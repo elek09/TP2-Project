@@ -5,6 +5,7 @@ import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 
 import java.util.List;
+import java.util.Vector;
 import java.util.function.Predicate;
 
 public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMapView, FoodSupplier{
@@ -21,7 +22,6 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
     protected Animal _mate_target;
     protected Animal _baby;
     protected AnimalMapView _region_mngr;
-    protected FoodSupplier _food_mngr;
     protected SelectionStrategy _mate_strategy;
 
     protected Animal(String genetic_code, Diet diet, double sight_range, double init_speed, SelectionStrategy mate_strategy, Vector2D pos) {
@@ -47,7 +47,7 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
         _pos = pos;
         _dest = null;
         _energy = _maxenergy;
-        _speed = Utils.get_randomized_parameter(init_speed, 0.1);
+        _speed = Utils.get_randomized_parameter(init_speed, _toleranceSpeed);
         _age = 0;
         _desire = _lowestdesire ;
         _sight_range = sight_range;
@@ -57,12 +57,12 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
         _mate_strategy = mate_strategy;
     }
     protected Animal(Animal p1, Animal p2){
-        _genetic_code = p1._genetic_code;
-        _diet = p1._diet;
+        _genetic_code = p1.get_genetic_code();
+        _diet = p1.get_diet();
         _state = State.NORMAL;
         _pos = p1.get_position().plus( Vector2D.get_random_vector(-1,1).scale(_multiplicativeFactor * (Utils._rand.nextGaussian()+1)));
         _dest = null;
-        _energy = (p1._energy + p2._energy) / 2.0;
+        _energy = (p1.get_energy() + p2.get_energy()) / 2.0;
         _speed = Utils.get_randomized_parameter((p1.get_speed() + p2.get_speed())/2, _tolerance);
         _age = 0;
         _desire = _lowestdesire;
@@ -70,7 +70,7 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
         _mate_target = null;
         _baby = null;
         _region_mngr = null;
-        _mate_strategy = p2._mate_strategy;
+        _mate_strategy = p2.get_mate_strategy();
     }
 
     public Animal() {
@@ -83,32 +83,61 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
             _pos = Vector2D.get_random_vector(0, _region_mngr.get_width()-1, 0, _region_mngr.get_height()-1);
         }
         else{
-            if(!IsOnTheMap(_pos)) _pos = _region_mngr.adjust_position(_pos);
+            if(IsOutOfMap()) {
+                _pos = adjust_position(_pos);
+            }
         }
     }
 
-    protected boolean IsOnTheMap(Vector2D pos){
-        return !(this._pos.getX() < 0 || this._pos.getX() > _region_mngr.get_width() || this._pos.getY() < 0 || this._pos.getY() > _region_mngr.get_height());
+    public Vector2D adjust_position (Vector2D pos){
+        double x = pos.getX();
+        double y = pos.getY();
+
+        double width = get_region_width();
+        double height = get_region_height();
+
+        while (x >= width)
+            x = (x - width);
+
+        while (x < 0)
+            x = (x + width);
+
+        while (y >= height)
+            y = (y - height);
+
+        while (y < 0)
+            y = (y + height);
+
+        return new Vector2D(x, y);
+    }
+    protected boolean IsOutOfMap(){
+        return this._pos.getX() < 0 || this._pos.getX() > _region_mngr.get_width() || this._pos.getY() < 0 || this._pos.getY() > _region_mngr.get_height();
     }
 
     public Animal deliver_baby(){
-        if (_baby != null){
+        if (this.is_pregnant()){
             Animal baby = _baby;
-            _baby = null;
+            set_baby(null);
             return baby;
         }
         return null;
     }
-
+    public void set_baby(Animal b){
+        this._baby = b;
+    }
     protected void move(double speed){
-        _pos = _pos.plus(_dest.minus(_pos).direction().scale(speed));
+        Vector2D destination = get_destination();
+        _pos = _pos.plus(destination.minus(_pos).direction().scale(speed));
     }
     public JSONObject as_JSON(){
         JSONObject json = new JSONObject();
-        json.put("pos", this._pos.toString());
-        json.put("gcode", this._genetic_code);
-        json.put("diet", this._diet.toString());
-        json.put("state", this._state.toString());
+        Vector2D pos = this.get_position();
+
+        json.put("pos", pos.toString());
+        json.put("gcode", get_genetic_code());
+        json.put("diet", get_diet().toString());
+        json.put("state", get_diet().toString());
+
         return json;
     }
 
@@ -162,6 +191,10 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
     @Override
     public boolean is_pregnant() {
         return this._baby != null;
+    }
+    @Override
+    public SelectionStrategy get_mate_strategy(){
+        return this._mate_strategy;
     }
 
 

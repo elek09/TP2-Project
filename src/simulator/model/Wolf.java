@@ -1,6 +1,5 @@
 package simulator.model;
 
-import org.json.JSONObject;
 import simulator.misc.Vector2D;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public class Wolf extends Animal{
     public void update(double dt) {
         if (this._state == State.DEAD) return;
 
-        if (!IsOnTheMap(this._pos)){
+        if (IsOutOfMap()){
             this._state = State.NORMAL;
             updateAsNormal(dt);
         }
@@ -93,9 +92,10 @@ public class Wolf extends Animal{
     private void updateAsHunger(double dt) {
         if (this._hunt_target==null||this._hunt_target._state == State.DEAD || this._hunt_target.get_position().distanceTo(_pos)>_sight_range){
             this._hunt_target = searchForHuntTarget(_region_mngr, this._hunting_strategy);
-            return;
+
         } else if (this._hunt_target == null){
             updateAsNormal(dt);
+
         } else if (this._hunt_target!=null){
             _dest = _hunt_target.get_position();
             move(_speedFactorWolf * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
@@ -149,7 +149,7 @@ public class Wolf extends Animal{
     private void updateAsMate(double dt){
         if(this._mate_target!=null&&(this._mate_target._state==State.DEAD||this._mate_target.get_position().distanceTo(_pos)>_sight_range)){
             this._mate_target = null;
-            return;
+
         } else if(this._mate_target==null){
             _mate_target=searchForMate(_region_mngr, this._mate_strategy);
             if(_mate_target==null){
@@ -254,11 +254,6 @@ public class Wolf extends Animal{
 
     @Override
     public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter) {
-        return null;
-    }
-
-    @Override
-    public Vector2D adjust_position(Vector2D pos) {
         return null;
     }
 

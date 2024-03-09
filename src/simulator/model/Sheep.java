@@ -15,53 +15,55 @@ public class Sheep extends Animal {
         super("Sheep", Diet.HERBIVORE, _sightrangeConst, _speedConst, mate_strategy, pos);
         this._mate_strategy = mate_strategy;
         this._danger_strategy = danger_strategy;
-        this._pos = pos;
-        this._speed = _speedConst;
-        this._sight_range = _sightrangeConst;
-
         this._danger_source = null;
     }
 
     protected Sheep(Sheep p1, Animal p2) {
         super(p1, p2);
-        this._danger_strategy = p1._danger_strategy;
+        this._danger_strategy = p1.get_danger_strategy();
         this._danger_source = null;
+    }
+    public SelectionStrategy get_danger_strategy() {
+        return this._danger_strategy;
     }
     @Override
     public void update(double dt) {
-        if (!IsOnTheMap(_pos)) {
-            _pos = _region_mngr.adjust_position(_pos);
+        switch(_state){
+            case NORMAL:
+                updateAsNormal(dt);
+                break;
+            case DANGER:
+                updateAsDanger(dt);
+                break;
+            case MATE:
+                updateAsMate(dt);
+                break;
+            case DEAD:
+                break;
+        }
+        if (IsOutOfMap()) {
+            _pos =  adjust_position(_pos);
             this._state = State.NORMAL;
         }
-        if (this._state == State.DEAD) {
-            return;
-        }
-        else if (this._state == State.NORMAL) {
-            updateAsNormal(dt);
-        }
-        else if (this._state == State.DANGER) {
-            updateAsDanger(dt);
-        }
-        else if (this._state == State.MATE) {
-            updateAsMate(dt);
-        }
-        else if (_energy<=0.0 || _age>8.0){
+
+        if (_energy <= _lowestenergy || _age > _ageLimit){
             _state = State.DEAD;
         }
 
-
-        //ensuring its value remains between 0.0 and 100.0      IMPORTANT
-        if (_energy > _maxenergy) {
-            _energy = _maxenergy;
-        } else if (_energy < 0) {
-            _energy = 0;
-        }
-        else {
+        State state = this.get_state();
+        if (state != State.DEAD){
             _energy += this._region_mngr.get_food(this,dt);
+            if (_energy > _maxenergy) {
+                _energy = _maxenergy;
+            }
+            else if (_energy < 0) {
+                _energy = 0;
+            }
         }
+
     }
 
-    //Checked
+
     private void updateAsNormal(double dt) {
         if (_pos.distanceTo(_dest) < 8.0) {
             _dest = new Vector2D(Math.random() * _region_mngr.get_width(), Math.random() * _region_mngr.get_height());
@@ -241,9 +243,6 @@ public class Sheep extends Animal {
         return null;
     }
 
-    @Override
-    public Vector2D adjust_position(Vector2D pos) {
-        return null;
-    }
+
 
 }
