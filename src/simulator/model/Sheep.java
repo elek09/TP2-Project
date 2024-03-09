@@ -92,7 +92,7 @@ public class Sheep extends Animal {
         }
 
         if (this._danger_source == null) {
-            searchForDanger(_region_mngr, this._danger_strategy);
+            _danger_source=searchForDanger(_region_mngr, this._danger_strategy);
         }
 
         if (this._danger_source != null) {
