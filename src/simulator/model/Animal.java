@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.function.Predicate;
 
-public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMapView, FoodSupplier{
+public abstract class Animal implements Entity, AnimalInfo, Constants{
     protected String _genetic_code;
     protected Diet _diet;
     protected State _state;
@@ -93,8 +93,8 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
         double x = pos.getX();
         double y = pos.getY();
 
-        double width = get_region_width();
-        double height = get_region_height();
+        double width = _region_mngr.get_region_width();
+        double height = _region_mngr.get_region_height();
 
         while (x >= width)
             x = (x - width);
@@ -199,7 +199,7 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
 
 
     public Animal searchForMate(AnimalMapView reg_mngr, SelectionStrategy strategy) {
-        Predicate<Animal> filter = a -> a.get_genetic_code() == this._genetic_code && !a.is_pregnant() && a.get_state() == State.MATE && a != this;
+        Predicate<Animal> filter = a -> a.get_genetic_code().equals(this._genetic_code) && !a.is_pregnant() && a.get_state() == State.MATE && a != this;
 
         List<Animal> animalsInRange = reg_mngr.get_animals_in_range(this, filter);
 
@@ -223,5 +223,23 @@ public abstract class Animal implements Entity, AnimalInfo, Constants, AnimalMap
 
 
         return strategy.select(this, animalsInRange);
+    }
+    protected void checkEnergy(){
+        if (_energy > _maxenergy) {
+            _energy = _maxenergy;
+        } else if (_energy < _lowestenergy) {
+            _energy = _lowestenergy;
+        }
+    }
+
+    protected void checkDesire(){
+        if (_desire > _maxdesire) {
+            _desire = _maxdesire;
+        } else if (_desire < _lowestdesire) {
+            _desire = _lowestdesire;
+        }
+    }
+    protected void setDesire(double d){
+        this._desire = d;
     }
 }

@@ -24,5 +24,9 @@ public interface Constants {
     double _plusEnergy = 50.0;
     double _sexEnergy = 10.0;
     double _toleranceSpeed = 0.10;
+    double _createBaby = 0.9;
+    double _wolfAge = 14.0;
+    double distanceDest = 8.0;
+    double _energyBound = 50.0;
 
 }
