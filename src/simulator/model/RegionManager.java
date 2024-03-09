@@ -29,8 +29,7 @@ public class RegionManager implements AnimalMapView {
         this._regions = new DefaultRegion[_rows][_cols];
         this._region_width = width / cols;
         this._region_height = height / rows;
-        this._animal_region = new HashMap<>();
-        //it initialises the regions of the _regions array to new objects of type DefaultRegion (using the default constructor)         //done below
+        this._animal_region = new HashMap<Animal, Region>();
         //and initialises the _animal_region attribute .        //dont know how to do it    page 13
 
         for (int i = 0; i < _rows; i++) {
@@ -150,8 +149,10 @@ public class RegionManager implements AnimalMapView {
 
             // If the animal has moved to a different region
             if (!r.equals(currentRegion)) {
-                // Remove the animal from the current region
-                currentRegion.remove_animal(a);
+                // Remove the animal from the current region if it's not null
+                if (currentRegion != null) {
+                    currentRegion.remove_animal(a);
+                }
 
                 // Add the animal to the new region
                 r.add_animal(a);
@@ -239,6 +240,7 @@ public class RegionManager implements AnimalMapView {
          }
          return animalsInRange;
      }*/
+
     @Override
     public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter) {
         List<Animal> animals_in_range = new ArrayList<>();
