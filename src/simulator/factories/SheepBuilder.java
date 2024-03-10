@@ -2,10 +2,7 @@ package simulator.factories;
 
 import org.json.JSONObject;
 import simulator.misc.Vector2D;
-import simulator.model.SelectFirst;
-import simulator.model.SelectionStrategy;
-import simulator.model.Animal;
-import simulator.model.Sheep;
+import simulator.model.*;
 
 /**
  * Builder for the Sheep class object.
@@ -23,10 +20,15 @@ public class SheepBuilder extends Builder{
         SelectionStrategy mateStrategy = mateStrategyData != null ? _strategy.create_instance(mateStrategyData) : new SelectFirst();
 
         JSONObject dangerStrategyData = data.optJSONObject("danger_strategy");
-        SelectionStrategy dangerStrategy = dangerStrategyData != null ? _strategy.create_instance(dangerStrategyData) : new SelectFirst();
+        SelectionStrategy dangerStrategy = dangerStrategyData != null ? _strategy.create_instance(dangerStrategyData) : new SelectClosest();
 
         JSONObject posData = data.optJSONObject("pos");
-        Vector2D pos = posData != null ? new Vector2D(posData.getJSONArray("x_range").getDouble(0), posData.getJSONArray("y_range").getDouble(0)) : null;
+        Vector2D pos = posData != null ? new Vector2D(
+                Vector2D.get_random_vector(
+                        posData.getJSONArray("x_range").getDouble(0),
+                        posData.getJSONArray("x_range").getDouble(1),
+                        posData.getJSONArray("y_range").getDouble(0),
+                        posData.getJSONArray("y_range").getDouble(1))) : null;
 
         return new Sheep(mateStrategy, dangerStrategy, pos);
     }

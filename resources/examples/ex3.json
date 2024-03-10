@@ -60,7 +60,7 @@
       }
     }
   }, {
-    "amount" : 30,
+    "amount" : 1,
     "spec" : {
       "type" : "wolf",
       "data" : { }

@@ -5,7 +5,6 @@ import simulator.misc.Utils;
 public class DynamicSupplyRegion extends Region implements RegionInfo {
     private double _food;
     private double _growthRate;
-    private int n = getHerbivorousSize();
 
     public DynamicSupplyRegion(double food, double growthRate) {
         this._food = food;
@@ -13,6 +12,8 @@ public class DynamicSupplyRegion extends Region implements RegionInfo {
     }
 
     public double get_food(Animal a, double dt) {
+        int n = getHerbivorousSize();
+
         if (a._diet == Diet.CARNIVORE) {
             return 0.0;
         } else {
