@@ -26,10 +26,13 @@ public abstract class Animal implements Entity, AnimalInfo, Constants{
 
     protected Animal(String genetic_code, Diet diet, double sight_range, double init_speed, SelectionStrategy mate_strategy, Vector2D pos) {
         // Check for null or empty genetic_code, sight_range and init_speed are positive, and mate_strategy is not null
-        if (genetic_code == null || genetic_code.isEmpty() || sight_range <= 0 || init_speed <= 0 || mate_strategy == null) {
+        if (genetic_code == null || genetic_code.isEmpty() || sight_range <= 0 || init_speed <= 0 ) {
             throw new IllegalArgumentException("Invalid parameters");
         }
 
+        if(mate_strategy == null){
+            mate_strategy = new SelectFirst();
+        }
         // Assign values to attributes
         _genetic_code = genetic_code;
         _diet = diet;
@@ -189,6 +192,9 @@ public abstract class Animal implements Entity, AnimalInfo, Constants{
 
 
     public Animal searchForMate(AnimalMapView reg_mngr, SelectionStrategy strategy) {
+        if (strategy == null) {
+            strategy = new SelectFirst();
+        }
         Predicate<Animal> filter = a -> a.get_genetic_code().equals(this._genetic_code) && !a.is_pregnant() && a.get_state() == State.MATE && a != this;
 
         List<Animal> animalsInRange = reg_mngr.get_animals_in_range(this, filter);

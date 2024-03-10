@@ -98,17 +98,25 @@ public class RegionManager implements AnimalMapView {
         int col = (int) a.get_position().getX() / _region_width; // and the position has methods to get x and y coordinates
 
         // Check if the row and col are within the valid range
-        if (row >= 0 && row < _rows && col >= 0 && col < _cols) {
-            // Get the region at the specified row and column
-            Region r = _regions[col][row];
-            // Add the animal to the region
-            r.add_animal(a);
-            // Update the _animal_region map
-            _animal_region.put(a, r);
-        } else {
-            // Throw an exception if the row or col are out of range
-            throw new IllegalArgumentException("Animal's position is out of range.");
+        if(row < 0 ){
+            row = 0;
         }
+        else if (row >= _rows){
+            row = _rows - 1;
+        }
+        if(col < 0){
+            col = 0;
+        }
+        else if(col >= _cols){
+            col = _cols - 1;
+        }
+        // Get the region at the specified row and column
+        Region r = _regions[col][row];
+        // Add the animal to the region
+        r.add_animal(a);
+        // Update the _animal_region map
+        _animal_region.put(a, r);
+
     }
 
     public void unregister_animal(Animal a) {
@@ -172,13 +180,13 @@ public class RegionManager implements AnimalMapView {
         int row_mn = (int) (Math.max(0, row - sight_range) / _region_height);
 
         if (col_mx >= _cols){
-            col_mx = _cols - 1;
+            col_mx = _cols - 2;
         }
         else if(col_mn < 0){
             col_mn = 0;
         }
         else if(row_mx >= _rows){
-            row_mx = _rows - 1;
+            row_mx = _rows - 2;
         }
         else if(row_mn < 0 || row_mn >= _rows){
             row_mn = 0;
@@ -187,7 +195,8 @@ public class RegionManager implements AnimalMapView {
         for (int f = row_mn; f < row_mx; f++) {
             for (int c = col_mn; c < col_mx; c++) {
                 Region reg = _regions[c][f];
-                for (Animal animal : reg.getAnimals()) {
+                for (int i = 0; reg.animals.size() > i; i++) {
+                    Animal animal = reg.animals.get(i);
                     if (filter.test(animal)) {
                         animals_in_range.add(animal);
                     }

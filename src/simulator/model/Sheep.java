@@ -15,6 +15,9 @@ public class Sheep extends Animal {
         super("Sheep", Diet.HERBIVORE, _sightrangeConst, _speedConst, mate_strategy, pos);
         this._mate_strategy = mate_strategy;
         this._danger_strategy = danger_strategy;
+        if (_danger_strategy == null) {
+            this._danger_strategy = new SelectClosest();
+        }
         this._danger_source = null;
     }
 
@@ -52,9 +55,6 @@ public class Sheep extends Animal {
 
         State state = this.get_state();
         if (state != State.DEAD){
-            if(_energy <= 50.0){
-                System.out.println("Sheep energy: " + _energy);
-            }
             _energy += this._region_mngr.get_food(this,dt);
             checkEnergy();
         }
