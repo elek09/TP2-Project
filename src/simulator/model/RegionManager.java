@@ -101,10 +101,8 @@ public class RegionManager implements AnimalMapView {
         if (row >= 0 && row < _rows && col >= 0 && col < _cols) {
             // Get the region at the specified row and column
             Region r = _regions[col][row];
-
             // Add the animal to the region
             r.add_animal(a);
-
             // Update the _animal_region map
             _animal_region.put(a, r);
         } else {

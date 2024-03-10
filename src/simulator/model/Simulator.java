@@ -30,8 +30,10 @@ public class Simulator implements JSONable {
     }
 
     public void set_region(int row, int col, JSONObject r_json) {
-        Region region = regionsFactory.createInstance(r_json);
-        set_region(row, col, region);
+        if(r_json == null) {
+            Region region = regionsFactory.createInstance(r_json);
+            set_region(row, col, region);
+        }
     }
 
     private void add_animal(Animal a) {
