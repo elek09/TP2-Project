@@ -25,9 +25,9 @@ public abstract class Animal implements Entity, AnimalInfo, Constants{
     protected SelectionStrategy _mate_strategy;
 
     protected Animal(String genetic_code, Diet diet, double sight_range, double init_speed, SelectionStrategy mate_strategy, Vector2D pos) {
-        // Check for null or empty genetic_code
+        // Check for null or empty genetic_code, sight_range and init_speed are positive, and mate_strategy is not null
         if (genetic_code == null || genetic_code.isEmpty() || sight_range <= 0 || init_speed <= 0 || mate_strategy == null) {
-            throw new IllegalArgumentException("Genetic code cannot be null or empty");
+            throw new IllegalArgumentException("Invalid parameters");
         }
 
         // Assign values to attributes

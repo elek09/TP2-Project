@@ -66,7 +66,7 @@ public class Sheep extends Animal {
         if (_pos.distanceTo(_dest) < distanceDest) {
             _dest = new Vector2D(Math.random() * _region_mngr.get_width(), Math.random() * _region_mngr.get_height());
         }
-        move(_speed * dt * Math.exp((this._energy - _maxenergy) * _movefactor));
+        move(_speed * dt * Math.exp((_energy - _maxenergy) * _movefactor));
         _age += dt;
 
         //Energy reduction always between 0 and 100

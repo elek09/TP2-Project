@@ -9,18 +9,15 @@ import simulator.model.*;
  */
 public class WolfBuilder extends Builder{
     private SelectionStrategy _strategy;
+    private SelectionStrategy mateStrategy;
+    private SelectionStrategy huntStrategy;
     public WolfBuilder(SelectionStrategy strategy) {
         super("wolf", "Creates a wolf with the specified position and strategies.");
         _strategy = strategy;
     }
     @Override
     protected Animal create_instance(JSONObject data) throws IllegalArgumentException{
-        JSONObject mateStrategyData = data.optJSONObject("mate_strategy");
-        SelectionStrategy mateStrategy = mateStrategyData != null ? _strategy.create_instance(mateStrategyData) : new SelectFirst();
-
-        JSONObject huntStrategyData = data.optJSONObject("hunt_strategy");
-        SelectionStrategy huntStrategy = huntStrategyData != null ? _strategy.create_instance(huntStrategyData) : new SelectClosest();
-
+        fill_in_data(data);
         JSONObject posData = data.optJSONObject("pos");
         Vector2D pos = posData != null ? new Vector2D(
                 Vector2D.get_random_vector(
@@ -30,5 +27,14 @@ public class WolfBuilder extends Builder{
                         posData.getJSONArray("y_range").getDouble(1))) : null;
 
         return new Wolf(mateStrategy, huntStrategy, pos);
+    }
+    @Override
+    protected void fill_in_data(JSONObject o) {
+        JSONObject mateStrategyData = o.optJSONObject("mate_strategy");
+        mateStrategy = mateStrategyData != null ? _strategy.create_instance(mateStrategyData) : new SelectFirst();
+
+        JSONObject dangerStrategyData = o.optJSONObject("danger_strategy");
+        huntStrategy = dangerStrategyData != null ? _strategy.create_instance(dangerStrategyData) : new SelectClosest();
+
     }
 }

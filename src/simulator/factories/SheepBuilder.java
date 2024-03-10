@@ -9,6 +9,8 @@ import simulator.model.*;
  */
 public class SheepBuilder extends Builder{
     private SelectionStrategy _strategy;
+    private SelectionStrategy mateStrategy;
+    private SelectionStrategy dangerStrategy;
     public SheepBuilder(SelectionStrategy strategy) {
         super("sheep", "Creates a Sheep instance.");
         _strategy = strategy;
@@ -16,12 +18,7 @@ public class SheepBuilder extends Builder{
 
     @Override
     protected Animal create_instance(JSONObject data) throws IllegalArgumentException{
-        JSONObject mateStrategyData = data.optJSONObject("mate_strategy");
-        SelectionStrategy mateStrategy = mateStrategyData != null ? _strategy.create_instance(mateStrategyData) : new SelectFirst();
-
-        JSONObject dangerStrategyData = data.optJSONObject("danger_strategy");
-        SelectionStrategy dangerStrategy = dangerStrategyData != null ? _strategy.create_instance(dangerStrategyData) : new SelectClosest();
-
+        fill_in_data(data);
         JSONObject posData = data.optJSONObject("pos");
         Vector2D pos = posData != null ? new Vector2D(
                 Vector2D.get_random_vector(
@@ -31,5 +28,14 @@ public class SheepBuilder extends Builder{
                         posData.getJSONArray("y_range").getDouble(1))) : null;
 
         return new Sheep(mateStrategy, dangerStrategy, pos);
+    }
+    @Override
+    protected void fill_in_data(JSONObject o) {
+        JSONObject mateStrategyData = o.optJSONObject("mate_strategy");
+        mateStrategy = mateStrategyData != null ? _strategy.create_instance(mateStrategyData) : new SelectFirst();
+
+        JSONObject dangerStrategyData = o.optJSONObject("danger_strategy");
+        dangerStrategy = dangerStrategyData != null ? _strategy.create_instance(dangerStrategyData) : new SelectClosest();
+
     }
 }
