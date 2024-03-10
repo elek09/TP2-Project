@@ -4,6 +4,11 @@ import org.json.JSONObject;
 
 import java.util.*;
 
+/**
+ * Factory class for creating instances of a specific type.
+ *
+ * @param <T> Type of object to create
+ */
 public class BuilderBasedFactory<T> implements Factory<T> {
     private final Map<String, Builder<T>> _builders;
     private final List<JSONObject> _builders_info;
@@ -12,12 +17,24 @@ public class BuilderBasedFactory<T> implements Factory<T> {
         _builders = new HashMap<String, Builder<T>>();
         _builders_info = new LinkedList<JSONObject>();
     }
+
+    /**
+     * Creates a new factory with the provided builders.
+     *
+     * @param builders
+     */
     public BuilderBasedFactory(List<Builder<T>> builders) {
         this();
         for (Builder<T> b : builders) {
             add_builder(b);
         }
     }
+
+    /**
+     * Adds a new builder to the factory.
+     *
+     * @param b
+     */
     public void add_builder(Builder<T> b) {
         // add an entry "b.getTag() |-> b" to _builders
         _builders.put(b.get_type_tag(), b);
@@ -25,6 +42,14 @@ public class BuilderBasedFactory<T> implements Factory<T> {
         // add b.get_info() to _builders_info
         _builders_info.add(b.get_info());
     }
+
+    /**
+     * Creates an instance of the specified type using the provided info.
+     *
+     * @param info JSON object containing the type and data for the instance creation
+     * @return Instance of type T
+     * @throws IllegalArgumentException
+     */
     @Override
     public T createInstance(JSONObject info) throws IllegalArgumentException {
         if (info == null)
@@ -48,9 +73,14 @@ public class BuilderBasedFactory<T> implements Factory<T> {
         }
 
         // If no builder is found or the result is null, throw an exception
-        throw new IllegalArgumentException("Unrecognized 'info':" + info.toString());
+        throw new IllegalArgumentException("Unrecognized 'info':" + info);
     }
 
+    /**
+     * Retrieves information about the builders in this factory.
+     *
+     * @return List of JSON objects containing builder information
+     */
     @Override
     public List<JSONObject> get_info() {
         return Collections.unmodifiableList(_builders_info);

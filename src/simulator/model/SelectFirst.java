@@ -2,13 +2,15 @@ package simulator.model;
 
 import org.json.JSONObject;
 
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
-public class SelectFirst implements SelectionStrategy{
+/**
+ * Selects the first animal in the list
+ */
+public class SelectFirst implements SelectionStrategy {
     @Override
     public Animal select(Animal a, List<Animal> as) {
-        if(as.isEmpty())
+        if (as.isEmpty())
             return null;
 
         return as.getFirst();

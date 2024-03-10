@@ -6,7 +6,7 @@ import simulator.model.SelectFirst;
 /**
  * Builder for the SelectFirstBuilder class object.
  */
-public class SelectFirstBuilder extends Builder{
+public class SelectFirstBuilder extends Builder {
     public SelectFirstBuilder() {
         super("first", "Creates a SelectFirst strategy.");
     }
