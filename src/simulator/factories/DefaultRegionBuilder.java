@@ -6,7 +6,7 @@ import simulator.model.DefaultRegion;
 /**
  * Builder for the DefaultRegion class object.
  */
-public class DefaultRegionBuilder extends Builder{
+public class DefaultRegionBuilder extends Builder {
     public DefaultRegionBuilder() {
         super("default", "Creates a default region with the specified food capacity.");
     }

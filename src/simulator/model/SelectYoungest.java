@@ -4,11 +4,14 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class SelectYoungest implements SelectionStrategy{
+/**
+ * Interface for selection strategies
+ */
+public class SelectYoungest implements SelectionStrategy {
     @Override
     public Animal select(Animal a, List<Animal> as) {
-         if(as.isEmpty())
-             return null;
+        if (as.isEmpty())
+            return null;
 
         Animal youngest = as.getFirst();
         for (Animal animal : as) {

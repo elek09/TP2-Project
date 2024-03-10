@@ -7,17 +7,25 @@ import simulator.model.*;
 /**
  * Builder for the Sheep class object.
  */
-public class SheepBuilder extends Builder{
-    private SelectionStrategy _strategy;
+public class SheepBuilder extends Builder {
+    private final SelectionStrategy _strategy;
     private SelectionStrategy mateStrategy;
     private SelectionStrategy dangerStrategy;
+
     public SheepBuilder(SelectionStrategy strategy) {
         super("sheep", "Creates a Sheep instance.");
         _strategy = strategy;
     }
 
+    /**
+     * Creates a new Sheep instance.
+     *
+     * @param data JSON object containing data for the instance creation
+     * @return a new Sheep instance
+     * @throws IllegalArgumentException if the data is invalid
+     */
     @Override
-    protected Animal create_instance(JSONObject data) throws IllegalArgumentException{
+    protected Animal create_instance(JSONObject data) throws IllegalArgumentException {
         fill_in_data(data);
         JSONObject posData = data.optJSONObject("pos");
         Vector2D pos = posData != null ? new Vector2D(
@@ -29,6 +37,12 @@ public class SheepBuilder extends Builder{
 
         return new Sheep(mateStrategy, dangerStrategy, pos);
     }
+
+    /**
+     * Fills in additional data into the provided JSON object.
+     *
+     * @param o JSON object to fill in data
+     */
     @Override
     protected void fill_in_data(JSONObject o) {
         JSONObject mateStrategyData = o.optJSONObject("mate_strategy");

@@ -1,4 +1,4 @@
 package simulator.model;
 
-public interface RegionInfo extends JSONable{
+public interface RegionInfo extends JSONable {
 }

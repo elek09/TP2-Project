@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class RegionManager implements AnimalMapView {
     private final int _rows;
@@ -19,9 +18,17 @@ public class RegionManager implements AnimalMapView {
     private final int _height;
     private final int _region_width;
     private final int _region_height;
-    private Region[][] _regions;
-    private Map<Animal, Region> _animal_region;
+    private final Region[][] _regions;
+    private final Map<Animal, Region> _animal_region;
 
+    /**
+     * Constructs a region manager with the specified parameters.
+     *
+     * @param cols   Number of columns
+     * @param rows   Number of rows
+     * @param width  Total width of the region
+     * @param height Total height of the region
+     */
     public RegionManager(int cols, int rows, int width, int height) {
         this._rows = rows;
         this._cols = cols;
@@ -65,6 +72,15 @@ public class RegionManager implements AnimalMapView {
         return _region_height;
     }
 
+    /**
+     * Sets the region at the specified row and column to the given region.
+     * Moves animals from the current region to the new region if applicable.
+     *
+     * @param row The row index
+     * @param col The column index
+     * @param r   The region to set
+     * @throws IllegalArgumentException if the row or col are out of range
+     */
     public void set_region(int row, int col, Region r) {
         // Check if the row and col are within the valid range
         if (row >= 0 && row < _rows && col >= 0 && col < _cols) {
@@ -90,24 +106,29 @@ public class RegionManager implements AnimalMapView {
         }
     }
 
-
+    /**
+     * Registers an animal within the region manager.
+     *
+     * @param a The animal to register
+     */
     public void register_animal(Animal a) {
+        if (a == null) {
+            return;
+        }
         a.init(this);
         // Calculate the row and column of the region based on the animal's position
         int row = (int) a.get_position().getY() / _region_height; // Assuming you have a method in Animal to get its position
         int col = (int) a.get_position().getX() / _region_width; // and the position has methods to get x and y coordinates
 
         // Check if the row and col are within the valid range
-        if(row < 0 ){
+        if (row < 0) {
             row = 0;
-        }
-        else if (row >= _rows){
+        } else if (row >= _rows) {
             row = _rows - 1;
         }
-        if(col < 0){
+        if (col < 0) {
             col = 0;
-        }
-        else if(col >= _cols){
+        } else if (col >= _cols) {
             col = _cols - 1;
         }
         // Get the region at the specified row and column
@@ -119,6 +140,11 @@ public class RegionManager implements AnimalMapView {
 
     }
 
+    /**
+     * Unregisters an animal from the region manager.
+     *
+     * @param a The animal to unregister
+     */
     public void unregister_animal(Animal a) {
         Region reg = _animal_region.get(a);
 
@@ -128,6 +154,11 @@ public class RegionManager implements AnimalMapView {
         _animal_region.remove(a);
     }
 
+    /**
+     * Updates the region of the specified animal based on its position.
+     *
+     * @param a The animal to update
+     */
     public void update_animal_region(Animal a) {
         double x = a.get_position().getX();
         double y = a.get_position().getY();
@@ -137,28 +168,39 @@ public class RegionManager implements AnimalMapView {
         Region regCurrent = _animal_region.get(a);
         Region regNew = _regions[col][row];
 
-        if(regNew != regCurrent){
-            if(regCurrent != null){
+        if (regNew != regCurrent) {
+            if (regCurrent != null) {
                 regCurrent.remove_animal(a);
             }
-            if(regNew != null){
+            if (regNew != null) {
                 regNew.add_animal(a);
                 _animal_region.put(a, regNew);
             }
         }
     }
 
-
+    /**
+     * Gets the food available to the specified animal in its current region.
+     *
+     * @param a  The animal
+     * @param dt The time interval
+     * @return The amount of food available
+     */
     public double get_food(Animal a, double dt) {
         Region reg = _animal_region.get(a);
         double food = 0;
-        if (reg != null){
+        if (reg != null) {
             food = reg.get_food(a, dt);
 
         }
         return food;
     }
 
+    /**
+     * Updates all regions within the region manager.
+     *
+     * @param dt The time interval
+     */
     void update_all_regions(double dt) {
         for (int i = 0; i < _cols; i++) {
             for (int j = 0; j < _rows; j++) {
@@ -166,6 +208,14 @@ public class RegionManager implements AnimalMapView {
             }
         }
     }
+
+    /**
+     * Retrieves a list of animals within the specified range of the given animal position, filtered by the provided predicate.
+     *
+     * @param a      The reference animal.
+     * @param filter The predicate used to filter the animals.
+     * @return A list of animals within the specified range and satisfying the filter predicate.
+     */
     @Override
     public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter) {
         List<Animal> animals_in_range = new ArrayList<>();
@@ -179,16 +229,13 @@ public class RegionManager implements AnimalMapView {
         int row_mx = (int) (Math.max(0, row + sight_range) / _region_height);
         int row_mn = (int) (Math.max(0, row - sight_range) / _region_height);
 
-        if (col_mx >= _cols){
+        if (col_mx >= _cols) {
             col_mx = _cols - 2;
-        }
-        else if(col_mn < 0){
+        } else if (col_mn < 0) {
             col_mn = 0;
-        }
-        else if(row_mx >= _rows){
+        } else if (row_mx >= _rows) {
             row_mx = _rows - 2;
-        }
-        else if(row_mn < 0 || row_mn >= _rows){
+        } else if (row_mn < 0 || row_mn >= _rows) {
             row_mn = 0;
         }
 
@@ -205,10 +252,13 @@ public class RegionManager implements AnimalMapView {
             }
         }
         return animals_in_range;
-}
+    }
 
-
-
+    /**
+     * Generates a JSON representation of the region manager and its regions.
+     *
+     * @return A JSON object representing the region manager and its regions.
+     */
     public JSONObject as_JSON() {
         JSONObject json = new JSONObject();
         JSONArray regions = new JSONArray();
