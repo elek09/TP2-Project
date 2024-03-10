@@ -4,7 +4,7 @@
   "cols" : 20,
   "rows" : 15,
   "animals" : [ {
-    "amount" : 3,
+    "amount" : 1,
     "spec" : {
       "type" : "sheep",
       "data" :{
@@ -15,10 +15,15 @@
       }
     }
   }, {
-    "amount" : 1,
+    "amount" : 3,
     "spec" : {
       "type" : "wolf",
-      "data" : { }
+      "data" : {
+        "pos" : {
+          "x_range" : [ 100.0, 200.0 ],
+          "y_range" : [ 450.0, 550.0 ]
+        }
+      }
     }
   } ]
 }

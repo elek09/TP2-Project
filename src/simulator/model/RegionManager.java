@@ -31,7 +31,7 @@ public class RegionManager implements AnimalMapView {
         this._region_width = width / cols;
         this._region_height = height / rows;
         this._animal_region = new HashMap<Animal, Region>();
-        //and initialises the _animal_region attribute .        //dont know how to do it    page 13
+
 
         for (int i = 0; i < _rows; i++) {
             for (int j = 0; j < _cols; j++) {
