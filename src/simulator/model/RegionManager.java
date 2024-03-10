@@ -2,6 +2,7 @@ package simulator.model;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 
 import java.util.ArrayList;
@@ -113,78 +114,42 @@ public class RegionManager implements AnimalMapView {
     }
 
     public void unregister_animal(Animal a) {
-        // Calculate the row and column of the region based on the animal's position
-        // Cast to int is needed because in Animal, position is a Vector2D and getX and getY return double (?).
-        int row = (int) a.get_position().getY() / _region_height;
-        int col = (int) a.get_position().getX() / _region_width;
+        Region reg = _animal_region.get(a);
 
-        // Check if the row and col are within the valid range
-        if (row >= 0 && row < _rows && col >= 0 && col < _cols) {
-            // Get the region at the specified row and column
-            Region r = _regions[row][col];
-
-            // Remove the animal from the region
-            r.remove_animal(a);
-
-            // Update the _animal_region map
-            _animal_region.remove(a, r);
-        } else {
-            // Throw an exception if the row or col are out of range
-            throw new IllegalArgumentException("Animal's position is out of range.");
+        if (reg != null) {
+            reg.remove_animal(a);
         }
+        _animal_region.remove(a);
     }
 
     public void update_animal_region(Animal a) {
-        // Calculate the row and column of the region based on the animal's position
-        int row = (int) a.get_position().getY() / _region_height;
-        int col = (int) a.get_position().getX() / _region_width;
+        double x = a.get_position().getX();
+        double y = a.get_position().getY();
 
-        // Check if the row and col are within the valid range
-        if (row >= 0 && row < _rows && col >= 0 && col < _cols) {
-            // Get the region at the specified row and column
-            Region r = _regions[row][col];
+        int row = (int) Utils.constrain_value_in_range(y / _region_height, 0, _rows - 1);
+        int col = (int) Utils.constrain_value_in_range(x / _region_width, 0, _cols - 1);
+        Region regCurrent = _animal_region.get(a);
+        Region regNew = _regions[row][col];
 
-            // Get the current region of the animal
-            Region currentRegion = _animal_region.get(a);
-
-            // If the animal has moved to a different region
-            if (!r.equals(currentRegion)) {
-                // Remove the animal from the current region if it's not null
-                if(currentRegion != null){
-                    currentRegion.remove_animal(a);
-                }
-                if(r != null){
-                    // Add the animal to the new region
-                    r.add_animal(a);
-                    // Update the _animal_region map
-                    _animal_region.put(a, r);
-                }
-
+        if(regNew != regCurrent){
+            if(regCurrent != null){
+                regCurrent.remove_animal(a);
             }
-        } else {
-            // Throw an exception if the row or col are out of range
-            throw new IllegalArgumentException("Animal's position is out of range.");
+            if(regNew != null){
+                regNew.add_animal(a);
+                _animal_region.put(a, regNew);
+            }
         }
-
     }
 
 
     public double get_food(Animal a, double dt) {
-        // Calculate the row and column of the region based on the animal's position
-        int row = (int) a.get_position().getY() / _region_height;
-        int col = (int) a.get_position().getX() / _region_width;
+        Region reg = _animal_region.get(a);
+        if (reg != null){
+            reg.get_food(a, dt);
 
-        // Check if the row and col are within the valid range
-        if (row >= 0 && row < _rows && col >= 0 && col < _cols) {
-            // Get the region at the specified row and column
-            Region r = _regions[row][col];
-
-            // Get the food from the region
-            return r.get_food(a, dt);
-        } else {
-            // Throw an exception if the row or col are out of range
-            throw new IllegalArgumentException("Animal's position is out of range.");
         }
+        return 0;
     }
 
     void update_all_regions(double dt) {
@@ -232,10 +197,23 @@ public class RegionManager implements AnimalMapView {
         double row = pos.getX();
         double col = pos.getY();
 
-        int col_mx = (int) (Math.max(0, col + sight_range) / _width);
-        int col_mn = (int) (Math.max(0, col - sight_range) / _width);
-        int row_mx = (int) (Math.max(0, row + sight_range) / _height);
-        int row_mn = (int) (Math.max(0, row - sight_range) / _height);
+        int col_mx = (int) (Math.max(0, col + sight_range) / _region_width);
+        int col_mn = (int) (Math.max(0, col - sight_range) / _region_width);
+        int row_mx = (int) (Math.max(0, row + sight_range) / _region_height);
+        int row_mn = (int) (Math.max(0, row - sight_range) / _region_height);
+
+        if (col_mx >= _cols){
+            col_mx = _cols - 1;
+        }
+        else if(col_mn < 0){
+            col_mn = 0;
+        }
+        else if(row_mx >= _rows){
+            row_mx = _rows - 1;
+        }
+        else if(row_mn < 0 || row_mn >= _rows){
+            row_mn = 0;
+        }
 
         for (int f = row_mn; f < row_mx; f++) {
             for (int c = col_mn; c < col_mx; c++) {

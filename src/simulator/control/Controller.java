@@ -48,7 +48,7 @@ public class Controller {
         JSONObject final_state;
         SimpleObjectViewer view = null;
         if (sv) {
-            RegionManager m =  _sim.get_map_info();
+            MapInfo m =  _sim.get_map_info();
             view = new SimpleObjectViewer("ECOSYSTEM", m.get_width(), m.get_height(), m.get_cols(), m.get_rows());
             view.update(to_animals_info(_sim.getAnimals()), _sim.get_time(), dt);
 
@@ -65,9 +65,14 @@ public class Controller {
         output.put("in", init_state);
         output.put("out", final_state);
 
+        try {
+            out.write(output.toString(2).getBytes());
+        } catch (Exception e) {
+            System.err.println("Error while writing the output file: " + e.getLocalizedMessage());
+        }
 
-
-
+        if(sv)
+            view.close();
     }
     private List<ObjInfo> to_animals_info(List<? extends AnimalInfo> animals) {
         List<ObjInfo> ol = new ArrayList<>(animals.size());

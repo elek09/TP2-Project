@@ -50,12 +50,13 @@ public class Main {
 
 	// default values for some parameters
 	//
-	private final static Double _default_time = 60.0; // in seconds
-	private final static Double _default_dt = 0.03;
+	private final static Double _default_time = 10.0; // in seconds
+	private final static Double _default_dt = 1.0;
 
 	// some attributes to stores values corresponding to command-line parameters
 	//
 	private static Double _time = 0.0;
+	private static Double _dt = 0.0;
 
 	private static String _in_file = null;
 	private static String _out_file = null;
@@ -112,12 +113,12 @@ public class Main {
 		// steps
 		cmdLineOptions.addOption(Option.builder("t").longOpt("time").hasArg()
 				.desc("An real number representing the total simulation time in seconds. Default value: "
-						+ _default_time + ".")
+						+ _time + ".")
 				.build());
 
 		cmdLineOptions.addOption(Option.builder("dt").longOpt("delta time").hasArg()
 				.desc("A double representing actual time, in seconds, per simulation step. Default value: "
-						+ _default_dt + ".")
+						+ _dt + ".")
 				.build());
 
 		cmdLineOptions.addOption(Option.builder("sv").longOpt("simple-viewer").desc("Show the viewer window in console mode.").build());
@@ -126,9 +127,9 @@ public class Main {
 		return cmdLineOptions;
 	}
 	private static void parse_dtime_option(CommandLine line) throws ParseException {
-		String dt = line.getOptionValue("dt", _default_dt.toString());
+		String dt = line.getOptionValue("dt", _dt.toString());
 		try {
-			_time = Double.parseDouble(dt);
+			_dt = Double.parseDouble(dt);
 			assert (_time >= 0);
 		} catch (Exception e) {
 			throw new ParseException("Invalid value for time: " + dt);
@@ -180,7 +181,7 @@ public class Main {
 
 		try{
 			//SelectionStrategy strategy = selection_strategy_factory.createInstance(load_JSON_file(_in_file));
-			SelectionStrategy strategy = new SelectFirst();
+			SelectionStrategy strategy = new SelectClosest();
 			SelectionStrategy mate_strategy = new SelectYoungest();
 
 
@@ -229,7 +230,7 @@ public class Main {
 			controller.load_data(inputJson);
 
 			// (6) Call the run method with the corresponding parameters
-			controller.run(_default_time, _default_dt, _sv, outputFile);
+			controller.run(_time, _dt, _sv, outputFile);
 
 			// (7) Close the output file
 			outputFile.close();

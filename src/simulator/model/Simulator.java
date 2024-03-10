@@ -67,28 +67,26 @@ public class Simulator implements JSONable {
     public void advance(double dt) {
         currentTime += dt;
         //probably better to use the functions what we wrote for this like unregister_animal thats why i modified below, but we can discuss it
-        for (Animal animal : animals) {
+        for(int i = 0; i < animals.size(); i++){
+            Animal animal = animals.get(i);
             if (animal.get_state() == State.DEAD) {
+                animals.remove(animal);
                 regionManager.unregister_animal(animal);
             }
-        }
-
-        // 3. For each animal: call its update(dt) and then ask the region manager to update its current region status.
-        for (Animal animal : animals) {
-            animal.update(dt);
-            regionManager.update_animal_region(animal);
+            else{
+                animal.update(dt);
+                regionManager.update_animal_region(animal);
+                if (animal.is_pregnant()) {
+                    Animal baby = animal.deliver_baby();
+                    add_animal(baby);
+                }
+            }
         }
 
         // Ask the region manager to update all regions.
         regionManager.update_all_regions(dt);
 
-        // Check for pregnancy and add babies
-        for (Animal animal : animals) {
-            if (animal.is_pregnant()) {
-                Animal baby = animal.deliver_baby();
-                add_animal(baby);
-            }
-        }
+
     }
 
     @Override
