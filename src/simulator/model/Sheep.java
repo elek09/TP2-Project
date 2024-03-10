@@ -52,6 +52,9 @@ public class Sheep extends Animal {
 
         State state = this.get_state();
         if (state != State.DEAD){
+            if(_energy <= 50.0){
+                System.out.println("Sheep energy: " + _energy);
+            }
             _energy += this._region_mngr.get_food(this,dt);
             checkEnergy();
         }
@@ -76,14 +79,13 @@ public class Sheep extends Animal {
 
         if (this._danger_source == null) {
             _danger_source = searchForDanger(_region_mngr, this._danger_strategy);
-            if(this._desire > 65.0){
+            if(this._danger_source != null ){
+                this._state = State.DANGER;
+            }
+            else if(this._desire > 65.0){
                 this._state = State.MATE;
             }
         }
-        else {
-            this._state = State.DANGER;
-        }
-
     }
 
 
@@ -121,11 +123,14 @@ public class Sheep extends Animal {
     private void updateAsMate(double dt) {
         if (this._mate_target != null && (this._state == State.DEAD || this._sight_range < _pos.distanceTo(_mate_target.get_position()))) {
             this._mate_target = null;
-        } else if (this._mate_target == null) {
-            _mate_target=searchForMate(_region_mngr, this._mate_strategy);
-            if  (_mate_target == null) {
+        }
+        if (this._mate_target == null) {
+            _mate_target = searchForMate(_region_mngr, this._mate_strategy);
+            if (_mate_target == null) {
                 updateAsNormal(dt);
-            } else {
+            }
+        }
+        if(this._mate_target != null) {
                 _dest = _mate_target.get_position();
                 move(_speedFactorSheep * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
                 this._age += dt;
@@ -137,7 +142,7 @@ public class Sheep extends Animal {
                 this._desire += _desirereductionSheep * dt;
                 checkDesire();
 
-                if (this._pos.distanceTo(_mate_target.get_position()) < 8.0) {
+                if (this._pos.distanceTo(_mate_target.get_position()) < distanceDest) {
                     this.setDesire(0);
                     this._mate_target.setDesire(0);
                     if (!is_pregnant() && Math.random() < _createBaby) {
@@ -146,9 +151,9 @@ public class Sheep extends Animal {
                     _mate_target = null;
                 }
             }
-        }
+
         if (this._danger_source == null){
-            _danger_source=searchForDanger(_region_mngr, this._danger_strategy);
+            _danger_source = searchForDanger(_region_mngr, this._danger_strategy);
         }
         if (this._danger_source != null){
             _state = State.DANGER;
@@ -157,8 +162,8 @@ public class Sheep extends Animal {
             this._state = State.NORMAL;
         }
     }
-
-
-
-
 }
+
+
+
+

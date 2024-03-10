@@ -27,14 +27,14 @@ public class RegionManager implements AnimalMapView {
         this._cols = cols;
         this._width = width;
         this._height = height;
-        this._regions = new DefaultRegion[_rows][_cols];
+        this._regions = new DefaultRegion[_cols][_rows];
         this._region_width = width / cols;
         this._region_height = height / rows;
         this._animal_region = new HashMap<Animal, Region>();
 
 
-        for (int i = 0; i < _rows; i++) {
-            for (int j = 0; j < _cols; j++) {
+        for (int i = 0; i < _cols; i++) {
+            for (int j = 0; j < _rows; j++) {
                 _regions[i][j] = new DefaultRegion();
             }
         }
@@ -69,7 +69,7 @@ public class RegionManager implements AnimalMapView {
         // Check if the row and col are within the valid range
         if (row >= 0 && row < _rows && col >= 0 && col < _cols) {
             // Get the current region at the specified row and column
-            Region currentRegion = _regions[row][col];
+            Region currentRegion = _regions[col][row];
 
             // Add all the animals from the current region to the new region
             for (Map.Entry<Animal, Region> entry : _animal_region.entrySet()) {
@@ -83,7 +83,7 @@ public class RegionManager implements AnimalMapView {
             }
 
             // Set the region at the specified row and column to the new region
-            _regions[row][col] = r;
+            _regions[col][row] = r;
         } else {
             // Throw an exception if the row or col are out of range
             throw new IllegalArgumentException("Row or column out of range.");
@@ -100,7 +100,7 @@ public class RegionManager implements AnimalMapView {
         // Check if the row and col are within the valid range
         if (row >= 0 && row < _rows && col >= 0 && col < _cols) {
             // Get the region at the specified row and column
-            Region r = _regions[row][col];
+            Region r = _regions[col][row];
 
             // Add the animal to the region
             r.add_animal(a);
@@ -129,7 +129,7 @@ public class RegionManager implements AnimalMapView {
         int row = (int) Utils.constrain_value_in_range(y / _region_height, 0, _rows - 1);
         int col = (int) Utils.constrain_value_in_range(x / _region_width, 0, _cols - 1);
         Region regCurrent = _animal_region.get(a);
-        Region regNew = _regions[row][col];
+        Region regNew = _regions[col][row];
 
         if(regNew != regCurrent){
             if(regCurrent != null){
@@ -145,57 +145,28 @@ public class RegionManager implements AnimalMapView {
 
     public double get_food(Animal a, double dt) {
         Region reg = _animal_region.get(a);
+        double food = 0;
         if (reg != null){
-            reg.get_food(a, dt);
+            food = reg.get_food(a, dt);
 
         }
-        return 0;
+        return food;
     }
 
     void update_all_regions(double dt) {
-        for (int i = 0; i < _rows; i++) {
-            for (int j = 0; j < _cols; j++) {
+        for (int i = 0; i < _cols; i++) {
+            for (int j = 0; j < _rows; j++) {
                 _regions[i][j].update(dt);
             }
         }
-    }
-
-    private boolean is_in_view(Animal a, Animal otherAnimal) {
-        Vector2D positionA = a.get_position();
-        Vector2D positionB = otherAnimal.get_position();
-
-        double distance = positionA.distanceTo(positionB);
-
-        return distance <= a.get_sight_range();
-    }
-
-    public List<Region> get_regions_in_sight(Animal a) {
-        List<Region> regionsInSight = new ArrayList<>();    //Create an empty list of regions
-        Vector2D animalPosition = a.get_position();         //Get the position of the animal
-        double sightRange = a.get_sight_range();            //Get the sight range of the animal
-
-        for (int i = 0; i < _rows; i++) {
-            for (int j = 0; j < _cols; j++) {
-                Vector2D regionPosition = new Vector2D(j * this._region_width, i * this._region_height);    //Calculate the position of the region
-
-                // Calculate the distance between the animal and the region
-                double distance = animalPosition.distanceTo(regionPosition);
-
-                if (distance <= sightRange) {
-                    regionsInSight.add(_regions[i][j]);
-                }
-            }
-        }
-
-        return regionsInSight;
     }
     @Override
     public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter) {
         List<Animal> animals_in_range = new ArrayList<>();
         Vector2D pos = a.get_position();
         double sight_range = a.get_sight_range();
-        double row = pos.getX();
-        double col = pos.getY();
+        double col = pos.getX();
+        double row = pos.getY();
 
         int col_mx = (int) (Math.max(0, col + sight_range) / _region_width);
         int col_mn = (int) (Math.max(0, col - sight_range) / _region_width);
@@ -217,7 +188,7 @@ public class RegionManager implements AnimalMapView {
 
         for (int f = row_mn; f < row_mx; f++) {
             for (int c = col_mn; c < col_mx; c++) {
-                Region reg = _regions[f][c];
+                Region reg = _regions[c][f];
                 for (Animal animal : reg.getAnimals()) {
                     if (filter.test(animal)) {
                         animals_in_range.add(animal);
@@ -226,21 +197,21 @@ public class RegionManager implements AnimalMapView {
 
             }
         }
-            return animals_in_range;
-    }
+        return animals_in_range;
+}
 
 
 
     public JSONObject as_JSON() {
         JSONObject json = new JSONObject();
         JSONArray regions = new JSONArray();
-        for (int i = 0; i < _rows; i++) {
-            for (int j = 0; j < _cols; j++) {
+        for (int i = 0; i < _cols; i++) {
+            for (int j = 0; j < _rows; j++) {
                 Region region = _regions[i][j];
                 if (region != null) {
                     JSONObject regionJson = region.as_JSON();
-                    regionJson.put("row", i);
-                    regionJson.put("col", j);
+                    regionJson.put("row", j);
+                    regionJson.put("col", i);
                     regionJson.put("data", region.as_JSON());
                     regions.put(regionJson);
                 }

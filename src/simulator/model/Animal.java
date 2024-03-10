@@ -26,18 +26,8 @@ public abstract class Animal implements Entity, AnimalInfo, Constants{
 
     protected Animal(String genetic_code, Diet diet, double sight_range, double init_speed, SelectionStrategy mate_strategy, Vector2D pos) {
         // Check for null or empty genetic_code
-        if (genetic_code == null || genetic_code.isEmpty()) {
+        if (genetic_code == null || genetic_code.isEmpty() || sight_range <= 0 || init_speed <= 0 || mate_strategy == null) {
             throw new IllegalArgumentException("Genetic code cannot be null or empty");
-        }
-
-        // Check for positive sight_range and init_speed
-        if (sight_range <= 0 || init_speed <= 0) {
-            throw new IllegalArgumentException("Sight range and initial speed must be positive");
-        }
-
-        // Check mate_strategy for null
-        if (mate_strategy == null) {
-            throw new IllegalArgumentException("Mate strategy cannot be null");
         }
 
         // Assign values to attributes
@@ -90,28 +80,28 @@ public abstract class Animal implements Entity, AnimalInfo, Constants{
     }
 
     public Vector2D adjust_position (Vector2D pos){
-        double x = pos.getX();
-        double y = pos.getY();
+        double cols = pos.getX();
+        double rows = pos.getY();
 
-        double width = _region_mngr.get_region_width();
-        double height = _region_mngr.get_region_height();
+        double width = _region_mngr.get_width();
+        double height = _region_mngr.get_height();
 
-        while (x >= width)
-            x = (x - width);
+        while (cols >= width)
+            cols = (cols - width);
 
-        while (x < 0)
-            x = (x + width);
+        while (cols < 0)
+            cols = (cols + width);
 
-        while (y >= height)
-            y = (y - height);
+        while (rows >= height)
+            rows = (rows - height);
 
-        while (y < 0)
-            y = (y + height);
+        while (rows < 0)
+            rows = (rows + height);
 
-        return new Vector2D(x, y);
+        return new Vector2D(cols, rows);
     }
     protected boolean IsOutOfMap(){
-        return this._pos.getX() < 0 || this._pos.getX() > _region_mngr.get_width() || this._pos.getY() < 0 || this._pos.getY() > _region_mngr.get_height();
+        return this._pos.getX() < 0 || this._pos.getX() > _region_mngr.get_region_width() || this._pos.getY() < 0 || this._pos.getY() > _region_mngr.get_region_height();
     }
 
     public Animal deliver_baby(){

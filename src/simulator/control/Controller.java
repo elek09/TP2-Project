@@ -23,8 +23,8 @@ public class Controller {
             {
                 for (int i = 0; i < regions.length(); i++) {
                     JSONObject regionSpec = regions.getJSONObject(i);
-                    int row = regionSpec.getInt("rows");
-                    int col = regionSpec.getInt("cols");
+                    int row = regionSpec.getInt("row");
+                    int col = regionSpec.getInt("col");
                     JSONObject spec = regionSpec.getJSONObject("spec");
                     _sim.set_region(row, col, spec);
                 }

@@ -15,8 +15,8 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo, Consta
 
     @Override
     public void update(double dt) {
-        for (Animal a : animals) {
-            a.update(dt);
+        for (int i = 0; i < animals.size(); i++) {
+            animals.get(i).update(dt);
         }
     }
     @Override
@@ -37,8 +37,8 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo, Consta
     public JSONObject as_JSON(){
         JSONObject ObjectAnimal = new JSONObject();
         JSONArray ArrayAnimals = new JSONArray();
-        for (Animal a : animals) {
-            ArrayAnimals.put(a.as_JSON());
+        for (int i = 0; i < animals.size(); i++) {
+            ArrayAnimals.put(animals.get(i).as_JSON());
         }
         ObjectAnimal.put("animals", ArrayAnimals);
         return ObjectAnimal;
@@ -46,8 +46,9 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo, Consta
 
     public int getHerbivorousSize() {
         int count = 0;
-        for (Animal a : animals) {
-            if (a.get_diet() == Diet.HERBIVORE) {
+
+        for (int i = 0; i < animals.size(); i++) {
+            if (animals.get(i).get_diet() == Diet.HERBIVORE) {
                 count++;
             }
         }

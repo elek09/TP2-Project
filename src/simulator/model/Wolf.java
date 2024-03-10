@@ -76,9 +76,11 @@ public class Wolf extends Animal{
     private void updateAsHunger(double dt) {
         if ((this._hunt_target == null) || (this._hunt_target != null && (this._hunt_target._state == State.DEAD || this._hunt_target.get_position().distanceTo(_pos) > get_sight_range()))){
             this._hunt_target = searchForHuntTarget(_region_mngr, this._hunting_strategy);
-            updateAsNormal(dt);
+            if (this._hunt_target == null) {
+                updateAsNormal(dt);
+            }
         }
-        else if (this._hunt_target != null){
+        if (this._hunt_target != null){
             _dest = _hunt_target.get_position();
             move(_speedFactorWolf * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
 
@@ -115,11 +117,13 @@ public class Wolf extends Animal{
             this._mate_target = null;
 
         }
-        if (this._mate_target == null){
-            _mate_target=searchForMate(_region_mngr, this._mate_strategy);
-            updateAsNormal(dt);
+        if (this._mate_target == null) {
+            _mate_target = searchForMate(_region_mngr, this._mate_strategy);
+            if (_mate_target == null) {
+                updateAsNormal(dt);
+            }
         }
-         else {
+        if(_mate_target != null){
                 _dest = _mate_target.get_position();
                 move(_speedFactorWolf * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
                 this._age += dt;
@@ -131,10 +135,10 @@ public class Wolf extends Animal{
                 checkDesire();
 
                 if (this._pos.distanceTo(_mate_target.get_position()) < distanceDest) {
-                    this._desire = 0.0;
-                    this._mate_target._desire = 0.0;
+                    this.setDesire(0);
+                    this._mate_target.setDesire(0);
 
-                    if (this._baby == null && Math.random() < _createBaby) {
+                    if (!is_pregnant() && Math.random() < _createBaby) {
                         this._baby = new Wolf(this, _mate_target);
                         this._energy -= _sexEnergy;
                         checkEnergy();
@@ -149,7 +153,10 @@ public class Wolf extends Animal{
                     this._state = State.NORMAL;
                 }
             }
-            }
-        }
+
+    }
+
+
+}
 
 

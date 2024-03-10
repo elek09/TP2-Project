@@ -9,10 +9,6 @@ import simulator.factories.Factory;
 
 public class Simulator implements JSONable {
 
-    private int cols;
-    private int rows;
-    private int width;
-    private int height;
     private final Factory<Animal> animalsFactory;
     private final Factory<Region> regionsFactory;
     private final RegionManager regionManager;
@@ -21,10 +17,6 @@ public class Simulator implements JSONable {
 
 
     public Simulator(int width, int height, int cols, int rows, Factory<Animal> animalsFactory, Factory<Region> regionsFactory) {
-        this.cols = cols;
-        this.rows = rows;
-        this.width = width;
-        this.height = height;
         this.animalsFactory = animalsFactory;
         this.regionsFactory = regionsFactory;
         this.regionManager = new RegionManager(cols, rows, width, height);
@@ -66,7 +58,6 @@ public class Simulator implements JSONable {
 
     public void advance(double dt) {
         currentTime += dt;
-        //probably better to use the functions what we wrote for this like unregister_animal thats why i modified below, but we can discuss it
         for(int i = 0; i < animals.size(); i++){
             Animal animal = animals.get(i);
             if (animal.get_state() == State.DEAD) {
@@ -82,11 +73,7 @@ public class Simulator implements JSONable {
                 }
             }
         }
-
-        // Ask the region manager to update all regions.
         regionManager.update_all_regions(dt);
-
-
     }
 
     @Override

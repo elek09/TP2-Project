@@ -19,11 +19,15 @@ public class WolfBuilder extends Builder{
         SelectionStrategy mateStrategy = mateStrategyData != null ? _strategy.create_instance(mateStrategyData) : new SelectFirst();
 
         JSONObject huntStrategyData = data.optJSONObject("hunt_strategy");
-        SelectionStrategy huntStrategy = huntStrategyData != null ? _strategy.create_instance(huntStrategyData) : new SelectFirst();
+        SelectionStrategy huntStrategy = huntStrategyData != null ? _strategy.create_instance(huntStrategyData) : new SelectClosest();
 
         JSONObject posData = data.optJSONObject("pos");
-        Vector2D pos = posData != null ? new Vector2D(posData.getJSONArray("x_range").getDouble(0), posData.getJSONArray("y_range").getDouble(0)) : null;
-
+        Vector2D pos = posData != null ? new Vector2D(
+                Vector2D.get_random_vector(
+                        posData.getJSONArray("x_range").getDouble(0),
+                        posData.getJSONArray("x_range").getDouble(1),
+                        posData.getJSONArray("y_range").getDouble(0),
+                        posData.getJSONArray("y_range").getDouble(1))) : null;
 
         return new Wolf(mateStrategy, huntStrategy, pos);
     }
