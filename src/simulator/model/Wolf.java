@@ -12,6 +12,7 @@ public class Wolf extends Animal{
         super("Wolf", Diet.CARNIVORE, _sightrangeConst, _speedConst, mate_strategy, pos);
         this._mate_strategy = mate_strategy;
         this._hunting_strategy = danger_strategy;
+        this._hunt_target = null;
     }
 
     protected Wolf(Wolf p1, Animal p2) {
@@ -75,9 +76,6 @@ public class Wolf extends Animal{
     private void updateAsHunger(double dt) {
         if ((this._hunt_target == null) || (this._hunt_target != null && (this._hunt_target._state == State.DEAD || this._hunt_target.get_position().distanceTo(_pos) > get_sight_range()))){
             this._hunt_target = searchForHuntTarget(_region_mngr, this._hunting_strategy);
-
-        }
-        else if (this._hunt_target == null){
             updateAsNormal(dt);
         }
         else if (this._hunt_target != null){
@@ -116,11 +114,12 @@ public class Wolf extends Animal{
         if(this._mate_target != null && (this._mate_target.get_state() == State.DEAD || this._mate_target.get_position().distanceTo(_pos) > _sight_range)){
             this._mate_target = null;
 
-        } else if (this._mate_target == null){
+        }
+        if (this._mate_target == null){
             _mate_target=searchForMate(_region_mngr, this._mate_strategy);
-            if(_mate_target == null){
-                updateAsNormal(dt);
-            } else {
+            updateAsNormal(dt);
+        }
+         else {
                 _dest = _mate_target.get_position();
                 move(_speedFactorWolf * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
                 this._age += dt;
@@ -152,8 +151,5 @@ public class Wolf extends Animal{
             }
             }
         }
-
-    }
-
 
 
