@@ -95,7 +95,6 @@ public class Wolf extends Animal{
             if (this._pos.distanceTo(_hunt_target.get_position()) < distanceDest) {
                 this._hunt_target._state = State.DEAD;
                 this._hunt_target = null;
-
                 _energy += _energyBound;
                 checkEnergy();
 
@@ -113,12 +112,12 @@ public class Wolf extends Animal{
     }
 
     private void updateAsMate(double dt){
-        if(this._mate_target != null && (this._mate_target.get_state() == State.DEAD || this._mate_target.get_position().distanceTo(_pos) > _sight_range)){
-            this._mate_target = null;
+        if(_mate_target != null && (_mate_target.get_state() == State.DEAD || _mate_target.get_position().distanceTo(_pos) > _sight_range)){
+            _mate_target = null;
 
         }
-        if (this._mate_target == null) {
-            _mate_target = searchForMate(_region_mngr, this._mate_strategy);
+        if (_mate_target == null) {
+            _mate_target = searchForMate(_region_mngr, _mate_strategy);
             if (_mate_target == null) {
                 updateAsNormal(dt);
             }
@@ -126,7 +125,7 @@ public class Wolf extends Animal{
         if(_mate_target != null){
                 _dest = _mate_target.get_position();
                 move(_speedFactorWolf * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
-                this._age += dt;
+                _age += dt;
 
                 _energy -= _energyreductionWolf * _multiplicativeTime * dt;
                 checkEnergy();
@@ -134,24 +133,23 @@ public class Wolf extends Animal{
                 _desire += _desirereductionWolf * dt;
                 checkDesire();
 
-                if (this._pos.distanceTo(_mate_target.get_position()) < distanceDest) {
-                    this.setDesire(0);
-                    this._mate_target.setDesire(0);
+                if (_pos.distanceTo(_mate_target.get_position()) < distanceDest) {
+                    setDesire(0);
+                    _mate_target.setDesire(0);
 
                     if (!is_pregnant() && Math.random() < _createBaby) {
-                        this._baby = new Wolf(this, _mate_target);
-                        this._energy -= _sexEnergy;
+                        _baby = new Wolf(this, _mate_target);
+                        _energy -= _sexEnergy;
                         checkEnergy();
-                        this._mate_target = null;
+                        _mate_target = null;
                     }
                 }
             }
-            if(this._energy < _energyBound){
-                this._state = State.HUNGER;
-            } else {
-                if (this._desire < _desireUpperBound) {
-                    this._state = State.NORMAL;
-                }
+            if(_energy < _energyBound){
+                _state = State.HUNGER;
+            } if (_energy >= _energyBound && _desire < _desireUpperBound){
+                    _state = State.NORMAL;
+
             }
 
     }

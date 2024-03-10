@@ -101,7 +101,7 @@ public abstract class Animal implements Entity, AnimalInfo, Constants{
         return new Vector2D(cols, rows);
     }
     protected boolean IsOutOfMap(){
-        return this._pos.getX() < 0 || this._pos.getX() > _region_mngr.get_region_width() || this._pos.getY() < 0 || this._pos.getY() > _region_mngr.get_region_height();
+        return this._pos.getX() < 0 || this._pos.getX() > _region_mngr.get_width() || this._pos.getY() < 0 || this._pos.getY() > _region_mngr.get_height();
     }
 
     public Animal deliver_baby(){
