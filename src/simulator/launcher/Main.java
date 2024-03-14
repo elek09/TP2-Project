@@ -1,27 +1,16 @@
 package simulator.launcher;
 
-import java.io.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.*;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-
 import simulator.control.Controller;
 import simulator.factories.*;
 import simulator.misc.Utils;
 import simulator.model.*;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 	private static Factory<Animal> animal_factory;
@@ -217,7 +206,7 @@ public class Main {
 			JSONObject inputJson = load_JSON_file(is);
 
 			// (2) Create the output file
-			OutputStream outputFile = new FileOutputStream(new File("output.json"));
+			OutputStream outputFile = new FileOutputStream("output.json");
 			_out_file = "output.json";
 
 			// (3) Create an instance of Simulator passing the appropriate information to its constructor

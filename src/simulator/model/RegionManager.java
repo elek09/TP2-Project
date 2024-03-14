@@ -112,6 +112,7 @@ public class RegionManager implements AnimalMapView {
         }
         // Get the region at the specified row and column
         Region r = _regions[col][row];
+
         // Add the animal to the region
         r.add_animal(a);
         // Update the _animal_region map
@@ -125,6 +126,7 @@ public class RegionManager implements AnimalMapView {
         if (reg != null) {
             reg.remove_animal(a);
         }
+
         _animal_region.remove(a);
     }
 
@@ -227,5 +229,4 @@ public class RegionManager implements AnimalMapView {
         json.put("regions", regions);
         return json;
     }
-
 }

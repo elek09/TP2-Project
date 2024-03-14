@@ -68,6 +68,7 @@ public class Simulator implements JSONable {
             }
             else{
                 animal.update(dt);
+                System.out.println(this.currentTime);
                 regionManager.update_animal_region(animal);
                 if (animal.is_pregnant()) {
                     Animal baby = animal.deliver_baby();

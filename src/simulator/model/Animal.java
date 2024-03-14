@@ -134,8 +134,7 @@ public abstract class Animal implements Entity, AnimalInfo, Constants{
         return json;
     }
 
-    public void update(double dt) {
-    }
+
     @Override
     public State get_state() {
         return this._state;

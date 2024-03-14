@@ -27,6 +27,8 @@ public class Wolf extends Animal{
 
     @Override
     public void update(double dt) {
+//        System.out.println(this._age);
+//        System.out.println(this._energy);
         switch(_state){
             case NORMAL:
                 updateAsNormal(dt);

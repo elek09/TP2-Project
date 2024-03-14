@@ -2,15 +2,10 @@ package simulator.model;
 
 import simulator.misc.Vector2D;
 
-import java.util.List;
-import java.util.function.Predicate;
-
 public class Sheep extends Animal {
-
+    int counter = 0;
     private Animal _danger_source;
     private SelectionStrategy _danger_strategy;
-
-
     public Sheep(SelectionStrategy mate_strategy, SelectionStrategy danger_strategy, Vector2D pos) {
         super("Sheep", Diet.HERBIVORE, _sightrangeConst, _speedConst, mate_strategy, pos);
         this._mate_strategy = mate_strategy;
@@ -20,7 +15,6 @@ public class Sheep extends Animal {
         }
         this._danger_source = null;
     }
-
     protected Sheep(Sheep p1, Animal p2) {
         super(p1, p2);
         this._danger_strategy = p1.get_danger_strategy();
@@ -31,6 +25,7 @@ public class Sheep extends Animal {
     }
     @Override
     public void update(double dt) {
+
         switch(_state){
             case NORMAL:
                 updateAsNormal(dt);
@@ -53,16 +48,14 @@ public class Sheep extends Animal {
             _state = State.DEAD;
         }
 
-        State state = this.get_state();
-        if (state != State.DEAD){
-            _energy += this._region_mngr.get_food(this,dt);
+        if (_state != State.DEAD){
+            _energy += _region_mngr.get_food(this,dt);
             checkEnergy();
         }
-
     }
-
-
     private void updateAsNormal(double dt) {
+        counter++;
+
         if (_pos.distanceTo(_dest) < distanceDest) {
             _dest = new Vector2D(Math.random() * _region_mngr.get_width(), Math.random() * _region_mngr.get_height());
         }
@@ -76,7 +69,6 @@ public class Sheep extends Animal {
         _desire += _desirereductionSheep * dt;
         checkDesire();
 
-
         if (this._danger_source == null) {
             _danger_source = searchForDanger(_region_mngr, this._danger_strategy);
             if(this._danger_source != null ){
@@ -87,8 +79,6 @@ public class Sheep extends Animal {
             }
         }
     }
-
-
     private void updateAsDanger(double dt) {
         if (_danger_source != null) {
             if(_danger_source.get_state() == State.DEAD){
@@ -99,13 +89,11 @@ public class Sheep extends Animal {
                 move(_speedFactorSheep * _speed * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
                 this._age += dt;
             }
-
             _energy -= _energyreductionSheep * _multiplicativeTime * dt;
             checkEnergy();
 
             _desire += _desirereductionSheep * dt;
             checkDesire();
-
         }
         if ((_danger_source == null) || (this._pos.distanceTo(_danger_source.get_position()) <= this._sight_range)) {
             _danger_source = searchForDanger(_region_mngr, _danger_strategy);
@@ -119,7 +107,6 @@ public class Sheep extends Animal {
             }
         }
     }
-
     private void updateAsMate(double dt) {
         if (this._mate_target != null && (this._state == State.DEAD || this._sight_range < _pos.distanceTo(_mate_target.get_position()))) {
             this._mate_target = null;
@@ -134,7 +121,6 @@ public class Sheep extends Animal {
                 _dest = _mate_target.get_position();
                 move(_speedFactorSheep * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
                 this._age += dt;
-
 
                 _energy -= _energyreductionSheep * _multiplicativeTime * dt;
                 checkEnergy();
@@ -163,7 +149,3 @@ public class Sheep extends Animal {
         }
     }
 }
-
-
-
-
