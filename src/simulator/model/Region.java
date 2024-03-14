@@ -18,9 +18,7 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo, Consta
 
     @Override
     public void update(double dt) {
-        for (int i = 0; i < animals.size(); i++) {
-            animals.get(i).update(dt);
-        }
+
     }
 
     @Override
