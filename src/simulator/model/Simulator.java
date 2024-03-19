@@ -11,7 +11,7 @@ public class Simulator implements JSONable {
 
     private final Factory<Animal> animalsFactory;
     private final Factory<Region> regionsFactory;
-    private final RegionManager regionManager;
+    private RegionManager regionManager;    // change it from final, i think it wasnt a requirement, and needed for the reset method to not be final
     private final List<Animal> animals;
     private double currentTime;
 
@@ -126,6 +126,12 @@ public class Simulator implements JSONable {
         jsonObject.put("time", currentTime);
         jsonObject.put("state", regionManager.as_JSON());
         return jsonObject;
+    }
+
+    public void reset(int cols, int rows, int width, int height) {
+        regionManager = new RegionManager(cols, rows, width, height);
+        animals.clear();
+        currentTime = 0.0;
     }
 }
 

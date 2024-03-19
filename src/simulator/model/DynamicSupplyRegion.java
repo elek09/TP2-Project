@@ -47,4 +47,9 @@ public class DynamicSupplyRegion extends Region implements RegionInfo {
         }
     }
 
+    /*@Override     // i think we did it in the builder, but i leave it here just in case
+    public String toString() {
+        return "Dynamic Supply Region";
+    }*/
+
 }

@@ -5,13 +5,11 @@ import org.json.JSONObject;
 import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class RegionManager implements AnimalMapView {
+public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData>{
     private final int _rows;
     private final int _cols;
     private final int _width;
@@ -115,7 +113,7 @@ public class RegionManager implements AnimalMapView {
         if (a == null) {
             return;
         }
-        a.init(this);
+        a.init((AnimalMapView) this);
         // Calculate the row and column of the region based on the animal's position
         int row = (int) a.get_position().getY() / _region_height; // Assuming you have a method in Animal to get its position
         int col = (int) a.get_position().getX() / _region_width; // and the position has methods to get x and y coordinates
@@ -278,4 +276,27 @@ public class RegionManager implements AnimalMapView {
         return json;
     }
 
+    private class RegionManagerIterator implements Iterator<MapInfo.RegionData> {
+        private int row = 0;
+        private int col = 0;
+        @Override
+        public boolean hasNext() {
+            return row < _rows && col < _cols;
+        }
+
+        @Override
+        public MapInfo.RegionData next() {
+            MapInfo.RegionData regionData = new MapInfo.RegionData(row, col, _regions[col][row]);
+            col++;
+            if (col >= _cols) {
+                col = 0;
+                row++;
+            }
+            return regionData;
+        }
+    }
+    @Override
+    public Iterator<MapInfo.RegionData> iterator() {
+        return new RegionManagerIterator();
+    }
 }

@@ -73,7 +73,8 @@ public class Controller {
         JSONObject final_state;
         SimpleObjectViewer view = null;
         if (sv) {
-            MapInfo m = _sim.get_map_info();
+            //MapInfo m = _sim.get_map_info();
+            MapInfo m = (MapInfo) _sim.get_map_info();
             view = new SimpleObjectViewer("ECOSYSTEM", m.get_width(), m.get_height(), m.get_cols(), m.get_rows());
             view.update(to_animals_info(_sim.getAnimals()), _sim.get_time(), dt);
 
