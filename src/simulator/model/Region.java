@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class Region implements Entity, FoodSupplier, RegionInfo, Constants {
@@ -85,7 +86,7 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo, Consta
     }
 
     public List<AnimalInfo> getAnimalsInfo() {
-    // can use Collections.unmodifiableList(_animals);
+        Collections.unmodifiableList(animals);
     // since Java 9, we can also use List.of() instead of unmodifiableList
         return new ArrayList<>(animals);
     }
