@@ -6,7 +6,6 @@ import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData>{

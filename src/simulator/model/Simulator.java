@@ -7,13 +7,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Simulator implements JSONable {
+public class Simulator implements Observable<EcoSysObserver>, JSONable {
 
     private final Factory<Animal> animalsFactory;
     private final Factory<Region> regionsFactory;
     private RegionManager regionManager;    // change it from final, i think it wasnt a requirement, and needed for the reset method to not be final
     private final List<Animal> animals;
     private double currentTime;
+    private List<EcoSysObserver> observers;
 
     /**
      * Constructor for the Simulator class
@@ -31,6 +32,7 @@ public class Simulator implements JSONable {
         this.regionManager = new RegionManager(cols, rows, width, height);
         this.animals = new ArrayList<>();
         this.currentTime = 0.0;
+        this.observers = new ArrayList<>();
     }
 
     /**
@@ -42,6 +44,9 @@ public class Simulator implements JSONable {
      */
     private void set_region(int row, int col, Region r) {
         regionManager.set_region(row, col, r);
+        for (EcoSysObserver observer : observers) {
+            observer.onRegionSet(row, col, regionManager, r);
+        }
     }
 
     /**
@@ -66,6 +71,9 @@ public class Simulator implements JSONable {
     private void add_animal(Animal a) {
         animals.add(a);
         regionManager.register_animal(a);
+        for (EcoSysObserver observer : observers) {
+            observer.onAnimalAdded(currentTime, regionManager, new ArrayList<>(animals), a);
+        }
     }
 
     public void add_animal(JSONObject a_json) {
@@ -105,7 +113,7 @@ public class Simulator implements JSONable {
         currentTime += dt;
         for (int i = 0; i < animals.size(); i++) {
             Animal animal = animals.get(i);
-            if (animal.get_state() == State.DEAD) {
+            if (animal.get_state() == Animal.State.DEAD) {
                 animals.remove(animal);
                 regionManager.unregister_animal(animal);
             } else {
@@ -118,6 +126,9 @@ public class Simulator implements JSONable {
             }
         }
         regionManager.update_all_regions(dt);
+        for (EcoSysObserver observer : observers) {
+            observer.onAvanced(currentTime, regionManager, new ArrayList<>(animals), dt);
+        }
     }
 
     @Override
@@ -132,6 +143,30 @@ public class Simulator implements JSONable {
         regionManager = new RegionManager(cols, rows, width, height);
         animals.clear();
         currentTime = 0.0;
+
+        for (EcoSysObserver observer : observers) {
+            observer.onReset(currentTime, regionManager, new ArrayList<>(animals));
+        }
+    }
+
+    // Method to notify observers when an animal is added
+    private void notifyAnimalAdded(double time, MapInfo map, List<AnimalInfo> animals, AnimalInfo a) {
+        for (EcoSysObserver observer : observers) {
+            observer.onAnimalAdded(time, map, animals, a);
+        }
+    }
+
+    @Override
+    public void addObserver(EcoSysObserver o) {
+        if (!observers.contains(o)) {
+            observers.add(o);
+            o.onRegister(currentTime, regionManager, new ArrayList<>(animals));
+        }
+    }
+
+    @Override
+    public void removeObserver(EcoSysObserver o) {
+        observers.remove(o);
     }
 }
 

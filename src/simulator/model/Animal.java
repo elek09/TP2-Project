@@ -23,6 +23,10 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
     protected AnimalMapView _region_mngr;
     protected SelectionStrategy _mate_strategy;
 
+    public enum State {
+        NORMAL, MATE, HUNGER, DANGER, DEAD
+    }
+
     /**
      * Initializes the attributes of the animal with the specified genetic code, diet, sight range, initial speed, mate strategy, and position.
      *

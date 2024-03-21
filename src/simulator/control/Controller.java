@@ -3,6 +3,7 @@ package simulator.control;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import simulator.model.AnimalInfo;
+import simulator.model.EcoSysObserver;
 import simulator.model.MapInfo;
 import simulator.model.Simulator;
 import simulator.view.SimpleObjectViewer;
@@ -28,25 +29,7 @@ public class Controller {
     public void load_data(JSONObject data) {
         if (data.has("regions")) {
             JSONArray regions = data.optJSONArray("regions");
-            for (int i = 0; i < regions.length(); i++) {
-                JSONObject regionSpec = regions.getJSONObject(i);
-                JSONArray rowArray = regionSpec.getJSONArray("row");
-                JSONArray colArray = regionSpec.getJSONArray("col");
-                JSONObject spec = regionSpec.getJSONObject("spec");
-                if (rowArray != null && colArray != null) {
-                    for (int r = 0; r < rowArray.length(); r++) {
-                        for (int c = 0; c < colArray.length(); c++) {
-                            int x = rowArray.getInt(r);
-                            int y = colArray.getInt(c);
-                            _sim.set_region(x, y, spec);
-                        }
-                    }
-                } else {
-                    int row = regionSpec.getInt("row");
-                    int col = regionSpec.getInt("col");
-                    _sim.set_region(row, col, spec);
-                }
-            }
+            load(regions);
         }
 
         JSONArray animals = data.getJSONArray("animals");
@@ -56,6 +39,28 @@ public class Controller {
             JSONObject spec = animalSpec.getJSONObject("spec");
             for (int j = 0; j < amount; j++) {
                 _sim.add_animal(spec);
+            }
+        }
+    }
+
+    private void load(JSONArray regions) {
+        for (int i = 0; i < regions.length(); i++) {
+            JSONObject regionSpec = regions.getJSONObject(i);
+            JSONArray rowArray = regionSpec.getJSONArray("row");
+            JSONArray colArray = regionSpec.getJSONArray("col");
+            JSONObject spec = regionSpec.getJSONObject("spec");
+            if (rowArray != null && colArray != null) {
+                for (int r = 0; r < rowArray.length(); r++) {
+                    for (int c = 0; c < colArray.length(); c++) {
+                        int x = rowArray.getInt(r);
+                        int y = colArray.getInt(c);
+                        _sim.set_region(x, y, spec);
+                    }
+                }
+            } else {
+                int row = regionSpec.getInt("row");
+                int col = regionSpec.getInt("col");
+                _sim.set_region(row, col, spec);
             }
         }
     }
@@ -113,6 +118,26 @@ public class Controller {
             ol.add(new ObjInfo(animal.get_genetic_code(), (int) animal.get_position().getX(), (int) animal.get_position().getY(), (int) Math.round(animal.get_age()) + 2));
         }
         return ol;
+    }
+
+    public void reset(int cols, int rows, int width, int height) {
+        _sim.reset(cols, rows, width, height);
+    }
+    public void set_regions(JSONObject rs) {
+        JSONArray regions = rs.getJSONArray("regions");
+        load(regions);
+    }
+
+    public void advance(double dt) {
+        _sim.advance(dt);
+    }
+
+    public void addObserver(EcoSysObserver o) {
+        _sim.addObserver(o);
+    }
+
+    public void removeObserver(EcoSysObserver o){
+        _sim.removeObserver(o);
     }
 }
 

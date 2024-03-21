@@ -6,7 +6,7 @@ import simulator.misc.Vector2D;
  * Interface representing information about an animal.
  */
 public interface AnimalInfo extends JSONable {
-    State get_state();
+    Animal.State get_state();
 
     Vector2D get_position();
 

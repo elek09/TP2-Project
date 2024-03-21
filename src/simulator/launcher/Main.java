@@ -22,12 +22,12 @@ public class Main {
     private final static Double _default_dt = 1.0;
     private static final String _out_file = null;
     private static final ExecMode _mode = ExecMode.BATCH;
-    private static Factory<Animal> animal_factory;
-    private static Factory<Region> region_factory;
+    public static Factory<Animal> animal_factory;
+    public static Factory<Region> region_factory;
     // some attributes to stores values corresponding to command-line parameters
     //
     private static Double _time = 0.0;
-    private static Double _dt = 0.0;
+    public static Double _dt = 0.0;
     private static String _in_file = null;
     private static boolean _sv = false;
 
