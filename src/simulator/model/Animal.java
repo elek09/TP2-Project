@@ -24,6 +24,17 @@ public abstract class Animal implements Entity, AnimalInfo, Constants{
     protected AnimalMapView _region_mngr;
     protected SelectionStrategy _mate_strategy;
 
+    /**
+     * Initializes the attributes of the animal with the specified genetic code, diet, sight range, initial speed, mate strategy, and position.
+     *
+     * @param genetic_code  The genetic code of the animal
+     * @param diet          The diet of the animal
+     * @param sight_range   The sight range of the animal
+     * @param init_speed    The initial speed of the animal
+     * @param mate_strategy The mate strategy of the animal
+     * @param pos           The position of the animal
+     * @throws IllegalArgumentException If the genetic code is null or empty, sight range is not positive, initial speed is not positive, or mate strategy is null
+     */
     protected Animal(String genetic_code, Diet diet, double sight_range, double init_speed, SelectionStrategy mate_strategy, Vector2D pos) {
         // Check for null or empty genetic_code, sight_range and init_speed are positive, and mate_strategy is not null
         if (genetic_code == null || genetic_code.isEmpty() || sight_range <= 0 || init_speed <= 0 ) {
@@ -49,7 +60,14 @@ public abstract class Animal implements Entity, AnimalInfo, Constants{
         _region_mngr = null;
         _mate_strategy = mate_strategy;
     }
-    protected Animal(Animal p1, Animal p2){
+
+    /**
+     * Initializes the attributes of the animal with the genetic code, diet, sight range, speed, and mate strategy of the parents.
+     *
+     * @param p1 The first parent animal
+     * @param p2 The second parent animal
+     */
+    protected Animal(Animal p1, Animal p2) {
         _genetic_code = p1.get_genetic_code();
         _diet = p1.get_diet();
         _state = State.NORMAL;
@@ -69,20 +87,30 @@ public abstract class Animal implements Entity, AnimalInfo, Constants{
     public Animal() {
     }
 
-    void init(AnimalMapView reg_mngr){
+    /**
+     * Initializes the animal with the specified animal map view.
+     *
+     * @param reg_mngr The animal map view to be associated with the animal
+     */
+    void init(AnimalMapView reg_mngr) {
         _region_mngr = reg_mngr;
-        this._dest = Vector2D.get_random_vector(0, _region_mngr.get_width()-1, 0, _region_mngr.get_height()-1);
-        if (this._pos == null){
-            _pos = Vector2D.get_random_vector(0, _region_mngr.get_width()-1, 0, _region_mngr.get_height()-1);
-        }
-        else{
-            if(IsOutOfMap()) {
+        this._dest = Vector2D.get_random_vector(0, _region_mngr.get_width() - 1, 0, _region_mngr.get_height() - 1);
+        if (this._pos == null) {
+            _pos = Vector2D.get_random_vector(0, _region_mngr.get_width() - 1, 0, _region_mngr.get_height() - 1);
+        } else {
+            if (IsOutOfMap()) {
                 _pos = adjust_position(_pos);
             }
         }
     }
 
-    public Vector2D adjust_position (Vector2D pos){
+    /**
+     * Adjusts the position of the animal to ensure it remains within the bounds of the map.
+     *
+     * @param pos The current position of the animal
+     * @return The adjusted position of the animal
+     */
+    public Vector2D adjust_position(Vector2D pos) {
         double cols = pos.getX();
         double rows = pos.getY();
 
@@ -103,26 +131,55 @@ public abstract class Animal implements Entity, AnimalInfo, Constants{
 
         return new Vector2D(cols, rows);
     }
-    protected boolean IsOutOfMap(){
+
+    /**
+     * Checks if the animal is out of the map bounds.
+     *
+     * @return True if the animal is out of the map bounds, false otherwise
+     */
+    protected boolean IsOutOfMap() {
         return this._pos.getX() < 0 || this._pos.getX() > _region_mngr.get_width() || this._pos.getY() < 0 || this._pos.getY() > _region_mngr.get_height();
     }
 
-    public Animal deliver_baby(){
-        if (this.is_pregnant()){
+    /**
+     * Delivers the baby if the animal is pregnant.
+     *
+     * @return The baby animal if the animal is pregnant, null otherwise
+     */
+    public Animal deliver_baby() {
+        if (this.is_pregnant()) {
             Animal baby = _baby;
             set_baby(null);
             return baby;
         }
         return null;
     }
-    public void set_baby(Animal b){
+
+    /**
+     * Sets the baby animal of the current animal.
+     *
+     * @param b The baby animal to be set
+     */
+    public void set_baby(Animal b) {
         this._baby = b;
     }
-    protected void move(double speed){
+
+    /**
+     * Moves the animal with the specified speed.
+     *
+     * @param speed The speed with which the animal moves
+     */
+    protected void move(double speed) {
         Vector2D destination = get_destination();
         _pos = _pos.plus(destination.minus(_pos).direction().scale(speed));
     }
-    public JSONObject as_JSON(){
+
+    /**
+     * Converts the animal's attributes to a JSONObject.
+     *
+     * @return A JSONObject representing the animal's attributes
+     */
+    public JSONObject as_JSON() {
         JSONObject json = new JSONObject();
         Vector2D pos = this.get_position();
 
@@ -134,6 +191,13 @@ public abstract class Animal implements Entity, AnimalInfo, Constants{
         return json;
     }
 
+    /**
+     * Updates the animal's state based on the specified time interval.
+     *
+     * @param dt The time interval for the update
+     */
+    public void update(double dt) {
+    }
 
     @Override
     public State get_state() {
@@ -184,12 +248,19 @@ public abstract class Animal implements Entity, AnimalInfo, Constants{
     public boolean is_pregnant() {
         return this._baby != null;
     }
+
     @Override
-    public SelectionStrategy get_mate_strategy(){
+    public SelectionStrategy get_mate_strategy() {
         return this._mate_strategy;
     }
 
-
+    /**
+     * Searches for a mate animal within the specified animal map view using the given selection strategy.
+     *
+     * @param reg_mngr The animal map view to search within
+     * @param strategy The selection strategy to use
+     * @return The selected mate animal, or null if no mate is found
+     */
     public Animal searchForMate(AnimalMapView reg_mngr, SelectionStrategy strategy) {
         if (strategy == null) {
             strategy = new SelectFirst();
@@ -201,6 +272,13 @@ public abstract class Animal implements Entity, AnimalInfo, Constants{
         return strategy.select(this, animalsInRange);
     }
 
+    /**
+     * Searches for a dangerous animal within the specified animal map view using the given selection strategy.
+     *
+     * @param reg_mngr The animal map view to search within
+     * @param strategy The selection strategy to use
+     * @return The selected dangerous animal, or null if none is found
+     */
     public Animal searchForDanger(AnimalMapView reg_mngr, SelectionStrategy strategy) {
 
         Predicate<Animal> filter = a -> a.get_diet() == Diet.CARNIVORE;
@@ -211,6 +289,13 @@ public abstract class Animal implements Entity, AnimalInfo, Constants{
         return strategy.select(this, animalsInRange);
     }
 
+    /**
+     * Searches for a hunt target animal within the specified animal map view using the given selection strategy.
+     *
+     * @param reg_mngr The animal map view to search within
+     * @param strategy The selection strategy to use
+     * @return The selected hunt target animal, or null if none is found
+     */
     public Animal searchForHuntTarget(AnimalMapView reg_mngr, SelectionStrategy strategy) {
         Predicate<Animal> filter = a -> a.get_diet() == Diet.HERBIVORE;
 
@@ -219,7 +304,11 @@ public abstract class Animal implements Entity, AnimalInfo, Constants{
 
         return strategy.select(this, animalsInRange);
     }
-    protected void checkEnergy(){
+
+    /**
+     * Checks and adjusts the energy level of the animal if it exceeds the maximum or falls below the lowest energy level.
+     */
+    protected void checkEnergy() {
         if (_energy > _maxenergy) {
             _energy = _maxenergy;
         } else if (_energy < _lowestenergy) {
@@ -227,14 +316,23 @@ public abstract class Animal implements Entity, AnimalInfo, Constants{
         }
     }
 
-    protected void checkDesire(){
+    /**
+     * Checks and adjusts the desire level of the animal if it exceeds the maximum or falls below the lowest desire level.
+     */
+    protected void checkDesire() {
         if (_desire > _maxdesire) {
             _desire = _maxdesire;
         } else if (_desire < _lowestdesire) {
             _desire = _lowestdesire;
         }
     }
-    protected void setDesire(double d){
+
+    /**
+     * Sets the desire level of the animal to the specified value.
+     *
+     * @param d The desire level to set
+     */
+    protected void setDesire(double d) {
         this._desire = d;
     }
 }

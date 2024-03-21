@@ -2,6 +2,11 @@ package simulator.factories;
 
 import org.json.JSONObject;
 
+/**
+ * Abstract class for creating instances of a specific type.
+ *
+ * @param <T> Type of object to create
+ */
 public abstract class Builder<T> {
     private String _type_tag;
     private String _desc;
@@ -13,9 +18,21 @@ public abstract class Builder<T> {
         _type_tag = type_tag;
         _desc = desc;
     }
+
+    /**
+     * Retrieves the type tag associated with this builder.
+     *
+     * @return Type tag
+     */
     public String get_type_tag() {
         return _type_tag;
     }
+
+    /**
+     * Retrieves information about this builder.
+     *
+     * @return JSON object containing builder information
+     */
     public JSONObject get_info() {
         JSONObject info = new JSONObject();
         info.put("type", _type_tag);
@@ -25,11 +42,26 @@ public abstract class Builder<T> {
         info.put("data", data);
         return info;
     }
+
+    /**
+     * Fills in additional data into the provided JSON object.
+     *
+     * @param o JSON object to fill in data
+     */
     protected void fill_in_data(JSONObject o) {
     }
+
     @Override
     public String toString() {
         return _desc;
     }
+
+    /**
+     * Creates an instance based on the provided JSON data.
+     *
+     * @param data JSON object containing data for the instance creation
+     * @return Instance of type T
+     * @throws IllegalArgumentException If the provided JSON data is invalid
+     */
     protected abstract T create_instance(JSONObject data) throws IllegalArgumentException;
 }
