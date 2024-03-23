@@ -1,5 +1,8 @@
 package simulator.model;
 
+import simulator.gui.ChangeRegionsDialog;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public interface EcoSysObserver {
@@ -7,5 +10,6 @@ public interface EcoSysObserver {
     void onReset(double time, MapInfo map, List<AnimalInfo> animals);
     void onAnimalAdded(double time, MapInfo map, List<AnimalInfo> animals, AnimalInfo a);
     void onRegionSet(int row, int col, MapInfo map, RegionInfo r);
-    void onAvanced(double time, MapInfo map, List<AnimalInfo> animals, double dt);
+    void open(ChangeRegionsDialog parent);
+    void onAvanced(double currentTime, RegionManager regionManager, ArrayList<Animal> animals, double dt);
 }
