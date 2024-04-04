@@ -1,4 +1,4 @@
-package simulator.gui;
+package simulator.view;
 
 import org.json.JSONObject;
 import simulator.control.Controller;

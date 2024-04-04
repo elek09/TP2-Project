@@ -1,8 +1,6 @@
 package simulator.view;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Frame;
+import java.awt.*;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -22,6 +20,7 @@ class ViewUtils {
 		}
 		return w;
 	}
+
 
 	/*
 	 * opens a dialog box to show an error

@@ -1,6 +1,6 @@
 package simulator.model;
 
-import simulator.gui.ChangeRegionsDialog;
+import simulator.view.ChangeRegionsDialog;
 
 import java.util.ArrayList;
 import java.util.List;

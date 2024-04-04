@@ -1,6 +1,5 @@
-package simulator.gui;
+package simulator.view;
 
-import org.json.JSONObject;
 import simulator.control.Controller;
 import simulator.launcher.Main;
 
@@ -113,9 +112,11 @@ public class ControlPanel extends JPanel {
         MapWindow mapWindow = new MapWindow(_ctrl);
     }
 
+
     private void openRegionsDialog() {
-        _changeRegionsDialog.open(ViewUtils.getWindow(this));
+        //_changeRegionsDialog.open(ViewUtils.getWindow(this));
     }
+
 
     private void runSimulation() {
         _stopped = false;

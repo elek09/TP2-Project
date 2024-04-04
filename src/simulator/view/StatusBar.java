@@ -1,4 +1,4 @@
-package simulator.gui;
+package simulator.view;
 
 import simulator.control.Controller;
 import simulator.model.*;

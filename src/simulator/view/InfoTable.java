@@ -1,4 +1,4 @@
-package simulator.gui;
+package simulator.view;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
