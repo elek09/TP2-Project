@@ -73,7 +73,7 @@ public class StatusBar extends JPanel implements EcoSysObserver {
     }
 
     @Override
-    public void open(ChangeRegionsDialog parent) {
+    public void open(Component  parent) {
 
     }
 

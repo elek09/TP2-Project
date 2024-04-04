@@ -114,7 +114,7 @@ public class ControlPanel extends JPanel {
 
 
     private void openRegionsDialog() {
-        //_changeRegionsDialog.open(ViewUtils.getWindow(this));
+        _changeRegionsDialog.open(ViewUtils.getWindow(this));
     }
 
 

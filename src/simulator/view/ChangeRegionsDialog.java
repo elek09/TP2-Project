@@ -132,8 +132,9 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
     public void onRegionSet(int row, int col, MapInfo map, RegionInfo r) {
 
     }
+
     @Override
-    public void open(ChangeRegionsDialog parent) {
+    public void open(Component parent) {
         setLocation(
                 parent.getLocation().x + parent.getWidth() / 2 - getWidth() / 2,
                 parent.getLocation().y + parent.getHeight() / 2 - getHeight() / 2
