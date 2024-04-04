@@ -7,7 +7,9 @@ import simulator.control.Controller;
 import simulator.factories.*;
 import simulator.misc.Utils;
 import simulator.model.*;
+import simulator.view.MainWindow;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +23,7 @@ public class Main {
     private final static Double _default_time = 10.0; // in seconds
     private final static Double _default_dt = 1.0;
     private static final String _out_file = null;
-    private static final ExecMode _mode = ExecMode.BATCH;
+    private static final ExecMode _mode = ExecMode.GUI;
     public static Factory<Animal> animal_factory;
     public static Factory<Region> region_factory;
     // some attributes to stores values corresponding to command-line parameters
@@ -87,6 +89,9 @@ public class Main {
 
         // input file
         cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg().desc("A configuration file.").build());
+
+        // Excecution mode
+        cmdLineOptions.addOption(Option.builder("m").longOpt("mode").hasArg().desc("Execution Mode. Possible values: 'batch' (Batch mode), 'gui' (Graphical User Interface mode). Default value: " + _mode + ".").build());
 
         // steps
         cmdLineOptions.addOption(Option.builder("t").longOpt("time").hasArg()
@@ -278,7 +283,15 @@ public class Main {
      * @throws Exception If an error occurs while starting the simulator
      */
     private static void start_GUI_mode() throws Exception {
-        throw new UnsupportedOperationException("GUI mode is not ready yet ...");
+        SwingUtilities.invokeAndWait(() -> {
+            try {
+                Controller controller = new Controller(new Simulator(800, 600, 15, 20, animal_factory, region_factory));
+                new MainWindow(controller);
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error starting GUI mode: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
     }
 
     /**
