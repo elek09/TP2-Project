@@ -38,14 +38,14 @@ public class ControlPanel extends JPanel {
         // Load Button
         _loadButton = new JButton();
         _loadButton.setToolTipText("Load File");
-        _loadButton.setIcon(new ImageIcon("resources/icons/load.png"));
+        _loadButton.setIcon(new ImageIcon("resources/icons/open.png"));
         _loadButton.addActionListener((e) -> loadFile());
         _toolBar.add(_loadButton);
 
         // Map Button
         _mapButton = new JButton();
         _mapButton.setToolTipText("Open Map Viewer");
-        _mapButton.setIcon(new ImageIcon("resources/icons/map.png"));
+        _mapButton.setIcon(new ImageIcon("resources/icons/viewer.png"));
         _mapButton.addActionListener((e) -> openMapViewer());
         _toolBar.add(_mapButton);
 
@@ -113,7 +113,7 @@ public class ControlPanel extends JPanel {
     }
 
     private void openMapViewer() {
-        MapWindow mapWindow = new MapWindow(_ctrl);
+        MapWindow mapWindow = new MapWindow(_ctrl, ViewUtils.getWindow(this));
     }
 
 

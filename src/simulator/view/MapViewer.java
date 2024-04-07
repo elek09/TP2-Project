@@ -1,5 +1,6 @@
 package simulator.view;
 
+import simulator.control.Controller;
 import simulator.model.Animal;
 import simulator.model.AnimalInfo;
 import simulator.model.MapInfo;
@@ -14,7 +15,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class MapViewer extends AbstractMapViewer{
 
@@ -50,7 +50,7 @@ public class MapViewer extends AbstractMapViewer{
 
 	private boolean _showHelp;
 
-	public MapViewer() {
+	public MapViewer(Controller _ctrl) {
 		initGUI();
 	}
 
