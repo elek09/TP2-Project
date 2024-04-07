@@ -3,6 +3,7 @@ package simulator.view;
 import simulator.control.Controller;
 
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 
 public class MainWindow extends JFrame {
@@ -32,12 +33,14 @@ public class MainWindow extends JFrame {
         mainPanel.add(contentPanel, BorderLayout.CENTER);
 
         // Create and add the species table to the contentPanel
-        JTable speciesTable = new JTable();
+        SpeciesTableModel speciesModel = new SpeciesTableModel(_ctrl);
+        JTable speciesTable = new JTable(speciesModel);
         speciesTable.setPreferredSize(new Dimension(500, 250));
         contentPanel.add(new JScrollPane(speciesTable));
 
         // Create and add the regions table to the contentPanel
-        JTable regionsTable = new JTable();
+        RegionsTableModel regionsModel = new RegionsTableModel(_ctrl);
+        JTable regionsTable = new JTable(regionsModel);
         regionsTable.setPreferredSize(new Dimension(500, 250));
         contentPanel.add(new JScrollPane(regionsTable));
 
