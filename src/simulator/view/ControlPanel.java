@@ -1,11 +1,14 @@
 package simulator.view;
 
+import org.json.JSONObject;
 import simulator.control.Controller;
 import simulator.launcher.Main;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class ControlPanel extends JPanel {
     private Controller _ctrl;
@@ -99,9 +102,10 @@ public class ControlPanel extends JPanel {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = _fc.getSelectedFile();
             try {
-                //JSONObject json = JSONUtils.readJSON(file);
-                //_ctrl.reset(json.getInt("cols"), json.getInt("rows"), json.getInt("width"), json.getInt("height"));
-                //_ctrl.load_data(json);
+                String content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+                JSONObject json = new JSONObject(content);
+                _ctrl.reset(json.getInt("cols"), json.getInt("rows"), json.getInt("width"), json.getInt("height"));
+                _ctrl.load_data(json);
             } catch (Exception ex) {
                 ViewUtils.showErrorMsg("Error loading file: " + ex.getMessage());
             }
