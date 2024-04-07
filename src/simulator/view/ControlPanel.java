@@ -15,6 +15,7 @@ public class ControlPanel extends JPanel {
     private ChangeRegionsDialog _changeRegionsDialog;
     private JToolBar _toolBar;
     private JFileChooser _fc;
+    private JLabel _deltaTimeLabel;
     private boolean _stopped = true;
     private JButton _quitButton;
     private JButton _loadButton;
@@ -76,6 +77,8 @@ public class ControlPanel extends JPanel {
 
         // Delta Time Field
         _deltaTimeField = new JTextField();
+        /*_deltaTimeLabel = new JLabel("Delta-Time: ");
+        _deltaTimeField.add(_deltaTimeLabel);*/
         _deltaTimeField.setToolTipText("Delta Time");
         _deltaTimeField.setText(String.valueOf(Main._dt));
         _toolBar.add(_deltaTimeField);

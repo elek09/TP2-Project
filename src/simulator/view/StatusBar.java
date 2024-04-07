@@ -27,10 +27,10 @@ public class StatusBar extends JPanel implements EcoSysObserver {
         this.add(timeLabel);
 
         //animal count label initialization and adding to the panel
-        animalCountLabel = new JLabel("Animal count: ");
+        animalCountLabel = new JLabel("Total Animals: ");
         this.add(animalCountLabel);
 
-        dimensionLabel = new JLabel("Dimensions: ");
+        dimensionLabel = new JLabel("Dimension: ");
         this.add(dimensionLabel);
 
         JSeparator separator = new JSeparator(JSeparator.VERTICAL);
