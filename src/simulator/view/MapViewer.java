@@ -24,8 +24,8 @@ public class MapViewer extends AbstractMapViewer{
 	private int _rows;
 	private int _cols;
 
-	int _rwidth;
-	int _rheight;
+	int _region_width;
+	int _region_height;
 
 	private Animal _selectedAnimal;
 
@@ -107,10 +107,17 @@ public class MapViewer extends AbstractMapViewer{
 
 	private void drawObjects(Graphics2D g, Collection<AnimalInfo> animals, Double time) {
 
-		// Draw the grid of regions
+		// TODO Draw the grid of regions
+		for (int i = 0; i < _rows; i++) {
+			for (int j = 0; j < _cols; j++) {
+				g.setColor(Color.LIGHT_GRAY);
+				g.drawRect(j * _region_width, i * _region_height, _region_width, _region_height);
+			}
+		}
 
 		// Draw the animals
 		for (AnimalInfo a : animals) {
+
 
 			// If not visible, skip iteration
 			if (!visible(a))
@@ -142,17 +149,25 @@ public class MapViewer extends AbstractMapViewer{
 
 	@Override
 	public void update(List<AnimalInfo> objs, Double time) {
-		// Store objs and time in the corresponding attributes and call repaint() to redraw the component
+		//TODO Store objs and time in the corresponding attributes and call repaint() to redraw the component
+
+
 	}
 
 	@Override
 	public void reset(double time, MapInfo map, List<AnimalInfo> animals) {
-		// Update the attributes _width, _height, _cols, _rows, etc.
+		// TODO Update the attributes _width, _height, _cols, _rows, etc.
+		this._cols = map.get_cols();
+		this._rows = map.get_rows();
+		this._width = map.get_width();
+		this._height = map.get_height();
+		this._region_width = _width / _cols;
+		this._region_height = _height / _rows;
 
-		// This changes the size of the component, thus changing the size of the window because in MapWindow we call pack() after calling reset
+		// TODO This changes the size of the component, thus changing the size of the window because in MapWindow we call pack() after calling reset
 		setPreferredSize(new Dimension(map.get_width(), map.get_height()));
 
-		// Draw the state
+		// TODO Draw the state
 		update(animals, time);
 	}
 
