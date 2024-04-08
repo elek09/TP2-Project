@@ -6,15 +6,13 @@ import simulator.model.AnimalInfo;
 import simulator.model.MapInfo;
 
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.Timer;
 
 public class MapViewer extends AbstractMapViewer{
 
@@ -33,6 +31,8 @@ public class MapViewer extends AbstractMapViewer{
 
 	volatile private Collection<AnimalInfo> _objs;
 	volatile private Double _time;
+
+	private Timer timer;
 
 	private static class SpeciesInfo {
 		private Integer _count;
@@ -101,6 +101,8 @@ public class MapViewer extends AbstractMapViewer{
 			drawObjects(gr, _objs, _time);
 	}
 
+
+
 	private boolean visible(AnimalInfo a) {
 		return visible(a);
 	}
@@ -124,21 +126,43 @@ public class MapViewer extends AbstractMapViewer{
 				continue;
 
 			// Species information of 'a'
-			SpeciesInfo esp_info = _kindsInfo.get(a.get_genetic_code());
+			SpeciesInfo esp_info = _kindsInfo.computeIfAbsent(a.get_genetic_code(), k -> new SpeciesInfo(ViewUtils.get_color(a.get_genetic_code())));
 
 			// Add an entry to the map if esp_info is null
+			if (esp_info == null) {
+				esp_info = new SpeciesInfo(ViewUtils.get_color(a.get_genetic_code()));
+				_kindsInfo.put(a.get_genetic_code(), esp_info);
+			}
 			// Use ViewUtils.get_color(a.get_genetic_code()) for color
 
 			// Increment the species counter
+			esp_info._count++;
 		}
 
 		// Draw the visible state label, if not null
+		if (_currState != null) {
+			g.setColor(Color.BLACK);
+			drawStringWithRect(g, 10, 20, "State: " + _currState);
+		}
 
 		// Draw the time label
 		// Use String.format("%.3f", time) to write only 3 decimals
+		if (time != null) {
+		g.setColor(Color.BLACK);
+		drawStringWithRect(g, 10, 40, "Time: " + String.format("%.3f", time));
+		}
+
 
 		// Draw the information of all species
 		// At the end of each iteration, set the species counter to 0 to reset it
+		int i = 0;
+		for (Map.Entry<String, SpeciesInfo> entry : _kindsInfo.entrySet()) {
+			SpeciesInfo info = entry.getValue();
+			g.setColor(info._color);
+			drawStringWithRect(g, 10, 60 + i * 20, entry.getKey() + ": " + info._count);
+			info._count = 0;
+			i++;
+		}
 	}
 
 	void drawStringWithRect(Graphics2D g, int x, int y, String s) {
@@ -150,8 +174,9 @@ public class MapViewer extends AbstractMapViewer{
 	@Override
 	public void update(List<AnimalInfo> objs, Double time) {
 		//TODO Store objs and time in the corresponding attributes and call repaint() to redraw the component
-
-
+		_objs = objs;
+		_time = time;
+		repaint();
 	}
 
 	@Override

@@ -3,12 +3,15 @@ package simulator.view;
 import org.json.JSONObject;
 import simulator.control.Controller;
 import simulator.launcher.Main;
+import simulator.model.Animal;
+import simulator.model.AnimalInfo;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public class ControlPanel extends JPanel {
     private Controller _ctrl;
@@ -25,6 +28,7 @@ public class ControlPanel extends JPanel {
     private JButton _stopButton;
     private JSpinner _stepsSpinner;
     private JTextField _deltaTimeField;
+    private MapViewer _mapViewer;
 
     ControlPanel(Controller ctrl) {
         _ctrl = ctrl;
@@ -117,11 +121,25 @@ public class ControlPanel extends JPanel {
 
     private void openMapViewer() {
         MapWindow mapWindow = new MapWindow(_ctrl, ViewUtils.getWindow(this));
+
+        loadAndDisplayAnimalMovement();
+    }
+
+    //figure out a way to display the animal movements
+    private void loadAndDisplayAnimalMovement() {
+        Controller controller = _changeRegionsDialog.getController();
+
+        //<Animal> animals = controller.getAnimals();
+
+        //_mapViewer.update(animals, 0.0);
     }
 
 
     private void openRegionsDialog() {
         _changeRegionsDialog.open(ViewUtils.getWindow(this));
+
+        Frame parentFrame = ViewUtils.getWindow(this);
+        MapWindow mapWindow = new MapWindow(_ctrl, parentFrame);
     }
 
 

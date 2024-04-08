@@ -2,10 +2,7 @@ package simulator.control;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import simulator.model.AnimalInfo;
-import simulator.model.EcoSysObserver;
-import simulator.model.MapInfo;
-import simulator.model.Simulator;
+import simulator.model.*;
 import simulator.view.SimpleObjectViewer;
 import simulator.view.SimpleObjectViewer.ObjInfo;
 

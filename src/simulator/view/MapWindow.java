@@ -20,6 +20,8 @@ public class MapWindow extends JFrame implements EcoSysObserver{
         _ctrl = ctrl;
         _parent = parent;
         initGUI();
+
+        // TODO register ‘this’ as an observer
         _ctrl.addObserver(this);
     }
 
@@ -30,6 +32,7 @@ public class MapWindow extends JFrame implements EcoSysObserver{
         // TODO create the viewer and add it to mainPanel (in the centre)
         _viewer = new MapViewer(_ctrl);
         // TODO in windowClosing method, remove ‘MapWindow.this’ from observers
+        mainPanel.add(_viewer, BorderLayout.CENTER);
 
         addWindowListener(new WindowListener() {
             @Override
@@ -76,12 +79,19 @@ public class MapWindow extends JFrame implements EcoSysObserver{
     }
     @Override
     public void onRegister(double time, MapInfo map, List<AnimalInfo> animals) {
-
+        SwingUtilities.invokeLater(() -> {
+            _viewer.reset(time, map, animals);
+            pack();
+        });
     }
+
 
     @Override
     public void onReset(double time, MapInfo map, List<AnimalInfo> animals) {
-
+        SwingUtilities.invokeLater(() -> {
+            _viewer.reset(time, map, animals);
+            pack();
+        });
     }
 
     @Override

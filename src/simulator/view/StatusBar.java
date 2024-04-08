@@ -5,6 +5,8 @@ import simulator.model.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +40,7 @@ public class StatusBar extends JPanel implements EcoSysObserver {
         this.add(separator);
     }
 
+    //maybe we have to implement it to change the time constantly
     private void updateTime(double time) {
         timeLabel.setText("Time: " + time);
     }
@@ -47,7 +50,7 @@ public class StatusBar extends JPanel implements EcoSysObserver {
     }
 
     private void updateDimensions(int width, int height, int rows, int cols) {
-        dimensionLabel.setText("Dimensions: " + width + "x" + height + ", Rows: " + rows + ", Cols: " + cols);
+        dimensionLabel.setText("Dimensions:  " + width + "x" + height + " " + rows + "x" + cols);
     }
 
     public void onRegister(double time, MapInfo map, List<AnimalInfo> animals) {

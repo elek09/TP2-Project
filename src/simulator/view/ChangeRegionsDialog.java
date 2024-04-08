@@ -148,6 +148,10 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 
     }
 
+    public Controller getController() {
+        return _ctrl;
+    }
+
     // TODO the rest of the methods go here...
 }
 
