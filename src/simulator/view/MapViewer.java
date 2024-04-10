@@ -104,7 +104,10 @@ public class MapViewer extends AbstractMapViewer{
 
 
 	private boolean visible(AnimalInfo a) {
-		return visible(a);
+		if(_selectedAnimal == null)
+			return true;
+		else
+			return _selectedAnimal.equals(a);
 	}
 
 	private void drawObjects(Graphics2D g, Collection<AnimalInfo> animals, Double time) {
