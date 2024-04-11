@@ -25,21 +25,29 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
     }
     // TODO the rest of the methods go here...
 
+    //The table contains a row for each genetic code with information about the number of animals in each possible state
 
     @Override
     public int getRowCount() {
-        return 0;
+        return _animals.size();
     }
 
     @Override
     public int getColumnCount() {
-        return 0;
+        return _columns.size();
     }
 
+    //fucked up
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return null;
+        AnimalInfo animal = _animals.get(rowIndex);
+        if (columnIndex == 0) {
+            return animal.get_genetic_code();
+        } else {
+            return animal.get_state();
+        }
     }
+
 
     @Override
     public void onRegister(double time, MapInfo map, List<AnimalInfo> animals) {

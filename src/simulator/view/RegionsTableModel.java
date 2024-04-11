@@ -34,12 +34,15 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return null;
+        RegionInfo r = _regions.get(rowIndex);
+        switch (columnIndex) {
+            default:
+                return null;
+        }
     }
 
     @Override
     public void onRegister(double time, MapInfo map, List<AnimalInfo> animals) {
-
     }
 
     @Override

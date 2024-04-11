@@ -1,6 +1,8 @@
 package simulator.view;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.TableModel;
 import java.awt.*;
 
@@ -19,7 +21,10 @@ public class InfoTable extends JPanel {
         setLayout(new BorderLayout());
 
         // Add a border with a title to the panel
-        setBorder(BorderFactory.createTitledBorder(_title));
+        Border border = BorderFactory.createLineBorder(Color.BLACK);
+        TitledBorder titledBorder = BorderFactory.createTitledBorder(border, _title);
+        titledBorder.setTitleJustification(TitledBorder.CENTER);
+        setBorder(titledBorder);
 
         // Add a JTable with vertical scroll bar using _tableModel
         JTable table = new JTable(_tableModel);

@@ -52,6 +52,12 @@ public class MainWindow extends JFrame {
             }
         });
 
+        new InfoTable("Species", new SpeciesTableModel(_ctrl));
+        new InfoTable("Regions", new RegionsTableModel(_ctrl));
+
+        // Set window properties
+        setLocation(50, 50);
+
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         pack();
         setVisible(true);
