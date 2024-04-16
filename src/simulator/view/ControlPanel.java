@@ -26,7 +26,7 @@ public class ControlPanel extends JPanel {
     private JButton _regionsButton;
     private JButton _runButton;
     private JButton _stopButton;
-    private JSpinner _stepsSpinner;
+    private JSpinner _stepsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 10000000, 1));
     private JTextField _deltaTimeField;
     private MapViewer _mapViewer;
 
@@ -52,6 +52,7 @@ public class ControlPanel extends JPanel {
         _mapButton.setToolTipText("Open Map Viewer");
         _mapButton.setIcon(new ImageIcon("resources/icons/viewer.png"));
         _mapButton.addActionListener((e) -> openMapViewer());
+        _toolBar.addSeparator();
         _toolBar.add(_mapButton);
 
         // Regions Button
@@ -65,7 +66,14 @@ public class ControlPanel extends JPanel {
         _runButton = new JButton();
         _runButton.setToolTipText("Run Simulation");
         _runButton.setIcon(new ImageIcon("resources/icons/run.png"));
-        _runButton.addActionListener((e) -> runSimulation());
+        _runButton.addActionListener((e) -> {
+            try {
+                runSimulation();
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        _toolBar.addSeparator();
         _toolBar.add(_runButton);
 
         // Stop Button
@@ -74,9 +82,11 @@ public class ControlPanel extends JPanel {
         _stopButton.setIcon(new ImageIcon("resources/icons/stop.png"));
         _stopButton.addActionListener((e) -> stopSimulation());
         _toolBar.add(_stopButton);
+        _toolBar.addSeparator();
+
 
         // Steps Spinner
-        _stepsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
+        _toolBar.addSeparator();
         _toolBar.add(_stepsSpinner);
 
         // Delta Time Field
@@ -85,6 +95,7 @@ public class ControlPanel extends JPanel {
         _deltaTimeField.add(_deltaTimeLabel);*/
         _deltaTimeField.setToolTipText("Delta Time");
         _deltaTimeField.setText(String.valueOf(Main._dt));
+        _toolBar.addSeparator();
         _toolBar.add(_deltaTimeField);
 
         // Quit Button
@@ -127,7 +138,7 @@ public class ControlPanel extends JPanel {
 
     //figure out a way to display the animal movements
     private void loadAndDisplayAnimalMovement() {
-        Controller controller = _changeRegionsDialog.getController();
+        //Controller controller = _changeRegionsDialog.getController();
 
         //<Animal> animals = controller.getAnimals();
 
@@ -143,13 +154,14 @@ public class ControlPanel extends JPanel {
     }
 
 
-    private void runSimulation() {
+    private void runSimulation() throws InterruptedException {
         _stopped = false;
         _runButton.setEnabled(false);
         _loadButton.setEnabled(false);
         _mapButton.setEnabled(false);
         _regionsButton.setEnabled(false);
         _quitButton.setEnabled(false);
+        _stopButton.setEnabled(true);
         double dt = Double.parseDouble(_deltaTimeField.getText());
         int steps = (int) _stepsSpinner.getValue();
         run_sim(steps, dt);
@@ -159,17 +171,29 @@ public class ControlPanel extends JPanel {
         _stopped = true;
     }
 
-    private void run_sim(int n, double dt) {
+    private void run_sim(int n, double dt) throws InterruptedException {
+
         if (n > 0 && !_stopped) {
             try {
                 _ctrl.advance(dt);
-                SwingUtilities.invokeLater(() -> run_sim(n - 1, dt));
+                SwingUtilities.invokeLater(() -> {
+                    try {
+                        run_sim(n - 1, dt);
+                        Thread.sleep(20);
+
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
             } catch (Exception e) {
                 ViewUtils.showErrorMsg("Error advancing simulation: " + e.getMessage());
                 enableButtons();
                 _stopped = true;
+
             }
-        } else {
+
+        }
+        else {
             enableButtons();
             _stopped = true;
         }
