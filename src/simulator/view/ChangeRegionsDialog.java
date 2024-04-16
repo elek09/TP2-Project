@@ -256,9 +256,11 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
     }
 
     @Override
-    public void onAvanced(double currentTime, RegionManager regionManager, ArrayList<Animal> animals, double dt) {
+    public void onAvanced(double currentTime, RegionManager regionManager, List<AnimalInfo> animals, double dt) {
 
     }
+
+
 
     public Controller getController() {
         return _ctrl;
