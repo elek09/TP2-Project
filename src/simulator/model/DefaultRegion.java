@@ -16,8 +16,8 @@ public class DefaultRegion extends Region implements RegionInfo {
             return _multiplicativeFactor * Math.exp(-Math.max(0, n - _substractionNumHerb) * _speedFactorSheep) * dt;
         }
     }
-    /*@Override     // i think we did it in the builder, but i leave it here just in case
+    @Override
     public String toString() {
         return "Default Region";
-    }*/
+    }
 }
