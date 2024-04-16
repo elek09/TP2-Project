@@ -3,7 +3,6 @@ package simulator.view;
 import simulator.control.Controller;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 
 public class MainWindow extends JFrame {
@@ -35,14 +34,14 @@ public class MainWindow extends JFrame {
         // Create and add the species table to the contentPanel
         SpeciesTableModel speciesModel = new SpeciesTableModel(_ctrl);
         JTable speciesTable = new JTable(speciesModel);
-        speciesTable.setPreferredSize(new Dimension(500, 250));
-        contentPanel.add(new JScrollPane(speciesTable));
+        JPanel speciesPanel = createTitledPanel("Species", speciesTable, 500, 250);
+        contentPanel.add(speciesPanel);
 
         // Create and add the regions table to the contentPanel
         RegionsTableModel regionsModel = new RegionsTableModel(_ctrl);
         JTable regionsTable = new JTable(regionsModel);
-        regionsTable.setPreferredSize(new Dimension(500, 250));
-        contentPanel.add(new JScrollPane(regionsTable));
+        JPanel regionsPanel = createTitledPanel("Regions", regionsTable, 500, 250);
+        contentPanel.add(regionsPanel);
 
         // Add window listener
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -52,14 +51,22 @@ public class MainWindow extends JFrame {
             }
         });
 
-        new InfoTable("Species", new SpeciesTableModel(_ctrl));
-        new InfoTable("Regions", new RegionsTableModel(_ctrl));
-
         // Set window properties
         setLocation(50, 50);
-
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         pack();
         setVisible(true);
+    }
+
+    private JPanel createTitledPanel(String title, JTable table, int width, int height) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(5, 5, 5, 5),
+                BorderFactory.createTitledBorder(title)
+        ));
+        table.setPreferredScrollableViewportSize(new Dimension(width, height));
+        JScrollPane scrollPane = new JScrollPane(table);
+        panel.add(scrollPane, BorderLayout.CENTER);
+        return panel;
     }
 }

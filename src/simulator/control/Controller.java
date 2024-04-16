@@ -135,5 +135,17 @@ public class Controller {
     public void removeObserver(EcoSysObserver o){
         _sim.removeObserver(o);
     }
+
+    public List<String> getAnimalSpecies() {
+        List<String> species = new ArrayList<>();
+        List<Animal> animals = _sim.getAnimals();
+        for (AnimalInfo animal : animals) {
+            String speciesName = animal.get_genetic_code();
+            if (!species.contains(speciesName)) {
+                species.add(speciesName);
+            }
+        }
+        return species;
+    }
 }
 

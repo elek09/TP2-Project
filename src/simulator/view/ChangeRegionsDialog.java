@@ -11,7 +11,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
@@ -74,33 +73,17 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
         JTable table = new JTable(_dataTableModel);
         JScrollPane scrollPane = new JScrollPane(table);
         for (JSONObject regionInfo : _regionsInfo) {
-            JSONObject data = regionInfo.getJSONObject("data");
-            for (String key : data.keySet()) {
-                String value = "";
-                String desc = data.optString(key, "");
-                _dataTableModel.addRow(new String[] { key, value, desc });
-            }
-        }
-
-        /*
-        i will finish it later
-
-        JTable table = new JTable(_dataTableModel);
-        JScrollPane scrollPane = new JScrollPane(table);
-        for (JSONObject regionInfo : _regionsInfo) {
-            if (regionInfo.has("spec")) {
-                JSONObject spec = regionInfo.getJSONObject("spec");
-                if (spec.has("type") && spec.getString("type").equals("dynamic")) {
-                    JSONObject data = regionInfo.getJSONObject("data");
-                    for (String key : data.keySet()) {
-                        String value = "";
-                        String desc = data.optString(key, "");
-                        _dataTableModel.addRow(new String[]{key, value, desc});
-                    }
+            JSONObject data = regionInfo.getJSONObject("data");     // if not data it will be no rows
+            String type = regionInfo.getString("type");
+            if (type.equals("dynamic")) {
+                for (String key : data.keySet()) {
+                    String value = "";
+                    String desc = data.optString(key, "");
+                    _dataTableModel.addRow(new String[] { key, value, desc });
                 }
             }
         }
-         */
+
 
         mainPanel.add(scrollPane);
 

@@ -6,7 +6,9 @@ import simulator.model.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
     private static final long serialVersionUID = 1L;
@@ -22,14 +24,19 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
         _data = new ArrayList<>();
         _animals = new ArrayList<>();
         _ctrl.addObserver(this);
-    }
-    // TODO the rest of the methods go here...
 
-    //The table contains a row for each genetic code with information about the number of animals in each possible state
+        _columns = new ArrayList<>();
+        _columns.add("Species");
+        for (Animal.State state : Animal.State.values() ) {     // header row reading the enum class
+            _columns.add(state.toString());
+        }
+
+        updateData();
+    }
 
     @Override
     public int getRowCount() {
-        return _animals.size();
+        return _data.size();
     }
 
     @Override
@@ -37,14 +44,12 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
         return _columns.size();
     }
 
-    //fucked up
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        AnimalInfo animal = _animals.get(rowIndex);
         if (columnIndex == 0) {
-            return animal.get_genetic_code();
+            return _data.get(rowIndex).get(0);
         } else {
-            return animal.get_state();
+            return _data.get(rowIndex).get(columnIndex);
         }
     }
 
@@ -76,6 +81,49 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 
     @Override
     public void onAvanced(double currentTime, RegionManager regionManager, List<AnimalInfo> animals, double dt) {
-
+        _animals = animals;
+        updateData();
+        fireTableDataChanged();
     }
+
+    @Override
+    public String getColumnName(int column) {
+        return _columns.get(column);
+    }
+
+    private void updateData() {
+        _data.clear();
+
+        // Create a map to store state counts for each species
+        Map<String, Map<Animal.State, Integer>> speciesStateCounts = new HashMap<>();
+
+        // Initialize state counts to zero
+        for (String species : _ctrl.getAnimalSpecies()) {
+            Map<Animal.State, Integer> stateCounts = new HashMap<>();
+            for (Animal.State state : Animal.State.values()) {
+                stateCounts.put(state, 0);
+            }
+            speciesStateCounts.put(species, stateCounts);
+        }
+
+        // Count states for each species
+        for (AnimalInfo animal : _animals) {
+            String species = animal.get_genetic_code();
+            Map<Animal.State, Integer> stateCounts = speciesStateCounts.get(species);
+            Animal.State state = animal.get_state();
+            stateCounts.put(state, stateCounts.get(state) + 1);
+        }
+
+        // Populate data list
+        for (String species : _ctrl.getAnimalSpecies()) {
+            List<Object> rowData = new ArrayList<>();
+            rowData.add(species);
+            Map<Animal.State, Integer> stateCounts = speciesStateCounts.get(species);
+            for (Animal.State state : Animal.State.values()) {
+                rowData.add(stateCounts.get(state));
+            }
+            _data.add(rowData);
+        }
+    }
+
 }

@@ -95,8 +95,13 @@ public class Simulator implements Observable<EcoSysObserver>, JSONable {
      *
      * @return An unmodifiable list of animal information.
      */
+    /*
     public List<? extends AnimalInfo> getAnimals() {
         return Collections.unmodifiableList(animals);
+    }*/
+
+    public List<Animal> getAnimals() {
+        return animals;
     }
 
     public double get_time() {
