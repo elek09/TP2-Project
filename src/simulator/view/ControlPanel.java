@@ -86,15 +86,18 @@ public class ControlPanel extends JPanel {
 
 
         // Steps Spinner
+        _toolBar.add(new JLabel("Steps:"));
         _toolBar.addSeparator();
         _toolBar.add(_stepsSpinner);
+        _toolBar.addSeparator();
+
 
         // Delta Time Field
         _deltaTimeField = new JTextField();
-        /*_deltaTimeLabel = new JLabel("Delta-Time: ");
-        _deltaTimeField.add(_deltaTimeLabel);*/
+        _deltaTimeField.setPreferredSize(new Dimension(70, 50));
         _deltaTimeField.setToolTipText("Delta Time");
         _deltaTimeField.setText(String.valueOf(Main._dt));
+        _toolBar.add(new JLabel("Delta-Time:"));
         _toolBar.addSeparator();
         _toolBar.add(_deltaTimeField);
 

@@ -20,7 +20,6 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
     SpeciesTableModel(Controller ctrl) {
         // TODO initialise the corresponding data structures
         _ctrl = ctrl;
-        _columns = new ArrayList<>();
         _data = new ArrayList<>();
         _animals = new ArrayList<>();
         _ctrl.addObserver(this);
@@ -94,10 +93,9 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
     private void updateData() {
         _data.clear();
 
-        // Create a map to store state counts for each species
         Map<String, Map<Animal.State, Integer>> speciesStateCounts = new HashMap<>();
 
-        // Initialize state counts to zero
+        // Initialize
         for (String species : _ctrl.getAnimalSpecies()) {
             Map<Animal.State, Integer> stateCounts = new HashMap<>();
             for (Animal.State state : Animal.State.values()) {
@@ -106,7 +104,7 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
             speciesStateCounts.put(species, stateCounts);
         }
 
-        // Count states for each species
+        // Count states
         for (AnimalInfo animal : _animals) {
             String species = animal.get_genetic_code();
             Map<Animal.State, Integer> stateCounts = speciesStateCounts.get(species);
@@ -114,7 +112,6 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
             stateCounts.put(state, stateCounts.get(state) + 1);
         }
 
-        // Populate data list
         for (String species : _ctrl.getAnimalSpecies()) {
             List<Object> rowData = new ArrayList<>();
             rowData.add(species);
