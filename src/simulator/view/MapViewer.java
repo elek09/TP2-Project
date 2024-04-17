@@ -50,7 +50,7 @@ public class MapViewer extends AbstractMapViewer{
 
 	private boolean _showHelp;
 
-	public MapViewer(Controller _ctrl) {
+	public MapViewer(Controller ctrl) {
 		initGUI();
 	}
 

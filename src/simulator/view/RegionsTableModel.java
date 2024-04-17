@@ -73,10 +73,6 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
     public void onRegionSet(int row, int col, MapInfo map, RegionInfo r) {
     }
 
-    private void updateRowData(List<Object> rowData, RegionInfo r) {
-    }
-
-
     @Override
     public void open(Component parent) {
 
@@ -96,7 +92,7 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
             List<Object> rowData = new ArrayList<>();
             rowData.add(regionData.row());
             rowData.add(regionData.col());
-            rowData.add(regionData.r().toString());
+            rowData.add(regionData.r().toString());             //description but not sure its enough to use toString
 
             // Initialize
             Map<Diet, Integer> dietCounts = new HashMap<>();
@@ -112,6 +108,11 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
 
             for (Diet diet : Diet.values()) {
                 rowData.add(dietCounts.get(diet));
+            }
+
+            // description
+            for (AnimalInfo animal : regionData.r().getAnimalsInfo()) {
+                rowData.add(animal.get_sight_range());
             }
 
             _data.add(rowData);
