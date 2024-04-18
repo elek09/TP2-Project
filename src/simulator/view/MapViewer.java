@@ -8,6 +8,7 @@ import simulator.model.MapInfo;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -25,15 +26,11 @@ public class MapViewer extends AbstractMapViewer{
 	int _region_width;
 	int _region_height;
 
-	//not used
-	//private Animal _selectedAnimal;
-
 	Animal.State _currState;
+	private int i = 0;
 
 	volatile private Collection<AnimalInfo> _objs;
 	volatile private Double _time;
-	//not used
-	//private Timer timer;
 
 	private static class SpeciesInfo {
 		private Integer _count;
@@ -66,12 +63,16 @@ public class MapViewer extends AbstractMapViewer{
 						repaint();
 						break;
 					case 's':
-						/*if (_currState == null) {
-							_currState = Animal.State.values()[0];
-						} else {
-							_currState = Animal.State.values()[(_currState.ordinal() + 1) % Animal.State.values().length];
-						}*/
-						_currState = Animal.State.values()[(_currState.ordinal() + 1) % Animal.State.values().length];
+						Animal.State[] values = Animal.State.values();
+
+						if(i < values.length){
+							_currState = values[i];
+							i++;
+						}
+						else{
+							_currState = null;
+							i = 0;
+						}
 
 						repaint();
 					default:
@@ -112,9 +113,6 @@ public class MapViewer extends AbstractMapViewer{
 			gr.setColor(Color.BLACK);
 			gr.drawString("h: toggle help, s: change state", 10, 10);
 		}
-
-
-
 	}
 
 	private boolean visible(AnimalInfo a) {
@@ -122,15 +120,12 @@ public class MapViewer extends AbstractMapViewer{
 	}
 
 	private void drawObjects(Graphics2D g, Collection<AnimalInfo> animals, Double time) {
-
-		//done
 		for (int i = 0; i < _rows; i++) {
 			for (int j = 0; j < _cols; j++) {
 				g.setColor(Color.LIGHT_GRAY);
 				g.drawRect(j * _region_width, i * _region_height, _region_width, _region_height);
 			}
 		}
-
 		// Draw the animals
 		for (AnimalInfo a : animals) {
 
@@ -146,7 +141,6 @@ public class MapViewer extends AbstractMapViewer{
 				esp_info = new SpeciesInfo(col);
 				_kindsInfo.put(a.get_genetic_code(), esp_info);
 			}
-			// Use ViewUtils.get_color(a.get_genetic_code()) for color
 
 			// Increment the species counter
 			esp_info._count++;
@@ -188,7 +182,6 @@ public class MapViewer extends AbstractMapViewer{
 
 	@Override
 	public void update(List<AnimalInfo> objs, Double time) {
-		//TODO Store objs and time in the corresponding attributes and call repaint() to redraw the component
 		_objs = objs;
 		_time = time;
 		repaint();
@@ -196,7 +189,6 @@ public class MapViewer extends AbstractMapViewer{
 
 	@Override
 	public void reset(double time, MapInfo map, List<AnimalInfo> animals) {
-		// TODO Update the attributes _width, _height, _cols, _rows, etc.
 		this._cols = map.get_cols();
 		this._rows = map.get_rows();
 		this._width = map.get_width();
@@ -204,10 +196,8 @@ public class MapViewer extends AbstractMapViewer{
 		this._region_width = _width / _cols;
 		this._region_height = _height / _rows;
 
-		// TODO This changes the size of the component, thus changing the size of the window because in MapWindow we call pack() after calling reset
 		setPreferredSize(new Dimension(map.get_width(), map.get_height()));
 
-		// TODO Draw the state
 		update(animals, time);
 	}
 
