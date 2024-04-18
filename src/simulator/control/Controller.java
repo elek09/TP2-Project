@@ -47,13 +47,7 @@ public class Controller {
             JSONArray colArray = regionSpec.getJSONArray("col");
             JSONObject spec = regionSpec.getJSONObject("spec");
             if (rowArray != null && colArray != null) {
-                for (int r = 0; r < rowArray.length(); r++) {
-                    for (int c = 0; c < colArray.length(); c++) {
-                        int x = rowArray.getInt(r);
-                        int y = colArray.getInt(c);
-                        _sim.set_region(x, y, spec);
-                    }
-                }
+                json_to_sim_converter(rowArray, colArray, spec);
             } else {
                 int row = regionSpec.getInt("row");
                 int col = regionSpec.getInt("col");
@@ -120,9 +114,36 @@ public class Controller {
         _sim.reset(cols, rows, width, height);
     }
     public void set_regions(JSONObject rs) {
-        JSONArray regions = rs.getJSONArray("regions");
-        load(regions);
+        JSONArray regionsArray = rs.getJSONArray("regions");
+        for (int i = 0; i < regionsArray.length(); i++) {
+            JSONObject regionObject = regionsArray.getJSONObject(i);
+            JSONArray rowArray = regionObject.getJSONArray("row");
+            JSONArray colArray = regionObject.getJSONArray("col");
+            JSONObject spec = regionObject.getJSONObject("spec");
+
+            if (spec.getString("type").equals("dynamic")) {
+            } else {
+                if (rowArray.length() == 1 && colArray.length() == 1) {
+                    int row = rowArray.getInt(0);
+                    int col = colArray.getInt(0);
+                    _sim.set_region(row, col, spec);
+                } else {
+                    json_to_sim_converter(rowArray, colArray, spec);
+                }
+            }
+        }
     }
+
+    private void json_to_sim_converter(JSONArray rowArray, JSONArray colArray, JSONObject spec) {
+        for (int j = 0; j < rowArray.length(); j++) {
+            for (int k = 0; k < colArray.length(); k++) {
+                int row = rowArray.getInt(j);
+                int col = colArray.getInt(k);
+                _sim.set_region(row, col, spec);
+            }
+        }
+    }
+
 
     public void advance(double dt) {
         _sim.advance(dt);

@@ -72,18 +72,6 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 
         JTable table = new JTable(_dataTableModel);
         JScrollPane scrollPane = new JScrollPane(table);
-        for (JSONObject regionInfo : _regionsInfo) {
-            JSONObject data = regionInfo.getJSONObject("data");     // if not data it will be no rows
-            String type = regionInfo.getString("type");
-            if (type.equals("dynamic")) {
-                for (String key : data.keySet()) {
-                    String value = "";
-                    String desc = data.optString(key, "");
-                    _dataTableModel.addRow(new String[] { key, value, desc });
-                }
-            }
-        }
-
 
         mainPanel.add(scrollPane);
 
@@ -128,6 +116,28 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
         buttonPanel.add(cancelButton);
         mainPanel.add(buttonPanel);
 
+        regionsComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (int i = _dataTableModel.getRowCount() - 1; i >= 0; i--) {
+                    _dataTableModel.removeRow(i);
+                }
+
+                String selectedRegionType = (String) regionsComboBox.getSelectedItem();
+                if ("dynamic".equals(selectedRegionType)) {
+                    for (JSONObject regionInfo : _regionsInfo) {
+                        JSONObject data = regionInfo.optJSONObject("data");
+                        if (data != null) {
+                            for (String key : data.keySet()) {
+                                String value = "";
+                                String desc = data.optString(key, "");
+                                _dataTableModel.addRow(new String[]{key, value, desc});
+                            }
+                        }
+                    }
+                }
+            }
+        });
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -163,15 +173,18 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
                 JSONObject regionsObject = new JSONObject();
                 regionsObject.put("regions", regionsArray);
 
+                //we have to pass the regionsObject to the region manager
+
                 try {
                     _ctrl.set_regions(regionsObject);
                     _status = 1;
-                    setVisible(false);
+                     setVisible(false);
                 } catch (Exception ex) {
                     ViewUtils.showErrorMsg(ex.getMessage());
                 }
             }
         });
+
 
 
         cancelButton.addActionListener(new ActionListener() {
