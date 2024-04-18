@@ -79,7 +79,7 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
     }
 
     @Override
-    public void onAvanced(double currentTime, RegionManager regionManager, List<AnimalInfo> animals, double dt) {
+    public void onAdvanced(double currentTime, RegionManager regionManager, List<AnimalInfo> animals, double dt) {
         _regionManager = regionManager;
         updateData();
         fireTableDataChanged();

@@ -81,7 +81,7 @@ public class StatusBar extends JPanel implements EcoSysObserver {
     }
 
     @Override
-    public void onAvanced(double currentTime, RegionManager regionManager, List<AnimalInfo> animals, double dt) {
+    public void onAdvanced(double currentTime, RegionManager regionManager, List<AnimalInfo> animals, double dt) {
         updateTime(currentTime);
         updateAnimalCount(animals.size());
     }

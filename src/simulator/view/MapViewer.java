@@ -25,14 +25,15 @@ public class MapViewer extends AbstractMapViewer{
 	int _region_width;
 	int _region_height;
 
-	private Animal _selectedAnimal;
+	//not used
+	//private Animal _selectedAnimal;
 
 	Animal.State _currState;
 
 	volatile private Collection<AnimalInfo> _objs;
 	volatile private Double _time;
-
-	private Timer timer;
+	//not used
+	//private Timer timer;
 
 	private static class SpeciesInfo {
 		private Integer _count;
@@ -65,6 +66,13 @@ public class MapViewer extends AbstractMapViewer{
 						repaint();
 						break;
 					case 's':
+						/*if (_currState == null) {
+							_currState = Animal.State.values()[0];
+						} else {
+							_currState = Animal.State.values()[(_currState.ordinal() + 1) % Animal.State.values().length];
+						}*/
+						_currState = Animal.State.values()[(_currState.ordinal() + 1) % Animal.State.values().length];
+
 						repaint();
 					default:
 				}
@@ -99,20 +107,23 @@ public class MapViewer extends AbstractMapViewer{
 
 		if (_objs != null)
 			drawObjects(gr, _objs, _time);
+
+		if (_showHelp) {
+			gr.setColor(Color.BLACK);
+			gr.drawString("h: toggle help, s: change state", 10, 10);
+		}
+
+
+
 	}
 
-
-
 	private boolean visible(AnimalInfo a) {
-		if(_selectedAnimal == null)
-			return true;
-		else
-			return _selectedAnimal.equals(a);
+		return a.get_state() == _currState || _currState == null;
 	}
 
 	private void drawObjects(Graphics2D g, Collection<AnimalInfo> animals, Double time) {
 
-		// TODO Draw the grid of regions
+		//done
 		for (int i = 0; i < _rows; i++) {
 			for (int j = 0; j < _cols; j++) {
 				g.setColor(Color.LIGHT_GRAY);
@@ -123,23 +134,24 @@ public class MapViewer extends AbstractMapViewer{
 		// Draw the animals
 		for (AnimalInfo a : animals) {
 
-
 			// If not visible, skip iteration
 			if (!visible(a))
 				continue;
 
 			// Species information of 'a'
-			SpeciesInfo esp_info = _kindsInfo.computeIfAbsent(a.get_genetic_code(), k -> new SpeciesInfo(ViewUtils.get_color(a.get_genetic_code())));
-
+			SpeciesInfo esp_info = _kindsInfo.get(a.get_genetic_code());
 			// Add an entry to the map if esp_info is null
 			if (esp_info == null) {
-				esp_info = new SpeciesInfo(ViewUtils.get_color(a.get_genetic_code()));
+				Color col = ViewUtils.get_color(a.get_genetic_code());
+				esp_info = new SpeciesInfo(col);
 				_kindsInfo.put(a.get_genetic_code(), esp_info);
 			}
 			// Use ViewUtils.get_color(a.get_genetic_code()) for color
 
 			// Increment the species counter
 			esp_info._count++;
+			g.setColor(esp_info._color);
+			g.fillOval((int) a.get_position().getX(), (int) a.get_position().getY(), 10, 10);
 		}
 
 		// Draw the visible state label, if not null

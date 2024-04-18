@@ -1,10 +1,6 @@
 package simulator.model;
 
-import simulator.view.ChangeRegionsDialog;
-
-import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface EcoSysObserver {
@@ -13,6 +9,6 @@ public interface EcoSysObserver {
     void onAnimalAdded(double time, MapInfo map, List<AnimalInfo> animals, AnimalInfo a);
     void onRegionSet(int row, int col, MapInfo map, RegionInfo r);
     void open(Component parent);
-    void onAvanced(double currentTime, RegionManager regionManager, List<AnimalInfo> animals, double dt);
+    void onAdvanced(double currentTime, RegionManager regionManager, List<AnimalInfo> animals, double dt);
 
 }

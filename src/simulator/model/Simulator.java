@@ -4,7 +4,6 @@ import org.json.JSONObject;
 import simulator.factories.Factory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Simulator implements Observable<EcoSysObserver>, JSONable {
@@ -132,7 +131,7 @@ public class Simulator implements Observable<EcoSysObserver>, JSONable {
         }
         regionManager.update_all_regions(dt);
         for (EcoSysObserver observer : observers) {
-            observer.onAvanced(currentTime, regionManager, new ArrayList<>(animals), dt);
+            observer.onAdvanced(currentTime, regionManager, new ArrayList<>(animals), dt);
         }
     }
 
