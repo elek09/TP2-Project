@@ -145,7 +145,7 @@ public class MapViewer extends AbstractMapViewer{
 			// Increment the species counter
 			esp_info._count++;
 			g.setColor(esp_info._color);
-			g.fillOval((int) a.get_position().getX(), (int) a.get_position().getY(), 10, 10);
+			g.fillOval((int) a.get_position().getX(), (int) a.get_position().getY(), (int) a.get_age() + 3, (int) a.get_age() + 3);
 		}
 
 		// Draw the visible state label, if not null

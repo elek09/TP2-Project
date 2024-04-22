@@ -63,7 +63,6 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
         _region_mngr = null;
         _mate_strategy = mate_strategy;
     }
-
     /**
      * Initializes the attributes of the animal with the genetic code, diet, sight range, speed, and mate strategy of the parents.
      *

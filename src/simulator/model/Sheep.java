@@ -2,7 +2,7 @@ package simulator.model;
 
 import simulator.misc.Vector2D;
 
-public class Sheep extends Animal {
+public class    Sheep extends Animal {
 
     private Animal _danger_source;
     private SelectionStrategy _danger_strategy;
