@@ -24,7 +24,6 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
     private List<JSONObject> _regionsInfo;
     private int _status;
     private String[] _headers = { "Key", "Value", "Description" };
-    // TODO add any necessary attributes here...
 
     ChangeRegionsDialog(Controller ctrl) {
         super((Frame)null, true);

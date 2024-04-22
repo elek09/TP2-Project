@@ -135,20 +135,7 @@ public class ControlPanel extends JPanel {
 
     private void openMapViewer() {
         MapWindow mapWindow = new MapWindow(_ctrl, ViewUtils.getWindow(this));
-
-        loadAndDisplayAnimalMovement();
     }
-
-    //figure out a way to display the animal movements
-    private void loadAndDisplayAnimalMovement() {
-        //Controller controller = _changeRegionsDialog.getController();
-
-        //<Animal> animals = controller.getAnimals();
-
-        //_mapViewer.update(animals, 0.0);
-    }
-
-
     private void openRegionsDialog() {
         _changeRegionsDialog.open(ViewUtils.getWindow(this));
 

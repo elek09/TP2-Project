@@ -58,10 +58,12 @@ public class MapViewer extends AbstractMapViewer{
 			@Override
 			public void keyPressed(KeyEvent e) {
 				switch (e.getKeyChar()) {
+					case 'H':
 					case 'h':
 						_showHelp = !_showHelp;
 						repaint();
 						break;
+					case 'S':
 					case 's':
 						Animal.State[] values = Animal.State.values();
 

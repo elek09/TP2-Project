@@ -115,23 +115,26 @@ public class Controller {
     }
     public void set_regions(JSONObject rs) {
         JSONArray regionsArray = rs.getJSONArray("regions");
+
         for (int i = 0; i < regionsArray.length(); i++) {
             JSONObject regionObject = regionsArray.getJSONObject(i);
             JSONArray rowArray = regionObject.getJSONArray("row");
             JSONArray colArray = regionObject.getJSONArray("col");
             JSONObject spec = regionObject.getJSONObject("spec");
 
-            if (spec.getString("type").equals("dynamic")) {
-            } else {
-                if (rowArray.length() == 1 && colArray.length() == 1) {
-                    int row = rowArray.getInt(0);
-                    int col = colArray.getInt(0);
+            int startRow = rowArray.getInt(0);
+            int endRow = rowArray.getInt(1);
+            int startCol = colArray.getInt(0);
+            int endCol = colArray.getInt(1);
+
+            for (int row = startRow; row <= endRow; row++) {
+                for (int col = startCol; col <= endCol; col++) {
                     _sim.set_region(row, col, spec);
-                } else {
-                    json_to_sim_converter(rowArray, colArray, spec);
                 }
             }
+
         }
+
     }
 
     private void json_to_sim_converter(JSONArray rowArray, JSONArray colArray, JSONObject spec) {

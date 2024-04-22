@@ -56,10 +56,11 @@ public class Simulator implements Observable<EcoSysObserver>, JSONable {
      * @param r_json The JSON object representing the region to be set.
      */
     public void set_region(int row, int col, JSONObject r_json) {
-        if (r_json == null) {
+        if (r_json != null) {
             Region region = regionsFactory.createInstance(r_json);
             set_region(row, col, region);
         }
+
     }
 
     /**
