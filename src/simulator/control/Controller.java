@@ -132,9 +132,7 @@ public class Controller {
                     _sim.set_region(row, col, spec);
                 }
             }
-
         }
-
     }
 
     private void json_to_sim_converter(JSONArray rowArray, JSONArray colArray, JSONObject spec) {
