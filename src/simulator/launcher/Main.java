@@ -26,6 +26,7 @@ public class Main {
     private static final ExecMode _mode = ExecMode.GUI;
     public static Factory<Animal> animal_factory;
     public static Factory<Region> region_factory;
+    public static Factory<SelectionStrategy> selection_factory;
     // some attributes to stores values corresponding to command-line parameters
     //
     private static Double _time = 0.0;
@@ -206,25 +207,24 @@ public class Main {
         selection_strategy_builders.add(new SelectFirstBuilder());
         selection_strategy_builders.add(new SelectClosestBuilder());
         selection_strategy_builders.add(new SelectYoungestBuilder());
-        Factory<SelectionStrategy> selection_strategy_factory = new BuilderBasedFactory<SelectionStrategy>(selection_strategy_builders);
+        selection_factory = new BuilderBasedFactory<SelectionStrategy>(selection_strategy_builders);
 
         try {
             //SelectionStrategy strategy = selection_strategy_factory.createInstance(load_JSON_file(_in_file));
             SelectionStrategy strategy = new SelectClosest();
             SelectionStrategy mate_strategy = new SelectYoungest();
 
-
             //animal factory
             List<Builder<Animal>> animal_builders = new ArrayList<>();
             animal_builders.add(new SheepBuilder(strategy));
             animal_builders.add(new WolfBuilder(strategy));
-            animal_factory = new BuilderBasedFactory<Animal>(animal_builders);
+            animal_factory = new BuilderBasedFactory<>(animal_builders);
 
             //region factory
             List<Builder<Region>> region_builders = new ArrayList<>();
             region_builders.add(new DefaultRegionBuilder());
             region_builders.add(new DynamicSupplyRegionBuilder());
-            region_factory = new BuilderBasedFactory<Region>(region_builders);
+            region_factory = new BuilderBasedFactory<>(region_builders);
         } catch (Exception e) {
             System.err.println("Error while loading the input file: " + e.getLocalizedMessage());
 

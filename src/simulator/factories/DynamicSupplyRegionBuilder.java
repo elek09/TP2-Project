@@ -2,21 +2,22 @@ package simulator.factories;
 
 import org.json.JSONObject;
 import simulator.model.DynamicSupplyRegion;
+import simulator.model.Region;
 
 /**
  * Builder for the DynamicSupplyRegion class object.
  */
-public class DynamicSupplyRegionBuilder<T> extends Builder<T> {
+public class DynamicSupplyRegionBuilder extends Builder<Region> {
     public DynamicSupplyRegionBuilder() {
         super("dynamic", "Creates a dynamic supply region with the specified parameters.");
     }
 
     @Override
-    protected T create_instance(JSONObject data) throws IllegalArgumentException {
+    protected Region create_instance(JSONObject data) throws IllegalArgumentException {
         fill_in_data(data);
         double factor = data.optDouble("factor", 2.0);
         double food = data.optDouble("food", 1000.0);
-        return (T) new DynamicSupplyRegion(factor, food);
+        return new DynamicSupplyRegion(factor, food);
     }
 
     @Override

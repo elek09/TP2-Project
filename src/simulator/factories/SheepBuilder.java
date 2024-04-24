@@ -7,7 +7,7 @@ import simulator.model.*;
 /**
  * Builder for the Sheep class object.
  */
-public class SheepBuilder extends Builder {
+public class SheepBuilder extends Builder<Animal> {
     private final SelectionStrategy _strategy;
     private SelectionStrategy mateStrategy;
     private SelectionStrategy dangerStrategy;

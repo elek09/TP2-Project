@@ -2,21 +2,19 @@ package simulator.factories;
 
 import org.json.JSONObject;
 import simulator.model.DefaultRegion;
+import simulator.model.Region;
 
 /**
  * Builder for the DefaultRegion class object.
  */
-public class DefaultRegionBuilder<T> extends Builder<T> {
+public class DefaultRegionBuilder extends Builder<Region> {
     public DefaultRegionBuilder() {
         super("default", "Infinite food supply");
     }
 
     @Override
-    protected T create_instance(JSONObject data) throws IllegalArgumentException {
-        return (T) new DefaultRegion();
+    protected Region create_instance(JSONObject data) throws IllegalArgumentException {
+        return new DefaultRegion();
     }
 
-    @Override
-    protected void fill_in_data(JSONObject o) {
-    }
 }

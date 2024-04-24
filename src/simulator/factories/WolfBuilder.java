@@ -7,7 +7,7 @@ import simulator.model.*;
 /**
  * Builder for the Wolf class objects.
  */
-public class WolfBuilder extends Builder {
+public class WolfBuilder extends Builder<Animal> {
     private final SelectionStrategy _strategy;
     private SelectionStrategy mateStrategy;
     private SelectionStrategy huntStrategy;
