@@ -18,9 +18,7 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo, Consta
     }
 
     @Override
-    public void update(double dt) {
-
-    }
+    public void update(double dt) {   }
 
     @Override
     public double get_food(Animal a, double dt) {

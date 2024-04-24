@@ -6,14 +6,14 @@ import simulator.model.DefaultRegion;
 /**
  * Builder for the DefaultRegion class object.
  */
-public class DefaultRegionBuilder extends Builder {
+public class DefaultRegionBuilder<T> extends Builder<T> {
     public DefaultRegionBuilder() {
         super("default", "Infinite food supply");
     }
 
     @Override
-    protected Object create_instance(JSONObject data) throws IllegalArgumentException {
-        return new DefaultRegion();
+    protected T create_instance(JSONObject data) throws IllegalArgumentException {
+        return (T) new DefaultRegion();
     }
 
     @Override

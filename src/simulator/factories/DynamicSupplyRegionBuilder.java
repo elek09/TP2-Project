@@ -6,16 +6,17 @@ import simulator.model.DynamicSupplyRegion;
 /**
  * Builder for the DynamicSupplyRegion class object.
  */
-public class DynamicSupplyRegionBuilder extends Builder {
+public class DynamicSupplyRegionBuilder<T> extends Builder<T> {
     public DynamicSupplyRegionBuilder() {
         super("dynamic", "Creates a dynamic supply region with the specified parameters.");
     }
 
     @Override
-    protected Object create_instance(JSONObject data) throws IllegalArgumentException {
+    protected T create_instance(JSONObject data) throws IllegalArgumentException {
+        fill_in_data(data);
         double factor = data.optDouble("factor", 2.0);
         double food = data.optDouble("food", 1000.0);
-        return new DynamicSupplyRegion(factor, food);
+        return (T) new DynamicSupplyRegion(factor, food);
     }
 
     @Override

@@ -83,7 +83,8 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
         if (row >= 0 && row < _rows && col >= 0 && col < _cols) {
             // Get the current region at the specified row and column
             Region currentRegion = _regions[col][row];
-
+            // Set the region at the specified row and column to the new region
+            _regions[col][row] = r;
             // Add all the animals from the current region to the new region
             for (Map.Entry<Animal, Region> entry : _animal_region.entrySet()) {
                 if (entry.getValue().equals(currentRegion)) {
@@ -95,8 +96,6 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
                 }
             }
 
-            // Set the region at the specified row and column to the new region
-            _regions[col][row] = r;
         } else {
             // Throw an exception if the row or col are out of range
             throw new IllegalArgumentException("Row or column out of range.");

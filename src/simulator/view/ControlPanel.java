@@ -84,7 +84,6 @@ public class ControlPanel extends JPanel {
         _toolBar.add(_stopButton);
         _toolBar.addSeparator();
 
-
         // Steps Spinner
         _toolBar.add(new JLabel("Steps:"));
         _toolBar.addSeparator();

@@ -23,7 +23,7 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
     private Controller _ctrl;
     private List<JSONObject> _regionsInfo;
     private int _status;
-    private String[] _headers = { "Key", "Value", "Description" };
+    private String[] _headers = { "Key", "Value", "Description"};
 
     ChangeRegionsDialog(Controller ctrl) {
         super((Frame)null, true);
@@ -115,72 +115,66 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
         buttonPanel.add(cancelButton);
         mainPanel.add(buttonPanel);
 
-        regionsComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                for (int i = _dataTableModel.getRowCount() - 1; i >= 0; i--) {
-                    _dataTableModel.removeRow(i);
-                }
+        regionsComboBox.addActionListener(e -> {
+            for (int i = _dataTableModel.getRowCount() - 1; i >= 0; i--) {
+                _dataTableModel.removeRow(i);
+            }
 
-                String selectedRegionType = (String) regionsComboBox.getSelectedItem();
-                if ("dynamic".equals(selectedRegionType)) {
-                    for (JSONObject regionInfo : _regionsInfo) {
-                        JSONObject data = regionInfo.optJSONObject("data");
-                        if (data != null) {
-                            for (String key : data.keySet()) {
-                                String value = "";
-                                String desc = data.optString(key, "");
-                                _dataTableModel.addRow(new String[]{key, value, desc});
-                            }
+            String selectedRegionType = (String) regionsComboBox.getSelectedItem();
+            if ("dynamic".equals(selectedRegionType)) {
+                for (JSONObject regionInfo : _regionsInfo) {
+                    JSONObject data = regionInfo.optJSONObject("data");
+                    if (data != null) {
+                        for (String key : data.keySet()) {
+                            String value = "";
+                            String desc = data.optString(key, "");
+                            _dataTableModel.addRow(new String[]{key, value, desc});
                         }
                     }
                 }
             }
         });
-        okButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Implement OK button functionality
-                String regionType = (String) regionsComboBox.getSelectedItem();
-                int selectedRegionIndex = regionsComboBox.getSelectedIndex();
-                JSONObject regionInfo = _regionsInfo.get(selectedRegionIndex);
-                JSONArray rowArray = new JSONArray();
-                JSONArray colArray = new JSONArray();
+        okButton.addActionListener(e -> {
+            // Implement OK button functionality
+            String regionType = (String) regionsComboBox.getSelectedItem();
+            int selectedRegionIndex = regionsComboBox.getSelectedIndex();
+            JSONObject regionInfo = _regionsInfo.get(selectedRegionIndex);
+            JSONArray rowArray = new JSONArray();
+            JSONArray colArray = new JSONArray();
 
-                // Obtain row and column information
-                String fromRow = (String) fromRowComboBox.getSelectedItem();
-                String toRow = (String) toRowComboBox.getSelectedItem();
-                String fromCol = (String) fromColComboBox.getSelectedItem();
-                String toCol = (String) toColComboBox.getSelectedItem();
+            // Obtain row and column information
+            String fromRow = (String) fromRowComboBox.getSelectedItem();
+            String toRow = (String) toRowComboBox.getSelectedItem();
+            String fromCol = (String) fromColComboBox.getSelectedItem();
+            String toCol = (String) toColComboBox.getSelectedItem();
 
-                rowArray.put(Integer.parseInt(fromRow));
-                rowArray.put(Integer.parseInt(toRow));
-                colArray.put(Integer.parseInt(fromCol));
-                colArray.put(Integer.parseInt(toCol));
+            rowArray.put(Integer.parseInt(fromRow));
+            rowArray.put(Integer.parseInt(toRow));
+            colArray.put(Integer.parseInt(fromCol));
+            colArray.put(Integer.parseInt(toCol));
 
-                JSONObject spec = new JSONObject();
-                spec.put("type", regionType);
-                spec.put("data", regionInfo.getJSONObject("data"));
+            JSONObject spec = new JSONObject();
+            spec.put("type", regionType);
+            spec.put("data", regionInfo.getJSONObject("data"));
 
-                JSONArray regionsArray = new JSONArray();
-                JSONObject regionObject = new JSONObject();
-                regionObject.put("row", rowArray);
-                regionObject.put("col", colArray);
-                regionObject.put("spec", spec);
-                regionsArray.put(regionObject);
+            JSONArray regionsArray = new JSONArray();
+            JSONObject regionObject = new JSONObject();
+            regionObject.put("row", rowArray);
+            regionObject.put("col", colArray);
+            regionObject.put("spec", spec);
+            regionsArray.put(regionObject);
 
-                JSONObject regionsObject = new JSONObject();
-                regionsObject.put("regions", regionsArray);
+            JSONObject regionsObject = new JSONObject();
+            regionsObject.put("regions", regionsArray);
 
-                //we have to pass the regionsObject to the region manager
+            //we have to pass the regionsObject to the region manager
 
-                try {
-                    _ctrl.set_regions(regionsObject);
-                    _status = 1;
-                     setVisible(false);
-                } catch (Exception ex) {
-                    ViewUtils.showErrorMsg(ex.getMessage());
-                }
+            try {
+                _ctrl.set_regions(regionsObject);
+                _status = 1;
+                 setVisible(false);
+            } catch (Exception ex) {
+                ViewUtils.showErrorMsg(ex.getMessage());
             }
         });
 
@@ -242,10 +236,12 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 
     @Override
     public void open(Component parent) {
-        setLocation(
+        setLocationRelativeTo(parent);
+        /*setLocation(
                 parent.getLocation().x + parent.getWidth() / 2 - getWidth() / 2,
                 parent.getLocation().y + parent.getHeight() / 2 - getHeight() / 2
-        );
+        );*/
+
         pack();
         setVisible(true);
     }
