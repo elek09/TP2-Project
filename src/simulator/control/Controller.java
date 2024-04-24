@@ -25,8 +25,7 @@ public class Controller {
      */
     public void load_data(JSONObject data) {
         if (data.has("regions")) {
-            JSONArray regions = data.optJSONArray("regions");
-            load(regions);
+            load(data);
         }
 
         JSONArray animals = data.getJSONArray("animals");
@@ -40,20 +39,44 @@ public class Controller {
         }
     }
 
-    private void load(JSONArray regions) {
-        for (int i = 0; i < regions.length(); i++) {
-            JSONObject regionSpec = regions.getJSONObject(i);
-            JSONArray rowArray = regionSpec.getJSONArray("row");
-            JSONArray colArray = regionSpec.getJSONArray("col");
-            JSONObject spec = regionSpec.getJSONObject("spec");
-            if (rowArray != null && colArray != null) {
-                json_to_sim_converter(rowArray, colArray, spec);
-            } else {
-                int row = regionSpec.getInt("row");
-                int col = regionSpec.getInt("col");
-                _sim.set_region(row, col, spec);
+    private void load(JSONObject regions) {
+        JSONArray regionsArray = regions.getJSONArray("regions");
+        for (int i=0; i < regionsArray.length(); ++i){
+            JSONObject r_json = regionsArray.getJSONObject(i);
+
+            JSONArray rowArray = r_json.optJSONArray("row");
+            JSONArray colArray = r_json.optJSONArray("col");
+            JSONObject spec = r_json.getJSONObject("spec");
+
+            if(rowArray != null && colArray != null){
+                int startRow = rowArray.getInt(0);
+                int endRow = rowArray.getInt(1);
+                int startCol = rowArray.getInt(0);
+                int endCol = rowArray.getInt(1);
+
+                for (int j = startRow; j < endRow; j++) {
+                    for (int k = startCol; k < endCol; k++) {
+                        _sim.set_region(j, k, spec);
+                    }
+                }
+
             }
         }
+
+
+//        for (int i = 0; i < regions.length(); i++) {
+//            JSONObject regionSpec = regions.getJSONObject(i);
+//            JSONArray rowArray = regionSpec.getJSONArray("row");
+//            JSONArray colArray = regionSpec.getJSONArray("col");
+//            JSONObject spec = regionSpec.getJSONObject("spec");
+//            if (rowArray != null && colArray != null) {
+//                json_to_sim_converter(rowArray, colArray, spec);
+//            } else {
+//                int row = regionSpec.getInt("row");
+//                int col = regionSpec.getInt("col");
+//                _sim.set_region(row, col, spec);
+//            }
+//        }
     }
 
     /**

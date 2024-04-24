@@ -1,6 +1,7 @@
 package simulator.view;
 
 import org.json.JSONObject;
+import org.json.JSONTokener;
 import simulator.control.Controller;
 import simulator.launcher.Main;
 import simulator.model.Animal;
@@ -9,6 +10,8 @@ import simulator.model.AnimalInfo;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -122,10 +125,23 @@ public class ControlPanel extends JPanel {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = _fc.getSelectedFile();
             try {
-                String content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
-                JSONObject json = new JSONObject(content);
-                _ctrl.reset(json.getInt("cols"), json.getInt("rows"), json.getInt("width"), json.getInt("height"));
-                _ctrl.load_data(json);
+                InputStream is = new FileInputStream(file);
+
+                JSONObject jsonFile = new JSONObject(new JSONTokener(is));
+                is.close();
+
+                int cols = jsonFile.getInt("cols");
+                int rows = jsonFile.getInt("rows");
+                int width = jsonFile.getInt("width");
+                int height = jsonFile.getInt("height");
+
+                _ctrl.reset(cols, rows, width, height);
+                _ctrl.load_data(jsonFile);
+
+//                String content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+//                JSONObject json = new JSONObject(content);
+//                _ctrl.reset(json.getInt("cols"), json.getInt("rows"), json.getInt("width"), json.getInt("height"));
+//                _ctrl.load_data(json);
             } catch (Exception ex) {
                 ViewUtils.showErrorMsg("Error loading file: " + ex.getMessage());
             }
