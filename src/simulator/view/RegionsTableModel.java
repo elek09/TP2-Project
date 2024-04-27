@@ -44,7 +44,7 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         if (columnIndex == 0) {
-            return _data.get(rowIndex).getFirst();
+            return _data.get(rowIndex).get(0);
         } else if (columnIndex == 1) {
             return _data.get(rowIndex).get(1);
         } else if (columnIndex == 2) {

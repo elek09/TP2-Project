@@ -13,7 +13,7 @@ public class SelectYoungest implements SelectionStrategy {
         if (as.isEmpty())
             return null;
 
-        Animal youngest = as.getFirst();
+        Animal youngest = as.get(0);
         for (Animal animal : as) {
             if (animal.get_age() < youngest.get_age()) {
                 youngest = animal;

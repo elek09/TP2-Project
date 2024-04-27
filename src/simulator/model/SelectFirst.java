@@ -13,7 +13,7 @@ public class SelectFirst implements SelectionStrategy {
         if (as.isEmpty())
             return null;
 
-        return as.getFirst();
+        return as.get(0);
     }
 
     @Override
