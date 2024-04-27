@@ -31,7 +31,7 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
         this._cols = cols;
         this._width = width;
         this._height = height;
-        this._regions = new DefaultRegion[_cols][_rows];
+        this._regions = new Region[_cols][_rows];
         this._region_width = width / cols;
         this._region_height = height / rows;
         this._animal_region = new HashMap<Animal, Region>();
@@ -84,7 +84,7 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
             // Get the current region at the specified row and column
             Region currentRegion = _regions[col][row];
             // Set the region at the specified row and column to the new region
-            _regions[col][row] = r;
+
             // Add all the animals from the current region to the new region
             for (Map.Entry<Animal, Region> entry : _animal_region.entrySet()) {
                 if (entry.getValue().equals(currentRegion)) {
@@ -95,6 +95,24 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
                     _animal_region.put(entry.getKey(), r);
                 }
             }
+            /*
+            System.out.println("Region set at row: " + row + " col: " + col + " " +
+                    "Region: " + r.toString());
+            Region p = _regions[col][row];
+            System.out.println(p.toString());
+
+            if(r instanceof DynamicSupplyRegion){
+                System.out.println("I CRASH HERE CUZ I WORK IN COLOMBIA");
+                System.out.println(_regions[col][row].toString());
+
+            }
+            else if(r instanceof DefaultRegion){
+                System.out.println("Botones mamón");
+                System.out.println(_regions[col][row].toString());
+            }*/
+            _regions[col][row] = r;
+
+            System.out.println("I CRASH HERE CUZ I WORK IN COLOMBIA");
 
         } else {
             // Throw an exception if the row or col are out of range

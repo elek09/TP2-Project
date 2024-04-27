@@ -109,11 +109,14 @@ public class Controller {
         output.put("in", init_state);
         output.put("out", final_state);
 
+        /*
         try {
             out.write(output.toString(2).getBytes());
         } catch (Exception e) {
             System.err.println("Error while writing the output file: " + e.getLocalizedMessage());
         }
+        */
+
 
         if (sv)
             view.close();
