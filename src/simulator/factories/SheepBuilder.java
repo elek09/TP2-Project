@@ -8,11 +8,11 @@ import simulator.model.*;
  * Builder for the Sheep class object.
  */
 public class SheepBuilder extends Builder<Animal> {
-    private final SelectionStrategy _strategy;
+    private Factory<SelectionStrategy> _strategy;
     private SelectionStrategy mateStrategy;
     private SelectionStrategy dangerStrategy;
 
-    public SheepBuilder(SelectionStrategy strategy) {
+    public SheepBuilder(Factory<SelectionStrategy> strategy) {
         super("sheep", "Creates a Sheep instance.");
         _strategy = strategy;
     }
@@ -26,7 +26,6 @@ public class SheepBuilder extends Builder<Animal> {
      */
     @Override
     protected Animal create_instance(JSONObject data) throws IllegalArgumentException {
-        fill_in_data(data);
         JSONObject posData = data.optJSONObject("pos");
         Vector2D pos = posData != null ? new Vector2D(
                 Vector2D.get_random_vector(
@@ -34,6 +33,7 @@ public class SheepBuilder extends Builder<Animal> {
                         posData.getJSONArray("x_range").getDouble(1),
                         posData.getJSONArray("y_range").getDouble(0),
                         posData.getJSONArray("y_range").getDouble(1))) : null;
+        fill_in_data(data);
 
         return new Sheep(mateStrategy, dangerStrategy, pos);
     }
@@ -45,11 +45,33 @@ public class SheepBuilder extends Builder<Animal> {
      */
     @Override
     protected void fill_in_data(JSONObject o) {
+        //For mate strategy
         JSONObject mateStrategyData = o.optJSONObject("mate_strategy");
-        mateStrategy = mateStrategyData != null ? _strategy.create_instance(mateStrategyData) : new SelectFirst();
+        if(mateStrategyData == null) {
+            _strategy.createInstance(new SelectFirstBuilder().get_info());
+        }
+        else{
+            String mateType = mateStrategyData.getString("type");
+            switch (mateType) {
+                case "closest" -> _strategy.createInstance(new SelectClosestBuilder().get_info());
+                case "first" -> _strategy.createInstance(new SelectFirstBuilder().get_info());
+                case "youngest" -> _strategy.createInstance(new SelectYoungestBuilder().get_info());
+            }
+        }
 
+        //For danger strategy
         JSONObject dangerStrategyData = o.optJSONObject("danger_strategy");
-        dangerStrategy = dangerStrategyData != null ? _strategy.create_instance(dangerStrategyData) : new SelectClosest();
+        if(dangerStrategyData == null) {
+            _strategy.createInstance(new SelectFirstBuilder().get_info());
+        }
+        else{
+            String dangerType = dangerStrategyData.getString("type");
+            switch (dangerType) {
+                case "closest" -> _strategy.createInstance(new SelectClosestBuilder().get_info());
+                case "first" -> _strategy.createInstance(new SelectFirstBuilder().get_info());
+                case "youngest" -> _strategy.createInstance(new SelectYoungestBuilder().get_info());
+            }
+        }
 
     }
 }

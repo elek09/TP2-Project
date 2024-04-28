@@ -9,6 +9,7 @@ import java.util.List;
 
 public abstract class Region implements Entity, FoodSupplier, RegionInfo, Constants {
     protected List<Animal> animals;
+    private int countHerbivorous;
 
     /**
      * Constructs a region with an empty list of animals.
@@ -32,6 +33,7 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo, Consta
      */
     public final void add_animal(Animal a) {
         animals.add(a);
+        countHerbivorous++;
     }
 
     /**
@@ -41,6 +43,7 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo, Consta
      */
     public void remove_animal(Animal a) {
         animals.remove(a);
+        countHerbivorous--;
     }
 
     /**
@@ -73,14 +76,7 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo, Consta
      * @return The number of herbivorous animals
      */
     public int getHerbivorousSize() {
-        int count = 0;
-
-        for (int i = 0; i < animals.size(); i++) {
-            if (animals.get(i).get_diet() == Diet.HERBIVORE) {
-                count++;
-            }
-        }
-        return count;
+        return countHerbivorous;
     }
 
     public List<AnimalInfo> getAnimalsInfo() {

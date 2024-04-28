@@ -62,21 +62,6 @@ public class Controller {
 
             }
         }
-
-
-//        for (int i = 0; i < regions.length(); i++) {
-//            JSONObject regionSpec = regions.getJSONObject(i);
-//            JSONArray rowArray = regionSpec.getJSONArray("row");
-//            JSONArray colArray = regionSpec.getJSONArray("col");
-//            JSONObject spec = regionSpec.getJSONObject("spec");
-//            if (rowArray != null && colArray != null) {
-//                json_to_sim_converter(rowArray, colArray, spec);
-//            } else {
-//                int row = regionSpec.getInt("row");
-//                int col = regionSpec.getInt("col");
-//                _sim.set_region(row, col, spec);
-//            }
-//        }
     }
 
     /**
@@ -109,15 +94,12 @@ public class Controller {
         output.put("in", init_state);
         output.put("out", final_state);
 
-        /*
+
         try {
             out.write(output.toString(2).getBytes());
         } catch (Exception e) {
             System.err.println("Error while writing the output file: " + e.getLocalizedMessage());
         }
-        */
-
-
         if (sv)
             view.close();
     }

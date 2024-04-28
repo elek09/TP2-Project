@@ -22,8 +22,8 @@ public class SelectYoungest implements SelectionStrategy {
         return youngest;
     }
 
-    @Override
-    public SelectionStrategy create_instance(JSONObject mateStrategyData) {
-        return null;
-    }
+//    @Override
+//    public SelectionStrategy create_instance(JSONObject mateStrategyData) {
+//        return null;
+//    }
 }

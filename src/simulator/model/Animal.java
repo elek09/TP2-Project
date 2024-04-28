@@ -40,13 +40,13 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
      */
     protected Animal(String genetic_code, Diet diet, double sight_range, double init_speed, SelectionStrategy mate_strategy, Vector2D pos) {
         // Check for null or empty genetic_code, sight_range and init_speed are positive, and mate_strategy is not null
-        if (genetic_code == null || genetic_code.isEmpty() || sight_range <= 0 || init_speed <= 0) {
+        if (genetic_code == null || genetic_code.isEmpty() || sight_range <= 0 || init_speed <= 0 || mate_strategy == null) {
             throw new IllegalArgumentException("Invalid parameters");
         }
-
+        /*
         if (mate_strategy == null) {
             mate_strategy = new SelectFirst();
-        }
+        }*/
         // Assign values to attributes
         _genetic_code = genetic_code;
         _diet = diet;
@@ -86,8 +86,8 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
         _mate_strategy = p2.get_mate_strategy();
     }
 
-    public Animal() {
-    }
+//    public Animal() {
+//    }
 
     /**
      * Initializes the animal with the specified animal map view.
@@ -96,7 +96,6 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
      */
     void init(AnimalMapView reg_mngr) {
         _region_mngr = reg_mngr;
-        this._dest = Vector2D.get_random_vector(0, _region_mngr.get_width() - 1, 0, _region_mngr.get_height() - 1);
         if (this._pos == null) {
             _pos = Vector2D.get_random_vector(0, _region_mngr.get_width() - 1, 0, _region_mngr.get_height() - 1);
         } else {
@@ -104,6 +103,7 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
                 _pos = adjust_position(_pos);
             }
         }
+        this._dest = Vector2D.get_random_vector(0, _region_mngr.get_width() - 1, 0, _region_mngr.get_height() - 1);
     }
 
     /**
@@ -151,20 +151,13 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
     public Animal deliver_baby() {
         if (this.is_pregnant()) {
             Animal baby = _baby;
-            set_baby(null);
+            _baby = null;
             return baby;
         }
         return null;
     }
 
-    /**
-     * Sets the baby animal of the current animal.
-     *
-     * @param b The baby animal to be set
-     */
-    public void set_baby(Animal b) {
-        this._baby = b;
-    }
+
 
     /**
      * Moves the animal with the specified speed.
@@ -172,8 +165,7 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
      * @param speed The speed with which the animal moves
      */
     protected void move(double speed) {
-        Vector2D destination = get_destination();
-        _pos = _pos.plus(destination.minus(_pos).direction().scale(speed));
+        _pos = _pos.plus(_dest.minus(_pos).direction().scale(speed));
     }
 
     /**
@@ -251,7 +243,7 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
         return this._baby != null;
     }
 
-    @Override
+
     public SelectionStrategy get_mate_strategy() {
         return this._mate_strategy;
     }
@@ -264,9 +256,9 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
      * @return The selected mate animal, or null if no mate is found
      */
     public Animal searchForMate(AnimalMapView reg_mngr, SelectionStrategy strategy) {
-        if (strategy == null) {
+        /*if (strategy == null) {
             strategy = new SelectFirst();
-        }
+        }*/
         Predicate<Animal> filter = a -> a.get_genetic_code().equals(this._genetic_code) && !a.is_pregnant() && a.get_state() == State.MATE && a != this;
 
         List<Animal> animalsInRange = reg_mngr.get_animals_in_range(this, filter);
@@ -328,7 +320,9 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
             _desire = _lowestdesire;
         }
     }
-
+    protected void setState(State state) {
+        this._state = state;
+    }
     /**
      * Sets the desire level of the animal to the specified value.
      *

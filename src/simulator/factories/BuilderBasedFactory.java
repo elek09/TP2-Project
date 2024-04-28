@@ -14,7 +14,7 @@ public class BuilderBasedFactory<T> implements Factory<T> {
     private final List<JSONObject> _builders_info;
 
     public BuilderBasedFactory() {
-        _builders = new HashMap<String, Builder<T>>();
+        _builders = new HashMap<>();
         _builders_info = new LinkedList<JSONObject>();
     }
 

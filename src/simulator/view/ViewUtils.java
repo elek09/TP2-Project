@@ -10,8 +10,15 @@ class ViewUtils {
 	/*
 	 * return the frame to which 'c' belongs
 	 */
-	static Frame getWindow(Component c){
-		return (Frame) SwingUtilities.getWindowAncestor(c);
+	static Frame getWindow(Component c) {
+		Frame w = null;
+		if (c != null) {
+			if (c instanceof Frame)
+				w = (Frame) c;
+			else
+				w = (Frame) SwingUtilities.getWindowAncestor(c);
+		}
+		return w;
 	}
 
 

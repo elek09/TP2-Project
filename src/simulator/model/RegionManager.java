@@ -31,17 +31,18 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
         this._cols = cols;
         this._width = width;
         this._height = height;
-        this._regions = new Region[_cols][_rows];
+        this._regions = new Region[_rows][_cols];
         this._region_width = width / cols;
         this._region_height = height / rows;
         this._animal_region = new HashMap<>();
 
 
-        for (int i = 0; i < _cols; i++) {
-            for (int j = 0; j < _rows; j++) {
+        for (int i = 0; i < _rows; i++) {
+            for (int j = 0; j < _cols; j++) {
                 _regions[i][j] = new DefaultRegion();
             }
         }
+        iterator();
     }
 
 
@@ -79,42 +80,22 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
      * @throws IllegalArgumentException if the row or col are out of range
      */
     public void set_region(int row, int col, Region r) {
-        // Check if the row and col are within the valid range
-        if (row >= 0 && row < _rows && col >= 0 && col < _cols) {
-            // Get the current region at the specified row and column
-            Region currentRegion = _regions[row][col];
-            // Set the region at the specified row and column to the new region
+        // Get the current region at the specified row and column
+        Region currentRegion = _regions[row][col];
 
-            // Add all the animals from the current region to the new region
-            for (Map.Entry<Animal, Region> entry : _animal_region.entrySet()) {
-                if (entry.getValue().equals(currentRegion)) {
-                    // Add the animal to the new region
-                    r.add_animal(entry.getKey()); // Assuming you have a method in Region to add an animal
+        // Add all the animals from the current region to the new region
+        for (Map.Entry<Animal, Region> entry : _animal_region.entrySet()) {
+            if (entry.getValue().equals(currentRegion)) {
+                // Add the animal to the new region
+                r.add_animal(entry.getKey()); // Assuming you have a method in Region to add an animal
 
-                    // Update the _animal_region map
-                    _animal_region.put(entry.getKey(), r);
-                }
+                // Update the _animal_region map
+                _animal_region.put(entry.getKey(), r);
             }
-
-            if(r instanceof DynamicSupplyRegion){
-                System.out.println("I CRASH HERE CUZ I WORK IN COLOMBIA");
-                System.out.println(_regions[col][row].toString());
-
-            }
-            else if(r instanceof DefaultRegion){
-                System.out.println("Botones mamón");
-                System.out.println(_regions[col][row].toString());
-            }
-            _regions[row][col] = r;
-
-
-        } else {
-            // Throw an exception if the row or col are out of range
-            throw new IllegalArgumentException("Row or column out of range.");
         }
 
-
-        coutRegions();
+        // Set the region at the specified row and column to the new region
+        _regions[row][col] = r;
     }
 
     /**
@@ -123,13 +104,13 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
      * @param a The animal to register
      */
     public void register_animal(Animal a) {
-        if (a == null) {
-            return;
-        }
+//        if (a == null) {
+//            return;
+//        }
         a.init(this);
         // Calculate the row and column of the region based on the animal's position
-        int row = (int) a.get_position().getY() / _region_height; // Assuming you have a method in Animal to get its position
-        int col = (int) a.get_position().getX() / _region_width; // and the position has methods to get x and y coordinates
+        int row = (int) a.get_position().getY() / _region_height;
+        int col = (int) a.get_position().getX() / _region_width;
 
         // Check if the row and col are within the valid range
         if (row < 0) {
@@ -143,7 +124,7 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
             col = _cols - 1;
         }
         // Get the region at the specified row and column
-        Region r = _regions[col][row];
+        Region r = _regions[row][col];
         // Add the animal to the region
         r.add_animal(a);
         // Update the _animal_region map
@@ -213,8 +194,8 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
      * @param dt The time interval
      */
     void update_all_regions(double dt) {
-        for (int i = 0; i < _cols; i++) {
-            for (int j = 0; j < _rows; j++) {
+        for (int i = 0; i < _rows; i++) {
+            for (int j = 0; j < _cols; j++) {
                 _regions[i][j].update(dt);
             }
         }
@@ -252,7 +233,7 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
 
         for (int f = row_mn; f < row_mx; f++) {
             for (int c = col_mn; c < col_mx; c++) {
-                Region reg = _regions[c][f];
+                Region reg = _regions[f][c];
                 for (int i = 0; reg.animals.size() > i; i++) {
                     Animal animal = reg.animals.get(i);
                     if (filter.test(animal)) {
@@ -273,8 +254,8 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
     public JSONObject as_JSON() {
         JSONObject json = new JSONObject();
         JSONArray regions = new JSONArray();
-        for (int i = 0; i < _cols; i++) {
-            for (int j = 0; j < _rows; j++) {
+        for (int i = 0; i < _rows; i++) {
+            for (int j = 0; j < _cols; j++) {
                 Region region = _regions[i][j];
                 if (region != null) {
                     JSONObject regionJson = region.as_JSON();

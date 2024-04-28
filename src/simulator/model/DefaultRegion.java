@@ -17,6 +17,10 @@ public class DefaultRegion extends Region implements RegionInfo {
         }
     }
     @Override
+    public void update(double dt) {
+        // Do nothing
+    }
+    @Override
     public String toString() {
         return "Default Region";
     }

@@ -199,25 +199,20 @@ public class Main {
     /**
      * Initializes the factories for the simulator
      *
-     * @throws FileNotFoundException If the input file is not found
      */
-    private static void init_factories() throws FileNotFoundException {
+    private static void init_factories() {
         //strategies factory
         List<Builder<SelectionStrategy>> selection_strategy_builders = new ArrayList<>();
         selection_strategy_builders.add(new SelectFirstBuilder());
         selection_strategy_builders.add(new SelectClosestBuilder());
         selection_strategy_builders.add(new SelectYoungestBuilder());
-        selection_factory = new BuilderBasedFactory<SelectionStrategy>(selection_strategy_builders);
+        selection_factory = new BuilderBasedFactory<>(selection_strategy_builders);
 
         try {
-            //SelectionStrategy strategy = selection_strategy_factory.createInstance(load_JSON_file(_in_file));
-            SelectionStrategy strategy = new SelectClosest();
-            SelectionStrategy mate_strategy = new SelectYoungest();
-
             //animal factory
             List<Builder<Animal>> animal_builders = new ArrayList<>();
-            animal_builders.add(new SheepBuilder(strategy));
-            animal_builders.add(new WolfBuilder(strategy));
+            animal_builders.add(new SheepBuilder(selection_factory));
+            animal_builders.add(new WolfBuilder(selection_factory));
             animal_factory = new BuilderBasedFactory<>(animal_builders);
 
             //region factory
@@ -256,7 +251,7 @@ public class Main {
             OutputStream outputFile = (_out_file != null) ? new FileOutputStream(_out_file) : System.out;
 
             // (3) Create an instance of Simulator passing the appropriate information to its constructor
-            Simulator simulator = new Simulator(inputJson.getInt("width"), inputJson.getInt("height"), inputJson.getInt("rows"), inputJson.getInt("cols"), animal_factory, region_factory);
+            Simulator simulator = new Simulator(inputJson.getInt("width"), inputJson.getInt("height"), inputJson.getInt("cols"), inputJson.getInt("rows"), animal_factory, region_factory);
 
             // (4) Create an instance of Controller, passing it the simulator
             Controller controller = new Controller(simulator);

@@ -4,13 +4,14 @@ import org.json.JSONObject;
 import simulator.factories.Factory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Simulator implements Observable<EcoSysObserver>, JSONable {
 
     private final Factory<Animal> animalsFactory;
     private final Factory<Region> regionsFactory;
-    private RegionManager regionManager;    // change it from final, i think it wasnt a requirement, and needed for the reset method to not be final
+    private RegionManager regionManager;
     private final List<Animal> animals;
     private double currentTime;
     private List<EcoSysObserver> observers;
@@ -86,7 +87,7 @@ public class Simulator implements Observable<EcoSysObserver>, JSONable {
      *
      * @return The region manager containing map information.
      */
-    public RegionManager get_map_info() {
+    public MapInfo get_map_info() {
         return regionManager;
     }
 
@@ -99,6 +100,9 @@ public class Simulator implements Observable<EcoSysObserver>, JSONable {
     public List<Animal> getAnimals() {
         return animals;
     }
+    public List<? extends AnimalInfo> get_animals() {
+        return Collections.unmodifiableList(animals);
+    }
 
     public double get_time() {
         return currentTime;
@@ -110,6 +114,7 @@ public class Simulator implements Observable<EcoSysObserver>, JSONable {
      *
      * @param dt The time increment for the simulation advancement.
      */
+
     public void advance(double dt) {
         currentTime += dt;
         for (int i = 0; i < animals.size(); i++) {
@@ -120,13 +125,15 @@ public class Simulator implements Observable<EcoSysObserver>, JSONable {
             } else {
                 animal.update(dt);
                 regionManager.update_animal_region(animal);
+                regionManager.update_all_regions(dt);
+
                 if (animal.is_pregnant()) {
                     Animal baby = animal.deliver_baby();
                     add_animal(baby);
                 }
             }
         }
-        regionManager.update_all_regions(dt);
+
         for (EcoSysObserver observer : observers) {
             observer.onAdvanced(currentTime, regionManager, new ArrayList<>(animals), dt);
         }
@@ -150,7 +157,7 @@ public class Simulator implements Observable<EcoSysObserver>, JSONable {
         }
     }
 
-    // Method to notify observers when an animal is added
+
     private void notifyAnimalAdded(double time, MapInfo map, List<AnimalInfo> animals, AnimalInfo a) {
         for (EcoSysObserver observer : observers) {
             observer.onAnimalAdded(time, map, animals, a);

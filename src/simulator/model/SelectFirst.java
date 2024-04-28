@@ -15,9 +15,11 @@ public class SelectFirst implements SelectionStrategy {
 
         return as.get(0);
     }
-
-    @Override
+    /*
+     @Override
     public SelectionStrategy create_instance(JSONObject mateStrategyData) {
         return null;
     }
+     */
+
 }

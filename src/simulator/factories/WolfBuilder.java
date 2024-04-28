@@ -8,11 +8,11 @@ import simulator.model.*;
  * Builder for the Wolf class objects.
  */
 public class WolfBuilder extends Builder<Animal> {
-    private final SelectionStrategy _strategy;
+    private final Factory<SelectionStrategy> _strategy;
     private SelectionStrategy mateStrategy;
     private SelectionStrategy huntStrategy;
 
-    public WolfBuilder(SelectionStrategy strategy) {
+    public WolfBuilder(Factory<SelectionStrategy> strategy) {
         super("wolf", "Creates a wolf with the specified position and strategies.");
         _strategy = strategy;
     }
@@ -35,8 +35,10 @@ public class WolfBuilder extends Builder<Animal> {
                         posData.getJSONArray("y_range").getDouble(0),
                         posData.getJSONArray("y_range").getDouble(1))) : null;
 
+
         return new Wolf(mateStrategy, huntStrategy, pos);
     }
+
 
     /**
      * Fills in additional data into the provided JSON object.
@@ -45,11 +47,33 @@ public class WolfBuilder extends Builder<Animal> {
      */
     @Override
     protected void fill_in_data(JSONObject o) {
+        //For mate strategy
         JSONObject mateStrategyData = o.optJSONObject("mate_strategy");
-        mateStrategy = mateStrategyData != null ? _strategy.create_instance(mateStrategyData) : new SelectFirst();
+        if(mateStrategyData == null) {
+            _strategy.createInstance(new SelectFirstBuilder().get_info());
+        }
+        else{
+            String mateType = mateStrategyData.getString("type");
+            switch (mateType) {
+                case "closest" -> _strategy.createInstance(new SelectClosestBuilder().get_info());
+                case "first" -> _strategy.createInstance(new SelectFirstBuilder().get_info());
+                case "youngest" -> _strategy.createInstance(new SelectYoungestBuilder().get_info());
+            }
+        }
 
+        //For danger strategy
         JSONObject dangerStrategyData = o.optJSONObject("danger_strategy");
-        huntStrategy = dangerStrategyData != null ? _strategy.create_instance(dangerStrategyData) : new SelectClosest();
+        if(dangerStrategyData == null) {
+            _strategy.createInstance(new SelectFirstBuilder().get_info());
+        }
+        else{
+            String dangerType = dangerStrategyData.getString("type");
+            switch (dangerType) {
+                case "closest" -> _strategy.createInstance(new SelectClosestBuilder().get_info());
+                case "first" -> _strategy.createInstance(new SelectFirstBuilder().get_info());
+                case "youngest" -> _strategy.createInstance(new SelectYoungestBuilder().get_info());
+            }
+        }
 
     }
 }
