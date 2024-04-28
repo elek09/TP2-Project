@@ -9,6 +9,4 @@ import java.util.List;
  */
 public interface SelectionStrategy {
     Animal select(Animal a, List<Animal> as);
-    //Apparently not necessary
-    //SelectionStrategy create_instance(JSONObject mateStrategyData);
 }

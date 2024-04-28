@@ -35,16 +35,6 @@ public class MainWindow extends JFrame {
         InfoTable speciesTable = new InfoTable("Species", new SpeciesTableModel(_ctrl));
         contentPanel.add(speciesTable);
 
-//        SpeciesTableModel speciesModel = new SpeciesTableModel(_ctrl);
-//        JTable speciesTable = new JTable(speciesModel);
-//        JPanel speciesPanel = createTitledPanel("Species", speciesTable, 500, 250);
-//        contentPanel.add(speciesPanel);
-
-        // Create and add the regions table to the contentPanel
-//        RegionsTableModel regionsModel = new RegionsTableModel(_ctrl);
-//        JTable regionsTable = new JTable(regionsModel);
-//        JPanel regionsPanel = createTitledPanel("Regions", regionsTable, 500, 250);
-//        contentPanel.add(regionsPanel);
         InfoTable regionsTable = new InfoTable("Regions", new RegionsTableModel(_ctrl));
         contentPanel.add(regionsTable);
 

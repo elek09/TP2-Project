@@ -21,9 +21,4 @@ public class SelectClosest implements SelectionStrategy {
         }
         return null;
     }
-//
-//    @Override
-//    public SelectionStrategy create_instance(JSONObject mateStrategyData) {
-//        return null;
-//    }
 }

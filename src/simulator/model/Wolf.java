@@ -7,8 +7,6 @@ public class Wolf extends Animal {
     private Animal _hunt_target;
     private static final double _wolfSightRange = 50.0;
     private static final double _wolfSpeed = 60.0;
-
-
     /**
      * Constructs a Wolf with the specified mate strategy, hunting strategy, and position.
      *

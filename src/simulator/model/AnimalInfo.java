@@ -22,8 +22,6 @@ public interface AnimalInfo extends JSONable {
 
     double get_age();
 
-    Vector2D get_destination();
-
     boolean is_pregnant();
 
 }

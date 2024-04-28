@@ -132,10 +132,6 @@ public class ControlPanel extends JPanel {
                 _ctrl.reset(cols, rows, width, height);
                 _ctrl.load_data(jsonFile);
 
-//                String content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
-//                JSONObject json = new JSONObject(content);
-//                _ctrl.reset(json.getInt("cols"), json.getInt("rows"), json.getInt("width"), json.getInt("height"));
-//                _ctrl.load_data(json);
             } catch (Exception ex) {
                 ViewUtils.showErrorMsg("Error loading file: " + ex.getMessage());
             }
@@ -147,9 +143,6 @@ public class ControlPanel extends JPanel {
     }
     private void openRegionsDialog() {
         _changeRegionsDialog.open(ViewUtils.getWindow(this));
-
-//        Frame parentFrame = ViewUtils.getWindow(this);
-//        MapWindow mapWindow = new MapWindow(_ctrl, parentFrame);
     }
 
 

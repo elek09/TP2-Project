@@ -61,13 +61,13 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
         _dataTableModel = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                // TODO make only column 1 editable
+                // make only column 1 editable
                 return column == 1;
             }
         };
         _dataTableModel.setColumnIdentifiers(_headers);
 
-        // TODO create a JTable that uses _dataTableModel and add it to dialog
+        // create a JTable that uses _dataTableModel and add it to dialog
 
         JTable table = new JTable(_dataTableModel);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -75,7 +75,7 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
         mainPanel.add(scrollPane);
 
         // _regionsModel is a combobox model that includes the region types
-        // TODO add the description of all the regions to _regionsModel, using
+        // add the description of all the regions to _regionsModel, using
         // the key “desc” or “type” of the JSONObject in _regionsInfo, since
         // these give us information about what the factory can create.
         for (JSONObject regionInfo : _regionsInfo) {
@@ -83,12 +83,12 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
             _regionsModel.addElement(type);
         }
 
-        // TODO create a combobox que uses _regionsModel and add it to dialog.
+        // create a combobox que uses _regionsModel and add it to dialog.
         JComboBox<String> regionsComboBox = new JComboBox<>(_regionsModel);
         mainPanel.add(regionsComboBox);
 
-        // TODO create 4 combobox models for _fromRowModel, _toRowModel, _fromColModel, and _toColModel
-        // TODO create 4 comboboxes that use these models and add them to the dialog
+        //create 4 combobox models for _fromRowModel, _toRowModel, _fromColModel, and _toColModel
+        //create 4 comboboxes that use these models and add them to the dialog
         JComboBox<String> fromRowComboBox = new JComboBox<>(_fromRowModel);
         JComboBox<String> toRowComboBox = new JComboBox<>(_toRowModel);
         JComboBox<String> fromColComboBox = new JComboBox<>(_fromColModel);
@@ -106,7 +106,7 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
         mainPanel.add(comboBoxPanel);
 
 
-        // TODO create the OK and Cancel buttons and add them to the dialog
+        //create the OK and Cancel buttons and add them to the dialog
         JButton okButton = new JButton("OK");
         JButton cancelButton = new JButton("Cancel");
 
