@@ -34,7 +34,7 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
         this._regions = new Region[_cols][_rows];
         this._region_width = width / cols;
         this._region_height = height / rows;
-        this._animal_region = new HashMap<Animal, Region>();
+        this._animal_region = new HashMap<>();
 
 
         for (int i = 0; i < _cols; i++) {
@@ -82,7 +82,7 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
         // Check if the row and col are within the valid range
         if (row >= 0 && row < _rows && col >= 0 && col < _cols) {
             // Get the current region at the specified row and column
-            Region currentRegion = _regions[col][row];
+            Region currentRegion = _regions[row][col];
             // Set the region at the specified row and column to the new region
 
             // Add all the animals from the current region to the new region
@@ -95,11 +95,6 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
                     _animal_region.put(entry.getKey(), r);
                 }
             }
-            /*
-            System.out.println("Region set at row: " + row + " col: " + col + " " +
-                    "Region: " + r.toString());
-            Region p = _regions[col][row];
-            System.out.println(p.toString());
 
             if(r instanceof DynamicSupplyRegion){
                 System.out.println("I CRASH HERE CUZ I WORK IN COLOMBIA");
@@ -109,15 +104,17 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
             else if(r instanceof DefaultRegion){
                 System.out.println("Botones mamón");
                 System.out.println(_regions[col][row].toString());
-            }*/
-            _regions[col][row] = r;
+            }
+            _regions[row][col] = r;
 
-            System.out.println("I CRASH HERE CUZ I WORK IN COLOMBIA");
 
         } else {
             // Throw an exception if the row or col are out of range
             throw new IllegalArgumentException("Row or column out of range.");
         }
+
+
+        coutRegions();
     }
 
     /**
@@ -129,7 +126,7 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
         if (a == null) {
             return;
         }
-        a.init((AnimalMapView) this);
+        a.init(this);
         // Calculate the row and column of the region based on the animal's position
         int row = (int) a.get_position().getY() / _region_height; // Assuming you have a method in Animal to get its position
         int col = (int) a.get_position().getX() / _region_width; // and the position has methods to get x and y coordinates
@@ -315,4 +312,13 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
     public Iterator<MapInfo.RegionData> iterator() {
         return new RegionManagerIterator();
     }
+
+    private void coutRegions(){
+        for (int i = 0; i < _rows; i++) {
+            for (int j = 0; j < _cols; j++) {
+                System.out.println(_regions[i][j].toString());
+            }
+        }
+    }
+
 }

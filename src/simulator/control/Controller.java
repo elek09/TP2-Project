@@ -160,18 +160,6 @@ public class Controller {
             }
         }
     }
-
-    private void json_to_sim_converter(JSONArray rowArray, JSONArray colArray, JSONObject spec) {
-        for (int j = 0; j < rowArray.length(); j++) {
-            for (int k = 0; k < colArray.length(); k++) {
-                int row = rowArray.getInt(j);
-                int col = colArray.getInt(k);
-                _sim.set_region(row, col, spec);
-            }
-        }
-    }
-
-
     public void advance(double dt) {
         _sim.advance(dt);
     }
