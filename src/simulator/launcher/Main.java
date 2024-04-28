@@ -18,19 +18,14 @@ import java.util.List;
  * Main class to launch the simulator
  */
 public class Main {
-    // default values for some parameters
-    //
-    private final static Double _default_time = 10.0; // in seconds
-    private final static Double _default_dt = 1.0;
     private static final String _out_file = null;
     private static final ExecMode _mode = ExecMode.GUI;
     public static Factory<Animal> animal_factory;
     public static Factory<Region> region_factory;
     public static Factory<SelectionStrategy> selection_factory;
     // some attributes to stores values corresponding to command-line parameters
-    //
     private static Double _time = 0.0;
-    public static Double _dt = 0.0;
+    public static Double _dt = 0.03;
     private static String _in_file = null;
     private static boolean _sv = false;
 
@@ -42,11 +37,8 @@ public class Main {
     private static void parse_args(String[] args) {
 
         // define the valid command line options
-        //
         Options cmdLineOptions = build_options();
-
         // parse the command line as provided in args
-        //
         CommandLineParser parser = new DefaultParser();
         try {
             CommandLine line = parser.parse(cmdLineOptions, args);
@@ -57,9 +49,6 @@ public class Main {
             parse_sv_option(line, cmdLineOptions);
             parse_out_file_option(line);
 
-            // if there are some remaining arguments, then something wrong is
-            // provided in the command line!
-            //
             String[] remaining = line.getArgs();
             if (remaining.length > 0) {
                 String error = "Illegal arguments:";
@@ -119,6 +108,7 @@ public class Main {
      */
     private static void parse_dtime_option(CommandLine line) throws ParseException {
         String dt = line.getOptionValue("dt", _dt.toString());
+
         try {
             _dt = Double.parseDouble(dt);
             assert (_time >= 0);
@@ -188,6 +178,9 @@ public class Main {
      */
     private static void parse_time_option(CommandLine line) throws ParseException {
         String t = line.getOptionValue("t");
+        if(t == null) {
+            return;
+        }
         try {
             _time = Double.parseDouble(t);
             assert (_time >= 0);
@@ -278,15 +271,23 @@ public class Main {
      * @throws Exception If an error occurs while starting the simulator
      */
     private static void start_GUI_mode() throws Exception {
-        SwingUtilities.invokeAndWait(() -> {
-            try {
-                Controller controller = new Controller(new Simulator(800, 600, 15, 20, animal_factory, region_factory));
-                new MainWindow(controller);
-            } catch (Exception e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Error starting GUI mode: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        Simulator sim;
+        Controller ctrl;
+        if (_in_file != null) {
+            InputStream is = new FileInputStream(_in_file);
+            JSONObject inputJson = load_JSON_file(is);
+            is.close();
+            Simulator simulator = new Simulator(inputJson.getInt("width"), inputJson.getInt("height"), inputJson.getInt("cols"), inputJson.getInt("rows"), animal_factory, region_factory);
+            Controller controller = new Controller(simulator);
+            controller.load_data(inputJson);
+            SwingUtilities.invokeAndWait(() -> new MainWindow(controller));
+        } else {
+            sim = new Simulator(800, 600, 15, 20, animal_factory, region_factory);
+            ctrl = new Controller(sim);
+            SwingUtilities.invokeAndWait(() -> new MainWindow(ctrl));
+
+
+        }
     }
 
     /**
