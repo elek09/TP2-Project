@@ -8,15 +8,17 @@ import java.util.*;
 import java.util.List;
 
 public class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
-    private static final long serialVersionUID = 1L;
+    //private static final long serialVersionUID = 1L;
     private Controller _ctrl;
-    private RegionManager _regionManager;
+    private MapInfo _mapInfo;
     private List<String> _columns;
-    private List<List<Object>> _data;
+    //private List<List<Object>> _data;
+    private Object[][] _data; // change from List<List<Object>> to Object[][]
 
     RegionsTableModel(Controller ctrl) {
         _ctrl = ctrl;
-        _data = new ArrayList<>();
+
+//        _data = new ArrayList[][];
         _ctrl.addObserver(this);
 
         _columns = new ArrayList<>();
@@ -27,9 +29,12 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
             _columns.add(diet.toString());
         }
     }
+
     @Override
     public int getRowCount() {
-        return _data.size();
+        int rows = _mapInfo.get_rows();
+        int cols = _mapInfo.get_cols();
+        return rows * cols;
     }
 
     @Override
@@ -44,13 +49,13 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         if (columnIndex == 0) {
-            return _data.get(rowIndex).get(0);
+            return _data[rowIndex][0];
         } else if (columnIndex == 1) {
-            return _data.get(rowIndex).get(1);
+            return _data[rowIndex][1];
         } else if (columnIndex == 2) {
-            return _data.get(rowIndex).get(2);
+            return _data[rowIndex][2];
         } else {
-            return _data.get(rowIndex).get(columnIndex);
+            return _data[rowIndex][columnIndex];
         }
     }
 
@@ -78,43 +83,51 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
     }
 
     @Override
-    public void onAdvanced(double currentTime, RegionManager regionManager, List<AnimalInfo> animals, double dt) {
-        _regionManager = regionManager;
+    public void onAdvanced(double currentTime, MapInfo mapInfo, List<AnimalInfo> animals, double dt) {
+        _mapInfo = mapInfo;
         updateData();
         fireTableDataChanged();
     }
 
     private void updateData() {
-        _data.clear();
+        Iterator<MapInfo.RegionData> Region = _mapInfo.iterator();
 
-        for (MapInfo.RegionData regionData : _regionManager) {
-            List<Object> rowData = new ArrayList<>();
-            rowData.add(regionData.row());
-            rowData.add(regionData.col());
-            rowData.add(regionData.r().toString());             //description but not sure its enough to use toString
+//        for (MapInfo.RegionData regionData : _regionManager) {
+//            List<Object> rowData = new ArrayList<>();
+//            rowData.add(regionData.row());
+//            rowData.add(regionData.col());
+//            rowData.add(regionData.r().toString());             //description but not sure its enough to use toString
+        int i = 0;
+        while(Region.hasNext()) {
+              MapInfo.RegionData regionData = Region.next();
+              _data[i][1] = regionData.row();
+              _data[i][2] = regionData.col();
+              _data[i][3] = regionData.r().toString();
 
-            // Initialize
-            Map<Diet, Integer> dietCounts = new HashMap<>();
-            for (Diet diet : Diet.values()) {
-                dietCounts.put(diet, 0);
-            }
+          }
+//
+//            // Initialize
+//            Map<Diet, Integer> dietCounts = new HashMap<>();
+//            for (Diet diet : Diet.values()) {
+//                dietCounts.put(diet, 0);
+//            }
+//
+//            // diet
+//            for (AnimalInfo animal : regionData.r().getAnimalsInfo()) {
+//                Diet diet = animal.get_diet();
+//                dietCounts.put(diet, dietCounts.get(diet) + 1);
+//            }
+//
+//            for (Diet diet : Diet.values()) {
+//                rowData.add(dietCounts.get(diet));
+//            }
+//
+//            // description
+//            for (AnimalInfo animal : regionData.r().getAnimalsInfo()) {
+//                rowData.add(animal.get_sight_range());
+//            }
 
-            // diet
-            for (AnimalInfo animal : regionData.r().getAnimalsInfo()) {
-                Diet diet = animal.get_diet();
-                dietCounts.put(diet, dietCounts.get(diet) + 1);
-            }
-
-            for (Diet diet : Diet.values()) {
-                rowData.add(dietCounts.get(diet));
-            }
-
-            // description
-            for (AnimalInfo animal : regionData.r().getAnimalsInfo()) {
-                rowData.add(animal.get_sight_range());
-            }
-
-            _data.add(rowData);
+              //_data.add(rowData);
         }
-    }
 }
+

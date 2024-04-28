@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MapWindow extends JFrame implements EcoSysObserver{
@@ -105,7 +104,7 @@ public class MapWindow extends JFrame implements EcoSysObserver{
     }
 
     @Override
-    public void onAdvanced(double currentTime, RegionManager regionManager, List<AnimalInfo> animals, double dt) {
+    public void onAdvanced(double currentTime, MapInfo mapInfo, List<AnimalInfo> animals, double dt) {
         //TODO: Here update the animals and that stuff
         SwingUtilities.invokeLater(() -> {
             _viewer.update(animals, currentTime);
