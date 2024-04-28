@@ -26,6 +26,4 @@ public interface AnimalInfo extends JSONable {
 
     boolean is_pregnant();
 
-    SelectionStrategy get_mate_strategy();
-
 }

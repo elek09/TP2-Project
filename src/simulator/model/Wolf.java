@@ -3,8 +3,11 @@ package simulator.model;
 import simulator.misc.Vector2D;
 
 public class Wolf extends Animal {
-    private final SelectionStrategy _hunting_strategy;
+    private SelectionStrategy _hunting_strategy;
     private Animal _hunt_target;
+    private static final double _wolfSightRange = 50.0;
+    private static final double _wolfSpeed = 60.0;
+
 
     /**
      * Constructs a Wolf with the specified mate strategy, hunting strategy, and position.
@@ -14,7 +17,7 @@ public class Wolf extends Animal {
      * @param pos             The position of the wolf.
      */
     public Wolf(SelectionStrategy mate_strategy, SelectionStrategy danger_strategy, Vector2D pos) {
-        super("Wolf", Diet.CARNIVORE, _sightrangeConst, _speedConst, mate_strategy, pos);
+        super("Wolf", Diet.CARNIVORE, _wolfSightRange, _wolfSpeed, mate_strategy, pos);
         this._mate_strategy = mate_strategy;
         this._hunting_strategy = danger_strategy;
         this._hunt_target = null;
@@ -56,9 +59,11 @@ public class Wolf extends Animal {
                 break;
         }
         if (IsOutOfMap()) {
+            _pos = adjust_position(_pos);
             this._state = State.NORMAL;
             updateAsNormal(dt);
-        } else if (this._energy <= _lowestenergy || this._age > _wolfAge) {
+        }
+        if (this._energy <= _lowestenergy || this._age > _wolfAge) {
             this._state = State.DEAD;
         }
         _energy += this._region_mngr.get_food(this, dt);
@@ -71,6 +76,9 @@ public class Wolf extends Animal {
      * @param dt The time increment for the update.
      */
     private void updateAsNormal(double dt) {
+        _hunt_target = null;
+        _mate_target = null;
+
         if (_pos.distanceTo(_dest) < distanceDest) {
             _dest = new Vector2D(Math.random() * _region_mngr.get_width(), Math.random() * _region_mngr.get_height());
         }
@@ -96,7 +104,10 @@ public class Wolf extends Animal {
      * @param dt The time increment for the update.
      */
     private void updateAsHunger(double dt) {
-        if ((this._hunt_target == null) || (this._hunt_target != null && (this._hunt_target._state == State.DEAD || this._hunt_target.get_position().distanceTo(_pos) > get_sight_range()))) {
+        _mate_target = null;
+        if ((this._hunt_target == null) ||
+                (this._hunt_target != null && (this._hunt_target._state == State.DEAD ||
+                        this._hunt_target.get_position().distanceTo(_pos) > _wolfSightRange))) {
             this._hunt_target = searchForHuntTarget(_region_mngr, this._hunting_strategy);
             if (this._hunt_target == null) {
                 updateAsNormal(dt);
@@ -108,14 +119,14 @@ public class Wolf extends Animal {
 
             this._age += dt;
 
-            _energy -= _energyreductionWolf * dt;
+            _energy -= _energyreductionWolf * 1.2 * dt;
             checkEnergy();
 
             _desire += _desirereductionWolf * dt;
             checkDesire();
 
             if (this._pos.distanceTo(_hunt_target.get_position()) < distanceDest) {
-                this._hunt_target._state = State.DEAD;
+                this._hunt_target.setState(State.DEAD);
                 this._hunt_target = null;
                 _energy += _energyBound;
                 checkEnergy();
@@ -124,8 +135,7 @@ public class Wolf extends Animal {
                     if (this._desire < _desireUpperBound) {
                         this._state = State.NORMAL;
                     } else {
-                        if (this._desire >= 50)
-                            this._state = State.MATE;
+                        this._state = State.MATE;
                     }
                 }
             }
@@ -138,7 +148,10 @@ public class Wolf extends Animal {
      * @param dt The time increment for the update.
      */
     private void updateAsMate(double dt) {
-        if (_mate_target != null && (_mate_target.get_state() == State.DEAD || _mate_target.get_position().distanceTo(_pos) > _sight_range)) {
+        _hunt_target = null;
+        if (_mate_target != null &&
+                (_mate_target.get_state() == State.DEAD ||
+                        _mate_target.get_position().distanceTo(_pos) > _wolfSightRange)) {
             _mate_target = null;
 
         }
@@ -150,7 +163,7 @@ public class Wolf extends Animal {
         }
         if (_mate_target != null) {
             _dest = _mate_target.get_position();
-            move(_speedFactorWolf * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
+            move(_speedFactorWolf * dt * _wolfSpeed * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
             _age += dt;
 
             _energy -= _energyreductionWolf * _multiplicativeTime * dt;

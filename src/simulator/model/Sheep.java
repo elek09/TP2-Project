@@ -2,7 +2,7 @@ package simulator.model;
 
 import simulator.misc.Vector2D;
 
-public class    Sheep extends Animal {
+public class Sheep extends Animal {
 
     private Animal _danger_source;
     private SelectionStrategy _danger_strategy;
@@ -18,9 +18,9 @@ public class    Sheep extends Animal {
         super("Sheep", Diet.HERBIVORE, _sightrangeConst, _speedConst, mate_strategy, pos);
         this._mate_strategy = mate_strategy;
         this._danger_strategy = danger_strategy;
-        if (_danger_strategy == null) {
+        /*if (_danger_strategy == null) {
             this._danger_strategy = new SelectClosest();
-        }
+        }*/
         this._danger_source = null;
     }
 
@@ -84,6 +84,8 @@ public class    Sheep extends Animal {
      * @param dt The time increment for the update.
      */
     private void updateAsNormal(double dt) {
+        _danger_source = null;
+        _mate_target = null;
         if (_pos.distanceTo(_dest) < distanceDest) {
             _dest = new Vector2D(Math.random() * _region_mngr.get_width(), Math.random() * _region_mngr.get_height());
         }
@@ -115,6 +117,7 @@ public class    Sheep extends Animal {
      * @param dt The time increment for the update.
      */
     private void updateAsDanger(double dt) {
+        _mate_target = null;
         if (_danger_source != null) {
             if (_danger_source.get_state() == State.DEAD) {
                 _danger_source = null;
@@ -150,6 +153,7 @@ public class    Sheep extends Animal {
      * @param dt The time increment for the update.
      */
     private void updateAsMate(double dt) {
+        _danger_source = null;
         if (this._mate_target != null && (this._state == State.DEAD || this._sight_range < _pos.distanceTo(_mate_target.get_position()))) {
             this._mate_target = null;
         }
@@ -183,13 +187,15 @@ public class    Sheep extends Animal {
 
         if (this._danger_source == null) {
             _danger_source = searchForDanger(_region_mngr, this._danger_strategy);
+            if (this._danger_source != null) {
+                _state = State.DANGER;
+            }
+            else if (this._desire < _desireUpperBound) {
+                this._state = State.NORMAL;
+            }
         }
-        if (this._danger_source != null) {
-            _state = State.DANGER;
-        }
-        if (this._danger_source == null && this._desire < _desireUpperBound) {
-            this._state = State.NORMAL;
-        }
+
+
     }
 }
 
