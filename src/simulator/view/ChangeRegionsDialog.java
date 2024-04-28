@@ -167,7 +167,7 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
             JSONObject regionsObject = new JSONObject();
             regionsObject.put("regions", regionsArray);
 
-            //we have to pass the regionsObject to the region manager
+            
 
             try {
                 _ctrl.set_regions(regionsObject);
@@ -188,7 +188,7 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
             }
         });
 
-        setPreferredSize(new Dimension(1000, 400)); // you can use a different size
+        setPreferredSize(new Dimension(1000, 400)); 
         pack();
         setResizable(false);
         setVisible(false);
@@ -237,11 +237,6 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
     @Override
     public void open(Component parent) {
         setLocationRelativeTo(parent);
-        /*setLocation(
-                parent.getLocation().x + parent.getWidth() / 2 - getWidth() / 2,
-                parent.getLocation().y + parent.getHeight() / 2 - getHeight() / 2
-        );*/
-
         pack();
         setVisible(true);
     }

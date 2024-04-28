@@ -48,28 +48,28 @@ public class SheepBuilder extends Builder<Animal> {
         //For mate strategy
         JSONObject mateStrategyData = o.optJSONObject("mate_strategy");
         if(mateStrategyData == null) {
-            _strategy.createInstance(new SelectFirstBuilder().get_info());
+        	mateStrategy = _strategy.createInstance(new SelectFirstBuilder().get_info());
         }
         else{
             String mateType = mateStrategyData.getString("type");
             switch (mateType) {
-                case "closest" -> _strategy.createInstance(new SelectClosestBuilder().get_info());
-                case "first" -> _strategy.createInstance(new SelectFirstBuilder().get_info());
-                case "youngest" -> _strategy.createInstance(new SelectYoungestBuilder().get_info());
+                case "closest" -> mateStrategy =_strategy.createInstance(new SelectClosestBuilder().get_info());
+                case "first" -> mateStrategy = _strategy.createInstance(new SelectFirstBuilder().get_info());
+                case "youngest" -> mateStrategy = _strategy.createInstance(new SelectYoungestBuilder().get_info());
             }
         }
 
         //For danger strategy
         JSONObject dangerStrategyData = o.optJSONObject("danger_strategy");
         if(dangerStrategyData == null) {
-            _strategy.createInstance(new SelectFirstBuilder().get_info());
+        	dangerStrategy = _strategy.createInstance(new SelectFirstBuilder().get_info());
         }
         else{
             String dangerType = dangerStrategyData.getString("type");
             switch (dangerType) {
-                case "closest" -> _strategy.createInstance(new SelectClosestBuilder().get_info());
-                case "first" -> _strategy.createInstance(new SelectFirstBuilder().get_info());
-                case "youngest" -> _strategy.createInstance(new SelectYoungestBuilder().get_info());
+                case "closest" -> dangerStrategy = _strategy.createInstance(new SelectClosestBuilder().get_info());
+                case "first" -> dangerStrategy = _strategy.createInstance(new SelectFirstBuilder().get_info());
+                case "youngest" -> dangerStrategy = _strategy.createInstance(new SelectYoungestBuilder().get_info());
             }
         }
 
