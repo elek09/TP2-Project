@@ -148,8 +148,8 @@ public class ControlPanel extends JPanel {
     private void openRegionsDialog() {
         _changeRegionsDialog.open(ViewUtils.getWindow(this));
 
-        Frame parentFrame = ViewUtils.getWindow(this);
-        MapWindow mapWindow = new MapWindow(_ctrl, parentFrame);
+//        Frame parentFrame = ViewUtils.getWindow(this);
+//        MapWindow mapWindow = new MapWindow(_ctrl, parentFrame);
     }
 
 

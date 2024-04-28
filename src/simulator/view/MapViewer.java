@@ -153,14 +153,14 @@ public class MapViewer extends AbstractMapViewer{
 		// Draw the visible state label, if not null
 		if (_currState != null) {
 			g.setColor(Color.BLACK);
-			drawStringWithRect(g, 10, 20, "State: " + _currState);
+			drawStringWithRect(g, 10, 560, "State: " + _currState);
 		}
 
 		// Draw the time label
 		// Use String.format("%.3f", time) to write only 3 decimals
 		if (time != null) {
 		g.setColor(Color.BLACK);
-		drawStringWithRect(g, 10, 40, "Time: " + String.format("%.3f", time));
+		drawStringWithRect(g, 10, 540, "Time: " + String.format("%.3f", time));
 		}
 
 
@@ -170,7 +170,7 @@ public class MapViewer extends AbstractMapViewer{
 		for (Map.Entry<String, SpeciesInfo> entry : _kindsInfo.entrySet()) {
 			SpeciesInfo info = entry.getValue();
 			g.setColor(info._color);
-			drawStringWithRect(g, 10, 60 + i * 20, entry.getKey() + ": " + info._count);
+			drawStringWithRect(g, 10, 500 + i * 20, entry.getKey() + ": " + info._count);
 			info._count = 0;
 			i++;
 		}

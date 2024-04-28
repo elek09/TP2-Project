@@ -18,9 +18,6 @@ public class Sheep extends Animal {
         super("Sheep", Diet.HERBIVORE, _sightrangeConst, _speedConst, mate_strategy, pos);
         this._mate_strategy = mate_strategy;
         this._danger_strategy = danger_strategy;
-        /*if (_danger_strategy == null) {
-            this._danger_strategy = new SelectClosest();
-        }*/
         this._danger_source = null;
     }
 
@@ -86,7 +83,7 @@ public class Sheep extends Animal {
     private void updateAsNormal(double dt) {
         _danger_source = null;
         _mate_target = null;
-        if (_pos.distanceTo(_dest) < distanceDest) {
+        if (_dest == null || _pos.distanceTo(_dest) < distanceDest) {
             _dest = new Vector2D(Math.random() * _region_mngr.get_width(), Math.random() * _region_mngr.get_height());
         }
         move(_speed * dt * Math.exp((_energy - _maxenergy) * _movefactor));
