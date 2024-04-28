@@ -158,7 +158,7 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
         int row = (int) Utils.constrain_value_in_range(y / _region_height, 0, _rows - 1);
         int col = (int) Utils.constrain_value_in_range(x / _region_width, 0, _cols - 1);
         Region regCurrent = _animal_region.get(a);
-        Region regNew = _regions[col][row];
+        Region regNew = _regions[row][col];
 
         if (regNew != regCurrent) {
             if (regCurrent != null) {
@@ -280,7 +280,7 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
 
         @Override
         public MapInfo.RegionData next() {
-            MapInfo.RegionData regionData = new MapInfo.RegionData(row, col, _regions[col][row]);
+            MapInfo.RegionData regionData = new MapInfo.RegionData(row, col, _regions[row][col]);
             col++;
             if (col >= _cols) {
                 col = 0;
@@ -294,12 +294,6 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
         return new RegionManagerIterator();
     }
 
-    private void coutRegions(){
-        for (int i = 0; i < _rows; i++) {
-            for (int j = 0; j < _cols; j++) {
-                System.out.println(_regions[i][j].toString());
-            }
-        }
-    }
+
 
 }

@@ -40,7 +40,6 @@ public class StatusBar extends JPanel implements EcoSysObserver {
         this.add(separator);
     }
 
-    //maybe we have to implement it to change the time constantly
     private void updateTime(double time) {
         timeLabel.setText("Time: " + time);
     }

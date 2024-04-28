@@ -32,16 +32,21 @@ public class MainWindow extends JFrame {
         mainPanel.add(contentPanel, BorderLayout.CENTER);
 
         // Create and add the species table to the contentPanel
-        SpeciesTableModel speciesModel = new SpeciesTableModel(_ctrl);
-        JTable speciesTable = new JTable(speciesModel);
-        JPanel speciesPanel = createTitledPanel("Species", speciesTable, 500, 250);
-        contentPanel.add(speciesPanel);
+        InfoTable speciesTable = new InfoTable("Species", new SpeciesTableModel(_ctrl));
+        contentPanel.add(speciesTable);
+
+//        SpeciesTableModel speciesModel = new SpeciesTableModel(_ctrl);
+//        JTable speciesTable = new JTable(speciesModel);
+//        JPanel speciesPanel = createTitledPanel("Species", speciesTable, 500, 250);
+//        contentPanel.add(speciesPanel);
 
         // Create and add the regions table to the contentPanel
-        RegionsTableModel regionsModel = new RegionsTableModel(_ctrl);
-        JTable regionsTable = new JTable(regionsModel);
-        JPanel regionsPanel = createTitledPanel("Regions", regionsTable, 500, 250);
-        contentPanel.add(regionsPanel);
+//        RegionsTableModel regionsModel = new RegionsTableModel(_ctrl);
+//        JTable regionsTable = new JTable(regionsModel);
+//        JPanel regionsPanel = createTitledPanel("Regions", regionsTable, 500, 250);
+//        contentPanel.add(regionsPanel);
+        InfoTable regionsTable = new InfoTable("Regions", new RegionsTableModel(_ctrl));
+        contentPanel.add(regionsTable);
 
         // Add window listener
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -58,15 +63,4 @@ public class MainWindow extends JFrame {
         setVisible(true);
     }
 
-    private JPanel createTitledPanel(String title, JTable table, int width, int height) {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(5, 5, 5, 5),
-                BorderFactory.createTitledBorder(title)
-        ));
-        table.setPreferredScrollableViewportSize(new Dimension(width, height));
-        JScrollPane scrollPane = new JScrollPane(table);
-        panel.add(scrollPane, BorderLayout.CENTER);
-        return panel;
-    }
 }

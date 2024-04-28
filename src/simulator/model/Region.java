@@ -80,8 +80,6 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo, Consta
     }
 
     public List<AnimalInfo> getAnimalsInfo() {
-        Collections.unmodifiableList(animals);
-    // since Java 9, we can also use List.of() instead of unmodifiableList
-        return new ArrayList<>(animals);
+        return Collections.unmodifiableList(animals);
     }
 }

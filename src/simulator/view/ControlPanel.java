@@ -4,24 +4,18 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import simulator.control.Controller;
 import simulator.launcher.Main;
-import simulator.model.Animal;
-import simulator.model.AnimalInfo;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 
 public class ControlPanel extends JPanel {
     private Controller _ctrl;
     private ChangeRegionsDialog _changeRegionsDialog;
     private JToolBar _toolBar;
     private JFileChooser _fc;
-    private JLabel _deltaTimeLabel;
     private boolean _stopped = true;
     private JButton _quitButton;
     private JButton _loadButton;

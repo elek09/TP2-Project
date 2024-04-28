@@ -12,7 +12,7 @@ public class Simulator implements Observable<EcoSysObserver>, JSONable {
     private final Factory<Animal> animalsFactory;
     private final Factory<Region> regionsFactory;
     private RegionManager regionManager;
-    private final List<Animal> animals;
+    private List<Animal> animals;
     private double currentTime;
     private List<EcoSysObserver> observers;
 
@@ -154,13 +154,6 @@ public class Simulator implements Observable<EcoSysObserver>, JSONable {
 
         for (EcoSysObserver observer : observers) {
             observer.onReset(currentTime, regionManager, new ArrayList<>(animals));
-        }
-    }
-
-
-    private void notifyAnimalAdded(double time, MapInfo map, List<AnimalInfo> animals, AnimalInfo a) {
-        for (EcoSysObserver observer : observers) {
-            observer.onAnimalAdded(time, map, animals, a);
         }
     }
 
