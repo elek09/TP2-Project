@@ -95,7 +95,7 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
             List<Object> rowData = new ArrayList<>();
             rowData.add(regionData.row());
             rowData.add(regionData.col());
-            rowData.add(regionData.r().toString());
+            rowData.add(regionData.r().toString());             //description but not sure its enough to use toString
 
             // Initialize
             Map<Diet, Integer> dietCounts = new HashMap<>();

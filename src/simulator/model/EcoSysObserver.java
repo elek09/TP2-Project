@@ -9,6 +9,6 @@ public interface EcoSysObserver {
     void onAnimalAdded(double time, MapInfo map, List<AnimalInfo> animals, AnimalInfo a);
     void onRegionSet(int row, int col, MapInfo map, RegionInfo r);
     void open(Component parent);
-    void onAdvanced(double currentTime, RegionManager regionManager, List<AnimalInfo> animals, double dt);
+    void onAdvanced(double currentTime, MapInfo mapInfo, List<AnimalInfo> animals, double dt);
 
 }
