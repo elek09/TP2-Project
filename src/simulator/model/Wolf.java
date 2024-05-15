@@ -1,5 +1,6 @@
 package simulator.model;
 
+import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 
 public class Wolf extends Animal {
@@ -78,7 +79,7 @@ public class Wolf extends Animal {
         _mate_target = null;
 
         if (_pos.distanceTo(_dest) < distanceDest) {
-            _dest = new Vector2D(Math.random() * _region_mngr.get_width(), Math.random() * _region_mngr.get_height());
+            _dest = new Vector2D(Utils._rand.nextDouble() * _region_mngr.get_width(), Utils._rand.nextDouble() * _region_mngr.get_height());
         }
         move(this._speed * dt * Math.exp((this._energy - _maxenergy) * _movefactor));
         this._age += dt;
@@ -113,7 +114,7 @@ public class Wolf extends Animal {
         }
         if (this._hunt_target != null) {
             _dest = _hunt_target.get_position();
-            move(_speedFactorWolf * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
+            move(_speedFactorWolf * this._speed * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
 
             this._age += dt;
 
@@ -161,7 +162,7 @@ public class Wolf extends Animal {
         }
         if (_mate_target != null) {
             _dest = _mate_target.get_position();
-            move(_speedFactorWolf * dt * _wolfSpeed * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
+            move(_speedFactorWolf * dt * this._speed * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
             _age += dt;
 
             _energy -= _energyreductionWolf * _multiplicativeTime * dt;
@@ -174,7 +175,7 @@ public class Wolf extends Animal {
                 setDesire(0);
                 _mate_target.setDesire(0);
 
-                if (!is_pregnant() && Math.random() < _createBaby) {
+                if (!is_pregnant() && Utils._rand.nextDouble() < _createBaby) {
                     _baby = new Wolf(this, _mate_target);
                     _energy -= _sexEnergy;
                     checkEnergy();

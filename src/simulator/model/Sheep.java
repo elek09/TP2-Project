@@ -1,5 +1,6 @@
 package simulator.model;
 
+import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 
 public class Sheep extends Animal {
@@ -84,7 +85,7 @@ public class Sheep extends Animal {
         _danger_source = null;
         _mate_target = null;
         if (_dest == null || _pos.distanceTo(_dest) < distanceDest) {
-            _dest = new Vector2D(Math.random() * _region_mngr.get_width(), Math.random() * _region_mngr.get_height());
+            _dest = new Vector2D(Utils._rand.nextDouble() * _region_mngr.get_width(), Utils._rand.nextDouble() * _region_mngr.get_height());
         }
         move(_speed * dt * Math.exp((_energy - _maxenergy) * _movefactor));
         _age += dt;
@@ -120,7 +121,7 @@ public class Sheep extends Animal {
                 _danger_source = null;
             } else {
                 _dest = _pos.plus(_pos.minus(_danger_source.get_position()).direction());
-                move(_speedFactorSheep * _speed * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
+                move(_speedFactorSheep * this._speed * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
                 this._age += dt;
             }
 
@@ -151,7 +152,7 @@ public class Sheep extends Animal {
      */
     private void updateAsMate(double dt) {
         _danger_source = null;
-        if (this._mate_target != null && (this._state == State.DEAD || this._sight_range < _pos.distanceTo(_mate_target.get_position()))) {
+        if (this._mate_target != null && (_mate_target.get_state() == State.DEAD || this._sight_range < _pos.distanceTo(_mate_target.get_position()))) {
             this._mate_target = null;
         }
         if (this._mate_target == null) {
@@ -162,7 +163,7 @@ public class Sheep extends Animal {
         }
         if (this._mate_target != null) {
             _dest = _mate_target.get_position();
-            move(_speedFactorSheep * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
+            move(_speedFactorSheep * this._speed * dt * Math.exp((_energy - _maxenergy) * _multiplicativeMath));
             this._age += dt;
 
 
@@ -175,7 +176,7 @@ public class Sheep extends Animal {
             if (this._pos.distanceTo(_mate_target.get_position()) < distanceDest) {
                 this.setDesire(0);
                 this._mate_target.setDesire(0);
-                if (!is_pregnant() && Math.random() < _createBaby) {
+                if (!is_pregnant() && Utils._rand.nextDouble() < _createBaby) {
                     _baby = new Sheep(this, _mate_target);
                 }
                 _mate_target = null;
