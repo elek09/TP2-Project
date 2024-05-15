@@ -26,7 +26,6 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
     public enum State {
         NORMAL, MATE, HUNGER, DANGER, DEAD
     }
-
     /**
      * Initializes the attributes of the animal with the specified genetic code, diet, sight range, initial speed, mate strategy, and position.
      *
@@ -82,7 +81,6 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
         _region_mngr = null;
         _mate_strategy = p2.get_mate_strategy();
     }
-
     /**
      * Initializes the animal with the specified animal map view.
      *
@@ -99,7 +97,6 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
         }
         this._dest = Vector2D.get_random_vector(0, _region_mngr.get_width() - 1, 0, _region_mngr.get_height() - 1);
     }
-
     /**
      * Adjusts the position of the animal to ensure it remains within the bounds of the map.
      *
@@ -127,7 +124,6 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
 
         return new Vector2D(cols, rows);
     }
-
     /**
      * Checks if the animal is out of the map bounds.
      *
@@ -136,7 +132,6 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
     protected boolean IsOutOfMap() {
         return this._pos.getX() < 0 || this._pos.getX() > _region_mngr.get_width() || this._pos.getY() < 0 || this._pos.getY() > _region_mngr.get_height();
     }
-
     /**
      * Delivers the baby if the animal is pregnant.
      *
@@ -150,9 +145,6 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
         }
         return null;
     }
-
-
-
     /**
      * Moves the animal with the specified speed.
      *
@@ -161,7 +153,6 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
     protected void move(double speed) {
         _pos = _pos.plus(_dest.minus(_pos).direction().scale(speed));
     }
-
     /**
      * Converts the animal's attributes to a JSONObject.
      *
@@ -178,7 +169,6 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
 
         return json;
     }
-
     /**
      * Updates the animal's state based on the specified time interval.
      *
@@ -228,20 +218,13 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
     }
 
     @Override
-    public Vector2D get_destination() {
-        return this._dest;
-    }
-
-    @Override
     public boolean is_pregnant() {
         return this._baby != null;
     }
 
-
     public SelectionStrategy get_mate_strategy() {
         return this._mate_strategy;
     }
-
     /**
      * Searches for a mate animal within the specified animal map view using the given selection strategy.
      *
@@ -256,7 +239,6 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
 
         return strategy.select(this, animalsInRange);
     }
-
     /**
      * Searches for a dangerous animal within the specified animal map view using the given selection strategy.
      *
@@ -273,7 +255,6 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
 
         return strategy.select(this, animalsInRange);
     }
-
     /**
      * Searches for a hunt target animal within the specified animal map view using the given selection strategy.
      *
@@ -289,7 +270,6 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
 
         return strategy.select(this, animalsInRange);
     }
-
     /**
      * Checks and adjusts the energy level of the animal if it exceeds the maximum or falls below the lowest energy level.
      */
@@ -300,7 +280,6 @@ public abstract class Animal implements Entity, AnimalInfo, Constants {
             _energy = _lowestenergy;
         }
     }
-
     /**
      * Checks and adjusts the desire level of the animal if it exceeds the maximum or falls below the lowest desire level.
      */
