@@ -26,7 +26,7 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
      * @param width  Total width of the region
      * @param height Total height of the region
      */
-    public RegionManager(int cols, int rows, int width, int height) {
+    public RegionManager(int rows, int cols, int width, int height) {
         this._rows = rows;
         this._cols = cols;
         this._width = width;
@@ -35,7 +35,6 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
         this._region_width = width / cols;
         this._region_height = height / rows;
         this._animal_region = new HashMap<>();
-
 
         for (int i = 0; i < _rows; i++) {
             for (int j = 0; j < _cols; j++) {
@@ -221,18 +220,13 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
         int row_mx = (int) (Math.max(0, row + sight_range) / _region_height);
         int row_mn = (int) (Math.max(0, row - sight_range) / _region_height);
 
-        if (col_mx >= _cols) {
-            col_mx = _cols - 2;
-        } else if (col_mn < 0) {
-            col_mn = 0;
-        } else if (row_mx >= _rows) {
-            row_mx = _rows - 2;
-        } else if (row_mn < 0 || row_mn >= _rows) {
-            row_mn = 0;
-        }
+        col_mx = Math.min(col_mx, _cols - 1);
+        col_mn = Math.max(col_mn, 0);
+        row_mx = Math.min(row_mx, _rows - 1);
+        row_mn = Math.max(row_mn, 0);
 
-        for (int f = row_mn; f < row_mx; f++) {
-            for (int c = col_mn; c < col_mx; c++) {
+        for (int f = row_mn; f <= row_mx; f++) {
+            for (int c = col_mn; c <= col_mx; c++) {
                 Region reg = _regions[f][c];
                 for (int i = 0; reg.animals.size() > i; i++) {
                     Animal animal = reg.animals.get(i);
@@ -273,6 +267,7 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
     private class RegionManagerIterator implements Iterator<MapInfo.RegionData> {
         private int row = 0;
         private int col = 0;
+
         @Override
         public boolean hasNext() {
             return row < _rows && col < _cols;
@@ -289,7 +284,7 @@ public class RegionManager implements AnimalMapView, Iterable<MapInfo.RegionData
             return regionData;
         }
     }
-    @Override
+
     public Iterator<MapInfo.RegionData> iterator() {
         return new RegionManagerIterator();
     }

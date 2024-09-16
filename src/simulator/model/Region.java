@@ -33,7 +33,8 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo, Consta
      */
     public final void add_animal(Animal a) {
         animals.add(a);
-        countHerbivorous++;
+        if(a.get_diet() == Diet.HERBIVORE)
+            countHerbivorous++;
     }
 
     /**
@@ -43,7 +44,8 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo, Consta
      */
     public void remove_animal(Animal a) {
         animals.remove(a);
-        countHerbivorous--;
+        if(a.get_diet() == Diet.HERBIVORE)
+            countHerbivorous--;
     }
 
     /**

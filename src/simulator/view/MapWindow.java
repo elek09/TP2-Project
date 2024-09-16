@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapWindow extends JFrame implements EcoSysObserver{
-    private Controller _ctrl;
+    private final Controller _ctrl;
     private AbstractMapViewer _viewer;
-    private Frame _parent;
+    private final Frame _parent;
 
     public MapWindow(Controller ctrl, Frame parent) {
         super("[MAP VIEWER]");
@@ -105,7 +105,7 @@ public class MapWindow extends JFrame implements EcoSysObserver{
     }
 
     @Override
-    public void onAdvanced(double currentTime, RegionManager regionManager, List<AnimalInfo> animals, double dt) {
+    public void onAdvanced(double currentTime, MapInfo mapInfo, List<AnimalInfo> animals, double dt) {
         SwingUtilities.invokeLater(() -> {
             _viewer.update(animals, currentTime);
         });

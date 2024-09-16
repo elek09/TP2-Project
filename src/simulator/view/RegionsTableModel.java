@@ -9,10 +9,10 @@ import java.util.List;
 
 public class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
     private static final long serialVersionUID = 1L;
-    private Controller _ctrl;
-    private RegionManager _regionManager;
-    private List<String> _columns;
-    private List<List<Object>> _data;
+    private final Controller _ctrl;
+    private MapInfo _mapInfo;
+    private final List<String> _columns;
+    private final List<List<Object>> _data;
 
     RegionsTableModel(Controller ctrl) {
         _ctrl = ctrl;
@@ -26,6 +26,7 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
         for (Diet diet : Diet.values()) {
             _columns.add(diet.toString());
         }
+
     }
     @Override
     public int getRowCount() {
@@ -56,48 +57,59 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
 
     @Override
     public void onRegister(double time, MapInfo map, List<AnimalInfo> animals) {
+        _mapInfo = map;
+        updateData();
+        fireTableDataChanged();
     }
 
     @Override
     public void onReset(double time, MapInfo map, List<AnimalInfo> animals) {
+        _mapInfo = map;
+        updateData();
+        fireTableDataChanged();
 
     }
 
     @Override
     public void onAnimalAdded(double time, MapInfo map, List<AnimalInfo> animals, AnimalInfo a) {
-
-
+        _mapInfo = map;
+        updateData();
+        fireTableDataChanged();
     }
 
     @Override
     public void onRegionSet(int row, int col, MapInfo map, RegionInfo r) {
-
-
+        _mapInfo = map;
+        updateData();
+        fireTableDataChanged();
     }
 
     @Override
     public void open(Component parent) {
 
-
     }
 
     @Override
-    public void onAdvanced(double currentTime, RegionManager regionManager, List<AnimalInfo> animals, double dt) {
-        _regionManager = regionManager;
+    public void onAdvanced(double currentTime, MapInfo mapInfo, List<AnimalInfo> animals, double dt) {
+        _mapInfo = mapInfo;
         updateData();
         fireTableDataChanged();
     }
 
+    /**
+     * Updates the data in the table model.
+     */
     private void updateData() {
         _data.clear();
+        Iterator<MapInfo.RegionData> iterator = _mapInfo.iterator();
 
-        for (MapInfo.RegionData regionData : _regionManager) {
+        while(iterator.hasNext()){
             List<Object> rowData = new ArrayList<>();
+            MapInfo.RegionData regionData = iterator.next();
             rowData.add(regionData.row());
             rowData.add(regionData.col());
-            rowData.add(regionData.r().toString());             //description but not sure its enough to use toString
+            rowData.add(regionData.r().toString());
 
-            // Initialize
             Map<Diet, Integer> dietCounts = new HashMap<>();
             for (Diet diet : Diet.values()) {
                 dietCounts.put(diet, 0);
@@ -120,5 +132,6 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
 
             _data.add(rowData);
         }
+
     }
 }

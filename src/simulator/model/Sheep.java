@@ -6,7 +6,7 @@ import simulator.misc.Vector2D;
 public class Sheep extends Animal {
 
     private Animal _danger_source;
-    private SelectionStrategy _danger_strategy;
+    private final SelectionStrategy _danger_strategy;
 
     /**
      * Constructor for the Sheep class
@@ -152,7 +152,7 @@ public class Sheep extends Animal {
      */
     private void updateAsMate(double dt) {
         _danger_source = null;
-        if (this._mate_target != null && (_mate_target.get_state() == State.DEAD || this._sight_range < _pos.distanceTo(_mate_target.get_position()))) {
+        if (this._mate_target != null && (this._state == State.DEAD || this._sight_range < _pos.distanceTo(_mate_target.get_position()))) {
             this._mate_target = null;
         }
         if (this._mate_target == null) {

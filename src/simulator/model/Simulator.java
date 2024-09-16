@@ -1,6 +1,7 @@
 package simulator.model;
 
 import org.json.JSONObject;
+import simulator.factories.DynamicSupplyRegionBuilder;
 import simulator.factories.Factory;
 
 import java.util.ArrayList;
@@ -12,9 +13,9 @@ public class Simulator implements Observable<EcoSysObserver>, JSONable {
     private final Factory<Animal> animalsFactory;
     private final Factory<Region> regionsFactory;
     private RegionManager regionManager;
-    private List<Animal> animals;
+    private final List<Animal> animals;
     private double currentTime;
-    private List<EcoSysObserver> observers;
+    private final List<EcoSysObserver> observers;
 
     /**
      * Constructor for the Simulator class
@@ -26,10 +27,10 @@ public class Simulator implements Observable<EcoSysObserver>, JSONable {
      * @param animalsFactory The factory for creating animals
      * @param regionsFactory The factory for creating regions
      */
-    public Simulator(int width, int height, int cols, int rows, Factory<Animal> animalsFactory, Factory<Region> regionsFactory) {
+    public Simulator(int width, int height, int rows, int cols, Factory<Animal> animalsFactory, Factory<Region> regionsFactory) {
         this.animalsFactory = animalsFactory;
         this.regionsFactory = regionsFactory;
-        this.regionManager = new RegionManager(cols, rows, width, height);
+        this.regionManager = new RegionManager(rows, cols, width, height);
         this.animals = new ArrayList<>();
         this.currentTime = 0.0;
         this.observers = new ArrayList<>();
